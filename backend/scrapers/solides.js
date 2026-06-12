@@ -106,10 +106,16 @@ async function scrapeSolides() {
                 location = `${job.city.name}/${job.state.code}`;
             }
 
-            // Usa o redirectLink da API. Se não existir, fallback para URL de busca.
-            // Nota: os links da Sólides são subdomínios dinâmicos (empresa.solides.jobs) que podem
-            // ser removidos quando a vaga é encerrada. O campo redirectLink é a URL mais recente da API.
-            const jobUrl = job.redirectLink || `https://vagas.solides.com.br`;
+            // Constrói a URL no portal CENTRAL da Sólides usando o slug do título.
+            // O subdomínio empresa.solides.jobs é deletado quando a vaga fecha.
+            // O portal central vagas.solides.com.br/vagas/todos/{slug} é permanente.
+            const titleSlug = job.title
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+                .replace(/[^a-z0-9\s-]/g, '')                     // Remove caracteres especiais
+                .trim()
+                .replace(/\s+/g, '-');                             // Espaços → hífens
+            const jobUrl = `https://vagas.solides.com.br/vagas/todos/${titleSlug}`;
 
             jobs.push({
                 title: job.title,
