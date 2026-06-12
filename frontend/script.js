@@ -163,7 +163,7 @@ if (mobileBtn && mobileOverlay && closeMenuBtn) {
 }
 
 // --- VAGAS PAGE LOGIC ---
-if (window.location.pathname.includes('vagas.html')) {
+if (window.location.pathname.includes('/vagas') || window.location.pathname.includes('vagas.html')) {
     const jobsGrid = document.getElementById('jobsGrid');
     const loadingIndicator = document.getElementById('loadingIndicator');
     
