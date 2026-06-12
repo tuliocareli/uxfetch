@@ -83,9 +83,13 @@ async function scrapeRemotar() {
         });
 
         console.log(`[Remotar] Extraindo descrição para ${filtered.length} vagas...`);
-        // Extrai a descrição real de cada vaga usando Axios para ser rápido
+        // Extrai a descrição real de cada vaga usando Axios respeitando o Rate Limiting (Pausa simulando humano)
         for (let job of filtered) {
             try {
+                // Delay randômico entre 1.5s e 3.5s para não sobrecarregar o servidor
+                const delayMs = Math.floor(Math.random() * (3500 - 1500 + 1)) + 1500;
+                await new Promise(r => setTimeout(r, delayMs));
+
                 const { data } = await axios.get(job.url, {
                     headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36' }
                 });
