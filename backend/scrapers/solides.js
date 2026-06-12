@@ -115,7 +115,7 @@ async function scrapeSolides() {
                 .replace(/[^a-z0-9\s-]/g, '')                     // Remove caracteres especiais
                 .trim()
                 .replace(/\s+/g, '-');                             // Espaços → hífens
-            const jobUrl = `https://vagas.solides.com.br/vagas/todos/${titleSlug}`;
+            const jobUrl = `https://vagas.solides.com.br/vagas/todos/${titleSlug}?id=${job.id}`;
 
             jobs.push({
                 title: job.title,
