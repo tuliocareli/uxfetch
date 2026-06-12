@@ -30,8 +30,15 @@ async function main() {
     console.log(`Total de vagas coletadas: ${allJobs.length}`);
 
     if (allJobs.length > 0) {
-        console.log('Salvando no Supabase...');
-        // Upsert on 'url' column to avoid duplicates
+        console.log('Filtrando vagas repetidas...');
+        const { data: existingJobs } = await supabase.from('jobs').select('url');
+        const existingUrls = new Set((existingJobs || []).map(j => j.url));
+        
+        const newJobs = allJobs.filter(j => !existingUrls.has(j.url));
+        console.log(`Vagas inéditas encontradas hoje: ${newJobs.length}`);
+
+        console.log('Salvando/Atualizando histórico no Supabase...');
+        // Continua salvando tudo no Supabase para manter o histórico vivo
         const { data: upsertData, error: upsertError } = await supabase
             .from('jobs')
             .upsert(allJobs, { onConflict: 'url' });
@@ -41,27 +48,28 @@ async function main() {
         } else {
             console.log('Vagas salvas/atualizadas com sucesso!');
             
-            // FASE DE DISPARO DE E-MAIL
-            console.log('Buscando inscritos ativos para disparo de e-mails...');
-            const { data: subscribers, error: subError } = await supabase
-                .from('subscribers')
-                .select('*')
-                .eq('is_active', true);
-                
-            if (subError) {
-                console.error('Erro ao buscar inscritos:', subError);
-            } else if (subscribers && subscribers.length > 0) {
-                console.log(`Disparando e-mail para ${subscribers.length} inscrito(s)...`);
-                const { sendDailyEmail } = require('./utils/mailer');
-                
-                for (const sub of subscribers) {
-                    // TODO: Aqui implementaríamos a lógica de MATCH (Fase 5) para cruzar
-                    // o "accept_remote" e a "cidade" do usuário com as vagas.
-                    // Por enquanto, enviamos todas as vagas como teste.
-                    await sendDailyEmail(sub, allJobs);
+            // FASE DE DISPARO DE E-MAIL (Somente se houver inéditas)
+            if (newJobs.length > 0) {
+                console.log('Buscando inscritos ativos para disparo de e-mails...');
+                const { data: subscribers, error: subError } = await supabase
+                    .from('subscribers')
+                    .select('*')
+                    .eq('is_active', true);
+                    
+                if (subError) {
+                    console.error('Erro ao buscar inscritos:', subError);
+                } else if (subscribers && subscribers.length > 0) {
+                    console.log(`Disparando e-mail com ${newJobs.length} vagas inéditas para ${subscribers.length} inscrito(s)...`);
+                    const { sendDailyEmail } = require('./utils/mailer');
+                    
+                    for (const sub of subscribers) {
+                        await sendDailyEmail(sub, newJobs);
+                    }
+                } else {
+                    console.log('Nenhum inscrito ativo encontrado.');
                 }
             } else {
-                console.log('Nenhum inscrito ativo encontrado.');
+                console.log('Nenhuma vaga inédita para enviar hoje. Pulando disparo de e-mails para não gerar spam.');
             }
         }
     }
