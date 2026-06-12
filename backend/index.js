@@ -6,6 +6,9 @@ const remotarScraper = require('./scrapers/remotar');
 const tramposScraper = require('./scrapers/trampos');
 const solidesScraper = require('./scrapers/solides');
 const gupyScraper = require('./scrapers/gupy');
+const programathorScraper = require('./scrapers/programathor');
+const vagasScraper = require('./scrapers/vagas');
+const infojobsScraper = require('./scrapers/infojobs');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -14,7 +17,10 @@ async function main() {
         { name: 'Remotar', run: remotarScraper },
         { name: 'Trampos', run: tramposScraper },
         { name: 'Sólides', run: solidesScraper },
-        { name: 'Gupy', run: gupyScraper }
+        { name: 'Gupy', run: gupyScraper },
+        { name: 'Programathor', run: programathorScraper },
+        { name: 'Vagas.com.br', run: vagasScraper },
+        { name: 'Infojobs', run: infojobsScraper }
     ];
 
     const results = await Promise.allSettled(scrapers.map(s => s.run()));
@@ -42,10 +48,15 @@ async function main() {
         console.log(`Vagas inéditas encontradas hoje: ${newJobs.length}`);
 
         console.log('Salvando/Atualizando histórico no Supabase...');
-        // Continua salvando tudo no Supabase para manter o histórico vivo
-        const { data: upsertData, error: upsertError } = await supabase
+        // Limpa chaves temporárias de uso interno para evitar erro PGRST204
+        const cleanJobs = allJobs.map(j => {
+            const { needsDeepCheck, ...cleanJob } = j;
+            return cleanJob;
+        });
+
+        const { error: upsertError } = await supabase
             .from('jobs')
-            .upsert(allJobs, { onConflict: 'url' });
+            .upsert(cleanJobs, { onConflict: 'url' });
 
         if (upsertError) {
             console.error('Erro ao salvar no Supabase:', upsertError);
@@ -66,8 +77,29 @@ async function main() {
                     console.log(`Disparando e-mail com ${newJobs.length} vagas inéditas para ${subscribers.length} inscrito(s)...`);
                     const { sendDailyEmail } = require('./utils/mailer');
                     
+                    // Busca vagas recentes (últimos 7 dias)
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+                    const { data: recentJobsData, error: recentJobsError } = await supabase
+                        .from('jobs')
+                        .select('*')
+                        .gte('created_at', sevenDaysAgo.toISOString());
+
+                    let recentJobs = [];
+                    if (!recentJobsError && recentJobsData) {
+                        const newJobsUrls = new Set(newJobs.map(j => j.url));
+                        const validRecentJobs = recentJobsData.filter(j => !newJobsUrls.has(j.url));
+                        
+                        // Sorteia até 3 vagas
+                        const shuffled = validRecentJobs.sort(() => 0.5 - Math.random());
+                        recentJobs = shuffled.slice(0, 3);
+                    } else if (recentJobsError) {
+                        console.error('Erro ao buscar vagas recentes:', recentJobsError);
+                    }
+
                     for (const sub of subscribers) {
-                        await sendDailyEmail(sub, newJobs);
+                        await sendDailyEmail(sub, newJobs, recentJobs);
                     }
                 } else {
                     console.log('Nenhum inscrito ativo encontrado.');
@@ -76,6 +108,25 @@ async function main() {
                 console.log('Nenhuma vaga inédita para enviar hoje. Pulando disparo de e-mails para não gerar spam.');
             }
         }
+    }
+
+    console.log('Executando limpeza de banco de dados (Removendo vagas com mais de 30 dias)...');
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const { error: deleteError } = await supabase
+            .from('jobs')
+            .delete()
+            .lt('created_at', thirtyDaysAgo.toISOString());
+            
+        if (deleteError) {
+            console.error('Erro ao limpar vagas antigas:', deleteError);
+        } else {
+            console.log('Limpeza concluída com sucesso!');
+        }
+    } catch (error) {
+        console.error('Erro inesperado na rotina de limpeza:', error);
     }
 
     console.log('Orquestrador finalizado.');

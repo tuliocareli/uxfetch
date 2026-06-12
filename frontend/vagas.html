@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UX Fetch | Política de Privacidade (LGPD)</title>
+    <title>Vagas Recentes | UX Fetch</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header class="header">
@@ -18,7 +19,7 @@
             </a>
             
             <nav class="desktop-nav">
-                <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="vagas.html" class="nav-link" style="color: var(--primary);">Vagas Recentes</a>
                 <a href="index.html#sobre" class="nav-link">Sobre o Projeto</a>
             </nav>
 
@@ -42,24 +43,42 @@
         </div>
     </div>
 
-    <main class="container" style="max-width: 800px; padding: 64px 24px; min-height: 60vh;">
-        <div style="margin-bottom: 24px;">
-            <a href="index.html" style="color: var(--primary); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 8px;">
-                &larr; Voltar para a página inicial
-            </a>
-        </div>
-        <h1 style="margin-bottom: 40px; font-size: 2.5rem; color: var(--text-dark);">Como cuidamos dos seus dados (LGPD)</h1>
-        
-        <div style="font-size: 1.125rem; line-height: 1.8; color: var(--text-dark);">
-            <p style="margin-bottom: 24px;"><strong>O que coletamos:</strong><br>Coletamos apenas o seu e-mail, a sua cidade e as suas preferências de modelo de trabalho (remoto ou presencial).</p>
-            <p style="margin-bottom: 24px;"><strong>Por que coletamos e como usamos:</strong><br>O seu e-mail é usado exclusivamente para disparar os alertas de vagas.<br>A sua cidade e preferências de modelo de trabalho são usadas pelo nosso algoritmo para filtrar o banco de dados e enviar apenas as oportunidades que fazem sentido para a sua rotina.</p>
-            <p style="margin-bottom: 24px;"><strong>O que NÃO fazemos:</strong><br>Nós não vendemos, não alugamos e não compartilhamos o seu e-mail com recrutadores, empresas ou plataformas de terceiros. Este é um projeto de utilidade pública mantido de forma independente. O armazenamento é feito em infraestrutura de nuvem segura.</p>
-            <p><strong>O controle é seu:</strong><br>Você pode cancelar a sua inscrição e excluir todos os seus dados do nosso banco a qualquer momento, bastando clicar no link "Cancelar inscrição" presente no rodapé de todos os e-mails que enviamos.</p>
-        </div>
+    <main class="main-content">
+        <section class="jobs-hero">
+            <h1>Mural de <span class="highlight">Oportunidades</span></h1>
+            <p>Vagas de Product Design e UI/UX ativas rastreadas pelo nosso motor. <br>Exibindo as mais recentes coletadas.</p>
+        </section>
+        <section class="filters-bar">
+            <div class="filters-container">
+                <div class="filter-pills">
+                    <button class="filter-pill" data-filter="remoto">Remoto</button>
+                    <button class="filter-pill" data-filter="hibrido">Híbrido</button>
+                    <button class="filter-pill" data-filter="presencial">Presencial</button>
+                </div>
+                <div class="filter-location">
+                    <select id="vagas-state" class="custom-select filter-select">
+                        <option value="" selected>Todo o Brasil</option>
+                    </select>
+                    <select id="vagas-city" class="custom-select filter-select" disabled>
+                        <option value="" selected>Todas as Cidades</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="jobs-container">
+            <div id="loadingIndicator" style="text-align: center; padding: 40px; color: var(--primary); font-weight: bold;">
+                <span class="loader" style="border-top-color: var(--primary); border-width: 4px; width: 40px; height: 40px;"></span>
+                <p style="margin-top: 16px;">Sincronizando com o radar...</p>
+            </div>
+            <div id="jobsGrid" class="jobs-grid" style="display: none;">
+                <!-- Os cards (quadradinhos) entrarão aqui via JS -->
+            </div>
+        </section>
     </main>
 
     <!-- FOOTER -->
-    <footer class="footer" style="margin-top: 0;">
+    <footer class="footer">
         <div class="container footer-container">
             <div class="footer-logo">
                 <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
@@ -78,5 +97,7 @@
             </div>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

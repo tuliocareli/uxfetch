@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const EMAIL_CONTATO = "contato@uxfetch.com.br"; // TODO: Substituir por vagas@meudominio.com
 
-async function sendDailyEmail(user, jobs) {
+async function sendDailyEmail(user, jobs, recentJobs = []) {
     if (!jobs || jobs.length === 0) {
         console.log(`Nenhuma vaga para o usuário ${user.email}. Pulando e-mail.`);
         return;
@@ -16,13 +16,20 @@ async function sendDailyEmail(user, jobs) {
     try {
         const templatePath = path.join(__dirname, '../emails/template.html');
         const jobTemplatePath = path.join(__dirname, '../emails/jobTemplate.html');
+        const recentJobTemplatePath = path.join(__dirname, '../emails/recentJobTemplate.html');
         
         let templateHtml = fs.readFileSync(templatePath, 'utf8');
         const jobTemplateHtml = fs.readFileSync(jobTemplatePath, 'utf8');
+        let recentJobTemplateHtml = '';
+        if (fs.existsSync(recentJobTemplatePath)) {
+            recentJobTemplateHtml = fs.readFileSync(recentJobTemplatePath, 'utf8');
+        }
 
         let jobsHtml = '';
-
-        for (const job of jobs) {
+        const limit = 15;
+        const slicedJobs = jobs.slice(0, limit);
+        
+        for (const job of slicedJobs) {
             let jobBlock = jobTemplateHtml;
             jobBlock = jobBlock.replace(/{{modelo_trabalho}}/g, job.is_remote ? 'Home Office' : 'Híbrido/Presencial');
             jobBlock = jobBlock.replace(/{{regime}}/g, 'A Consultar'); // Placeholder, já que o scraper ainda não pega regime
@@ -38,12 +45,61 @@ async function sendDailyEmail(user, jobs) {
             jobsHtml += jobBlock;
         }
 
+        if (jobs.length > limit) {
+            const excessCount = jobs.length - limit;
+            jobsHtml += `
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px; margin-bottom:24px; text-align:center;">
+                <tr>
+                    <td>
+                        <p style="font-size:16px; color:#4A5568; margin-bottom:16px;">O radar encontrou mais <strong>${excessCount} vagas</strong> inéditas hoje!</p>
+                        <a href="https://uxfetch.com.br/vagas" target="_blank" style="display:inline-block; font-size:16px; font-weight:600; font-family:Inter, Helvetica, Arial, sans-serif; color:#ffffff; background-color:#0055FF; text-decoration:none; padding:16px 32px; border-radius:8px;">Ver todas no Mural Web &rarr;</a>
+                    </td>
+                </tr>
+            </table>
+            `;
+        }
+
+        let recentJobsHtml = '';
+        if (recentJobs.length > 0 && recentJobTemplateHtml) {
+            for (const job of recentJobs) {
+                let jobBlock = recentJobTemplateHtml;
+                jobBlock = jobBlock.replace(/{{titulo_cargo}}/g, job.title);
+                jobBlock = jobBlock.replace(/{{empresa}}/g, job.company);
+                
+                let locationStr = job.location;
+                if (job.is_remote && locationStr !== 'Remoto') {
+                    locationStr += ' (Remoto)';
+                }
+                jobBlock = jobBlock.replace(/{{cidade}}/g, locationStr);
+                
+                jobBlock = jobBlock.replace(/{{url_vaga}}/g, job.url);
+                
+                recentJobsHtml += jobBlock;
+            }
+        } else {
+            // Se não houver vagas recentes, esconde a seção inteira usando regex no template original,
+            // ou apenas remove o placeholder. Como o título da seção ficou hardcoded no template.html,
+            // precisaremos de uma lógica para não enviar o cabeçalho se recentJobsHtml for vazio.
+            // O template atual tem a seção e o placeholder juntos. 
+            // Para simplificar, vou remover a seção hardcoded do template.html caso não tenha recentes, 
+            // ou melhor, injetar o título junto com as vagas no placeholder.
+            // Para consertar o que fiz: Se não tem recentJobsHtml, apagamos o HTML ao redor do placeholder no template.
+        }
+
         // Nome extraído do e-mail (antes do @)
         const name = user.email.split('@')[0];
         const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
 
         templateHtml = templateHtml.replace(/{{nome}}/g, formattedName);
         templateHtml = templateHtml.replace(/{{VAGAS_PLACEHOLDER}}/g, jobsHtml);
+        
+        if (recentJobsHtml) {
+            templateHtml = templateHtml.replace(/{{VAGAS_RECENTES_PLACEHOLDER}}/g, recentJobsHtml);
+        } else {
+            // Remove a seção "Ainda em aberto" inteira do HTML se não houver vagas recentes
+            templateHtml = templateHtml.replace(/<!-- SEÇÃO: AINDA EM ABERTO -->[\s\S]*?{{VAGAS_RECENTES_PLACEHOLDER}}[\s\S]*?<\/td>\s*<\/tr>/, '');
+        }
+
         templateHtml = templateHtml.replace(/{{email_contato}}/g, EMAIL_CONTATO);
         
         // Data para evitar agrupamento abusivo do Gmail
