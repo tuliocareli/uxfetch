@@ -52,7 +52,12 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
                 <tr>
                     <td>
                         <p style="font-size:16px; color:#4A5568; margin-bottom:16px;">O radar encontrou mais <strong>${excessCount} vagas</strong> inéditas hoje!</p>
-                        <a href="https://uxfetch.com.br/vagas" target="_blank" style="display:inline-block; font-size:16px; font-weight:600; font-family:Inter, Helvetica, Arial, sans-serif; color:#ffffff; background-color:#0055FF; text-decoration:none; padding:16px 32px; border-radius:8px;">Ver todas no Mural Web &rarr;</a>
+                        <a href="https://www.uxfetch.com.br/vagas.html" class="btn" style="
+                display: inline-block;
+                background-color: #0055ff;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 16px 32px; border-radius:8px;">Ver todas no Mural Web &rarr;</a>
                     </td>
                 </tr>
             </table>

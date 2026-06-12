@@ -175,6 +175,10 @@ if (window.location.pathname.includes('vagas.html')) {
     let allJobsCache = [];
     let activeWorkModels = new Set(); // 'remoto', 'hibrido', 'presencial'
 
+    let filteredJobsCache = [];
+    let currentPage = 1;
+    const jobsPerPage = 21;
+
     // Load IBGE Locations for Filters
     if (stateSelect && citySelect) {
         fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
@@ -270,36 +274,125 @@ if (window.location.pathname.includes('vagas.html')) {
 
         if (selectedState) {
             filtered = filtered.filter(job => {
-                // Ignore location filter for 100% remote jobs if that's preferred, 
-                // but let's be strict: if they search SP, show SP jobs (even remote ones).
                 const loc = job.location || '';
-                // Se a vaga for 100% remota sem estado específico, location é só 'Remoto'. Não vai dar match.
-                // Mas se tiver o estado na string, dá match.
-                
-                // Match State
                 if (selectedState && !loc.includes(selectedState)) return false;
-                
-                // Match City
                 if (selectedCity && !loc.toLowerCase().includes(selectedCity.toLowerCase())) return false;
-                
                 return true;
             });
         }
 
-        renderJobs(filtered);
+        filteredJobsCache = filtered;
+        currentPage = 1; // Reset to page 1 on new filter
+        renderJobs();
     }
 
-    function renderJobs(jobsArray) {
+    function renderPagination(totalJobs) {
+        const paginationContainer = document.getElementById('paginationContainer');
+        if (!paginationContainer) return;
+
+        paginationContainer.innerHTML = '';
+        const totalPages = Math.ceil(totalJobs / jobsPerPage);
+
+        if (totalPages <= 1) {
+            paginationContainer.style.display = 'none';
+            return;
+        }
+
+        paginationContainer.style.display = 'flex';
+
+        // Prev Button
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'page-btn';
+        prevBtn.innerHTML = '&laquo;';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderJobs();
+                window.scrollTo({ top: document.querySelector('.jobs-hero').offsetTop, behavior: 'smooth' });
+            }
+        });
+        paginationContainer.appendChild(prevBtn);
+
+        // Page Numbers
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        if (startPage > 1) {
+            const btn = createPageBtn(1);
+            paginationContainer.appendChild(btn);
+            if (startPage > 2) {
+                const ell = document.createElement('span');
+                ell.className = 'page-ellipsis';
+                ell.textContent = '...';
+                paginationContainer.appendChild(ell);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const btn = createPageBtn(i);
+            paginationContainer.appendChild(btn);
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const ell = document.createElement('span');
+                ell.className = 'page-ellipsis';
+                ell.textContent = '...';
+                paginationContainer.appendChild(ell);
+            }
+            const btn = createPageBtn(totalPages);
+            paginationContainer.appendChild(btn);
+        }
+
+        // Next Button
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'page-btn';
+        nextBtn.innerHTML = '&raquo;';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderJobs();
+                window.scrollTo({ top: document.querySelector('.jobs-hero').offsetTop, behavior: 'smooth' });
+            }
+        });
+        paginationContainer.appendChild(nextBtn);
+    }
+
+    function createPageBtn(pageNum) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn';
+        btn.textContent = pageNum;
+        if (pageNum === currentPage) {
+            btn.classList.add('active');
+        }
+        btn.addEventListener('click', () => {
+            currentPage = pageNum;
+            renderJobs();
+            window.scrollTo({ top: document.querySelector('.jobs-hero').offsetTop, behavior: 'smooth' });
+        });
+        return btn;
+    }
+
+    function renderJobs() {
         jobsGrid.innerHTML = '';
         
-        if (!jobsArray || jobsArray.length === 0) {
+        if (!filteredJobsCache || filteredJobsCache.length === 0) {
             jobsGrid.style.display = 'block';
             jobsGrid.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px 0;">Nenhuma vaga encontrada com os filtros selecionados.</p>';
+            renderPagination(0);
             return;
         }
 
         jobsGrid.style.display = 'grid';
-        jobsArray.forEach(job => {
+
+        // Paginating
+        const startIndex = (currentPage - 1) * jobsPerPage;
+        const endIndex = startIndex + jobsPerPage;
+        const jobsToRender = filteredJobsCache.slice(startIndex, endIndex);
+
+        jobsToRender.forEach(job => {
             const card = document.createElement('div');
             card.className = 'job-card';
 
@@ -333,6 +426,8 @@ if (window.location.pathname.includes('vagas.html')) {
             `;
             jobsGrid.appendChild(card);
         });
+        
+        renderPagination(filteredJobsCache.length);
     }
 
     async function fetchJobs() {
