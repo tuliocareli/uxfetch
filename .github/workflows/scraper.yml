@@ -1,0 +1,32 @@
+name: Daily UX Fetch Scraper
+
+on:
+  schedule:
+    # Roda de segunda a sexta-feira às 11:00 UTC (08:00 no fuso de Brasília)
+    - cron: '0 11 * * 1-5'
+  workflow_dispatch: # Permite disparar o robô manualmente clicando em um botão no site do GitHub
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+        
+      - name: Run Scraper and Mailer
+        working-directory: ./backend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node index.js
