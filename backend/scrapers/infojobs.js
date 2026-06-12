@@ -6,7 +6,7 @@ async function scrapeInfojobs() {
     const jobs = [];
     const url = 'https://www.infojobs.com.br/vagas-de-emprego-ux-designer.aspx';
 
-    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer|designer digital)\b/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
@@ -61,7 +61,7 @@ async function scrapeInfojobs() {
                     console.log(`[DEBUG] Rejeitada (Palavra proibida): ${title}`);
                     return;
                 }
-                if (!hasUxUi && !t.includes('designer')) {
+                if (!hasUxUi) {
                     console.log(`[DEBUG] Rejeitada (Sem keyword UX/UI): ${title}`);
                     return;
                 }

@@ -10,15 +10,14 @@ async function scrapeGupy() {
     const extractedJobs = [];
 
     // Filtros rigorosos para Produto/Design
-    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer)\b/i;
-    const genericIncludeRegex = /\b(designer|design)\b/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
     
     // Gupy possui muitas vagas de salão de beleza e design genérico não-digital
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
-        'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data',
-        'gráfico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+        'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
+        'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
         'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
     ];
 
@@ -60,7 +59,7 @@ async function scrapeGupy() {
         
         console.log(`[Gupy] Encontradas ${uniqueJobs.length} vagas brutas na API. Aplicando filtros triplos...`);
 
-        // 3. Filtro Triplo (Rejeição, Aceitação e Deep Check)
+        // 3. Filtro Rigoroso por Título
         for (let job of uniqueJobs) {
             const t = (job.name || '').toLowerCase();
             
@@ -68,35 +67,14 @@ async function scrapeGupy() {
             const isExcluded = excludeKeywords.some(bad => t.includes(bad));
             if (isExcluded) continue;
 
-            const isExactMatch = includeRegex.test(t);
-            const isGenericMatch = genericIncludeRegex.test(t);
-            
-            let needsDeepCheck = false;
-            
-            // Camada 2: Aceitação ou Agendamento de Deep Check
-            if (isExactMatch) {
-                needsDeepCheck = false;
-            } else if (isGenericMatch) {
-                needsDeepCheck = true;
-            } else {
-                continue; // Passa direto se não for nem UX nem Design Genérico
-            }
+            // Camada 2: Aceitação por Título
+            const matchesTitle = includeRegex.test(t);
+            if (!matchesTitle) continue;
 
             // A Gupy já manda a description no JSON primário!
             const rawDesc = job.description || '';
             const $ = cheerio.load(rawDesc);
             let fullText = $('body').text().replace(/\s+/g, ' ').trim();
-
-            // Camada 3: Deep Check Semântico na Descrição
-            if (needsDeepCheck) {
-                const descLower = fullText.toLowerCase();
-                const hasUxUiKeywords = /\b(ux|ui|interface|usabilidade|figma|product|produto digital|app|aplicativo|web)\b/i.test(descLower);
-                if (!hasUxUiKeywords) {
-                    console.log(`[Gupy] ❌ Vaga descartada (não é design digital): ${job.name}`);
-                    continue; 
-                }
-                console.log(`[Gupy] ✅ Vaga genérica validada pela descrição: ${job.name}`);
-            }
 
             // Capturar resumo
             let excerpt = fullText.substring(0, 250).trim();

@@ -68,14 +68,13 @@ async function scrapeRemotar() {
         const uniqueJobs = Array.from(new Map(extractedJobs.map(j => [j.url, j])).values());
         
         // Filtro de segurança rigoroso para Produto/Design
-        const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer)\b/i;
-        const genericIncludeRegex = /\b(designer|design)\b/i;
+        const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
         
         const excludeKeywords = [
             'desenvolvedor', 'developer', 'arquiteto', 'architect', 
             'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
-            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data',
-            'gráfico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance'
+            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
+            'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance'
         ];
 
         const filtered = uniqueJobs.map(job => {
@@ -84,17 +83,12 @@ async function scrapeRemotar() {
             const isExcluded = excludeKeywords.some(bad => t.includes(bad));
             if (isExcluded) return null;
             
-            const isExactMatch = includeRegex.test(t);
-            const isGenericMatch = genericIncludeRegex.test(t);
+            // Aceitação por Título
+            const matchesTitle = includeRegex.test(t);
+            if (!matchesTitle) return null;
             
-            if (isExactMatch) {
-                job.needsDeepCheck = false;
-                return job;
-            } else if (isGenericMatch) {
-                job.needsDeepCheck = true; // Vaga genérica como "Designer" precisará ter a descrição lida
-                return job;
-            }
-            return null;
+            job.needsDeepCheck = false;
+            return job;
         }).filter(Boolean);
 
         console.log(`[Remotar] Extraindo descrição para ${filtered.length} vagas...`);
@@ -116,16 +110,7 @@ async function scrapeRemotar() {
                 // Vamos pegar o texto do body, remover quebras de linha e excesso de espaços.
                 let fullText = $('body').text().replace(/\s+/g, ' ').trim();
                 
-                // --- Deep Check Semântico para vagas genéricas ("Designer Pleno") ---
-                if (job.needsDeepCheck) {
-                    const descLower = fullText.toLowerCase();
-                    const hasUxUiKeywords = /\b(ux|ui|interface|usabilidade|figma|product|produto digital|app|aplicativo|web)\b/i.test(descLower);
-                    if (!hasUxUiKeywords) {
-                        console.log(`[Remotar] ❌ Vaga descartada após ler a descrição (não é UX/UI): ${job.title}`);
-                        continue; // Pula essa vaga e não insere na lista final
-                    }
-                    console.log(`[Remotar] ✅ Vaga genérica validada pela descrição: ${job.title}`);
-                }
+
 
                 // Procurar onde a descrição útil começa (depois do header genérico)
                 // Usualmente a parte de "Descrição" ou "Sobre a vaga" ajuda, mas para garantir:

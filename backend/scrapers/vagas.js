@@ -6,7 +6,7 @@ async function scrapeVagas() {
     const jobs = [];
     const url = 'https://www.vagas.com.br/vagas-de-ux-design';
     
-    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer|designer digital)\b/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
@@ -44,7 +44,7 @@ async function scrapeVagas() {
                 const isExcluded = excludeKeywords.some(bad => t.includes(bad));
 
                 if (isExcluded) return;
-                if (!hasUxUi && !t.includes('designer')) return;
+                if (!hasUxUi) return;
 
                 let isRemote = false;
                 let location = locationRaw || 'A Combinar';

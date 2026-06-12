@@ -10,14 +10,13 @@ async function scrapeProgramathor() {
     ];
     
     // Expressões regulares e palavras de exclusão para UX Fetch
-    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer)\b/i;
-    const genericIncludeRegex = /\b(designer|design)\b/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
     
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
-        'backend', 'fullstack', 'full stack', 'data', 'qa', 'tester',
-        'gráfico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+        'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
+        'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
         'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
     ];
 
@@ -63,56 +62,10 @@ async function scrapeProgramathor() {
             const hasUxUi = includeRegex.test(t);
             const isExcluded = excludeKeywords.some(bad => t.includes(bad));
             
-            if (isExcluded && !hasUxUi) {
-                continue;
-            }
-
-            const isGenericMatch = genericIncludeRegex.test(t);
-            let needsDeepCheck = false;
-            
-            // Aceitação
-            if (hasUxUi) {
-                needsDeepCheck = false;
-            } else if (isGenericMatch || t.includes('front-end') || t.includes('frontend')) {
-                // Front-end que não explicitou UX no título, ou "Designer" genérico
-                needsDeepCheck = true;
-            } else {
-                continue;
-            }
+            if (isExcluded) continue;
+            if (!hasUxUi) continue;
 
             let descriptionSnippet = `Oportunidade na ${job.company} via Programathor.`;
-            
-            // Camada 3: Deep Check (Entrar na vaga para ver se menciona Design/UX/Figma)
-            if (needsDeepCheck) {
-                try {
-                    // Delay para não sobrecarregar
-                    await new Promise(r => setTimeout(r, 1000));
-                    const { data: jobData } = await axios.get(job.link, { timeout: 10000 });
-                    const $job = cheerio.load(jobData);
-                    
-                    const description = $job('.wrapper-content-job-show').text() || $job('body').text();
-                    const descLower = description.toLowerCase();
-                    
-                    // Removido "web" e "app" pois vagas puras de front-end sempre têm isso
-                    const hasUxUiKeywords = /\b(ux|ui|interface|usabilidade|figma|product design|produto digital)\b/i.test(descLower);
-                    
-                    if (!hasUxUiKeywords) {
-                        console.log(`[Programathor] ❌ Vaga descartada (não menciona UX/UI na descrição): ${job.title}`);
-                        continue;
-                    }
-                    console.log(`[Programathor] ✅ Vaga validada pela descrição: ${job.title}`);
-                    
-                    // Extrair um snippet real
-                    let textClean = description.replace(/\s+/g, ' ').trim();
-                    if (textClean.length > 250) textClean = textClean.substring(0, 250) + '...';
-                    descriptionSnippet = textClean;
-                    
-                } catch (e) {
-                    console.error(`[Programathor] Falha ao acessar vaga ${job.link} para deep check:`, e.message);
-                    // Em caso de falha no deep check de front-end, pulamos a vaga por segurança
-                    continue;
-                }
-            }
 
             // Normalizar a Localização
             const isRemote = job.locationAndRemote.includes('Remoto');
