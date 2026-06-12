@@ -55,8 +55,8 @@ async function sendDailyEmail(user, jobs) {
         const subject = `O radar do UX Fetch atualizou: Novas vagas para você, ${formattedName} 🎯`;
 
         const { data, error } = await resend.emails.send({
-            from: 'UX Fetch <onboarding@resend.dev>', // TODO: Substituir por vagas@meudominio.com após validação DNS
-            to: ['tctulio2009@gmail.com'], // Hardcoded provisoriamente porque a Resend está em modo sandbox
+            from: 'UX Fetch <contato@uxfetch.com.br>',
+            to: [user.email],
             subject: subject,
             html: templateHtml
         });
