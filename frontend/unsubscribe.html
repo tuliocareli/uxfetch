@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch | Cancelar Inscrição</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+        </div>
+    </header>
+
+    <main class="main-content" style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+        <div class="container hero-container" style="padding-top: 40px; padding-bottom: 80px;">
+            <div class="hero-text" style="max-width: 600px; margin: 0 auto;">
+                <h1>Poxa, uma pena ver você ir embora 😢</h1>
+                <p>Nós respeitamos sua privacidade. Ao confirmar, todos os seus dados serão destruídos do nosso banco de dados em conformidade com a LGPD.</p>
+            </div>
+
+            <div class="form-card" style="border: none; box-shadow: none; padding: 0; background: transparent; max-width: 600px; margin: 40px auto 0 auto;">
+                <form id="unsubscribe-form">
+                    
+                    <div class="input-group" style="margin-bottom: 32px;">
+                        <label for="reason" style="display: block; margin-bottom: 8px; font-weight: 500; color: #4A5568;">Conta pra gente por que você está saindo? (Opcional)</label>
+                        <textarea id="reason" name="reason" rows="4" placeholder="Ex: Já consegui uma vaga, ou os e-mails estão muito frequentes..." style="width: 100%; padding: 16px; border: 2px solid #E2E8F0; border-radius: 12px; font-family: inherit; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <button type="submit" id="submit-btn" class="btn-primary" style="width: auto; padding: 20px 64px; border-radius: 16px; background-color: #E53E3E;">
+                            <span class="btn-text" style="font-size: 1.25rem;">Parar de receber emails</span>
+                            <span class="loader hidden"></span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="success-message" class="hidden alert-success" style="text-align: center; margin-top: 24px;">
+                    Seus dados foram excluídos com sucesso. Desejamos muito sucesso na sua jornada! 🚀
+                </div>
+                
+                <div id="error-message" class="hidden alert-error" style="text-align: center; margin-top: 24px; color: #E53E3E; font-weight: 500;">
+                    Erro ao excluir. O link pode ser inválido ou você já foi removido.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-logo">
+                <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
+            </div>
+            
+            <p class="footer-description">
+                Feito para fortalecer o ecossistema.<br>
+                O UXfetch é uma ferramenta viva. Se você tiver sugestões de novos portais para o robô rastrear ou ideias de melhoria na interface, o projeto é totalmente aberto a feedbacks.
+            </p>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <p>2026 UXfetch. Desenvolvido com ☕, Vibe Code, Supabase e GitHub Actions por <a href="https://tuliocareli.com" target="_blank" style="color: inherit;">tuliocareli.com</a></p>
+                <a href="lgpd.html">Política de Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="unsubscribe.js"></script>
+</body>
+</html>

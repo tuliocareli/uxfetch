@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UX Fetch | Novas Vagas</title>
+</head>
+<body style="margin:0; padding:0; background-color:#FFFFFF; font-family:Inter, Helvetica, Arial, sans-serif; color:#0A0A0A; -webkit-font-smoothing:antialiased;">
+  <center style="width:100%; table-layout:fixed; background-color:#FFFFFF;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; margin:0 auto; background-color:#FFFFFF;">
+      
+      <!-- CABEÇALHO -->
+      <tr>
+        <td align="center" style="padding:40px 20px 20px 20px;">
+          <img src="https://wxogmhruwhjvhhgmfvrr.supabase.co/storage/v1/object/public/assets/logo.svg" width="160" alt="UX Fetch" style="display:block; border:none; outline:none; text-decoration:none;">
+        </td>
+      </tr>
+      
+      <!-- INTRO -->
+      <tr>
+        <td style="padding:20px 30px 40px 30px; text-align:center;">
+          <h1 style="margin:0 0 16px 0; font-size:24px; font-weight:700; color:#0A0A0A;">Novas oportunidades no radar!</h1>
+          <p style="margin:0; font-size:16px; line-height:24px; color:#71717A;">
+            Fala <strong>{{nome}}</strong>, o motor do UX Fetch terminou a varredura de hoje. Filtramos os portais de RH e separamos as oportunidades de Produto e Design que dão match com você. Confere o que está em alta:
+          </p>
+        </td>
+      </tr>
+
+      <!-- VAGAS -->
+      <tr>
+        <td style="padding:0 20px;">
+          {{VAGAS_PLACEHOLDER}}
+        </td>
+      </tr>
+
+      <!-- COMPARTILHAR VITÓRIA CTA -->
+      <tr>
+        <td style="padding:40px 30px; text-align:center;">
+          <p style="margin:0 0 24px 0; font-size:14px; line-height:20px; color:#0A0A0A; font-weight:500;">
+            Se você avançar em algum processo ou conquistar uma vaga através do radar, manda um e-mail pra gente!<br>
+            Vamos adorar comemorar com você.
+          </p>
+          <table cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+              <td align="center" style="border-radius:8px; background-color:#E0E7FF; border:1px solid #0055FF;">
+                <a href="mailto:{{email_contato}}?subject=Consegui%20uma%20vaga%20pelo%20UX%20Fetch!" target="_blank" style="font-size:14px; font-family:Inter, Helvetica, Arial, sans-serif; color:#0055FF; text-decoration:none; padding:12px 24px; display:inline-block; font-weight:600;">Compartilhar vitória</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      
+      <!-- FOOTER -->
+      <tr>
+        <td align="left" style="background-color:#2554A3; padding:40px 30px; border-radius:24px 24px 0 0; margin-top:20px;">
+          <!-- Footer Logo -->
+          <img src="https://wxogmhruwhjvhhgmfvrr.supabase.co/storage/v1/object/public/assets/logo-white.svg" width="120" alt="UX Fetch" style="display:block; border:none; outline:none; text-decoration:none; margin-bottom: 32px;">
+
+          <p style="margin:0 0 32px 0; font-size:12px; line-height:18px; color:#FFFFFF;">
+            Feito para fortalecer o ecossistema.<br>
+            O UXfetch é uma ferramenta viva. Se você tiver sugestões de novos portais para o robô rastrear ou ideias de melhoria na interface, o projeto é totalmente aberto a feedbacks.
+          </p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+            <tr>
+              <td style="border-bottom:1px solid rgba(255,255,255,0.2);"></td>
+            </tr>
+          </table>
+
+          <p style="margin:0 0 24px 0; font-size:12px; color:rgba(255,255,255,0.8);">
+            2026 UXfetch. Enviado em {{data_envio}}.<br>Desenvolvido com ☕, Vibe Code, Supabase e GitHub Actions por <a href="https://tuliocareli.com" style="color:rgba(255,255,255,0.8); text-decoration:none;">tuliocareli.com</a>
+          </p>
+
+          <p style="margin:0; font-size:12px;">
+            <a href="{{url_unsubscribe}}" style="color:rgba(255,255,255,0.8); text-decoration:underline;">Quero me desinscrever</a>
+          </p>
+        </td>
+      </tr>
+      
+    </table>
+  </center>
+</body>
+</html>

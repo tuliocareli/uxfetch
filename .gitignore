@@ -1,0 +1,20 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+dist/
+build/
+backend/base64.txt
+backend/upload_logos.js
+backend/fix_template.js
+*.log
+
+# Secret / Text files
+*.txt
+senha*
+
+# Agent Artifacts
+*implementation_plan.md
+walkthrough.md
+task.md
