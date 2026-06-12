@@ -300,14 +300,15 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
 
         paginationContainer.style.display = 'flex';
 
-        // Prev Button
+        // Prev Button (vai para a PRIMEIRA página)
         const prevBtn = document.createElement('button');
         prevBtn.className = 'page-btn';
         prevBtn.innerHTML = '&laquo;';
         prevBtn.disabled = currentPage === 1;
+        prevBtn.title = 'Primeira página';
         prevBtn.addEventListener('click', () => {
             if (currentPage > 1) {
-                currentPage--;
+                currentPage = 1;
                 renderJobs();
                 window.scrollTo({ top: document.querySelector('.jobs-hero').offsetTop, behavior: 'smooth' });
             }
@@ -345,14 +346,15 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             paginationContainer.appendChild(btn);
         }
 
-        // Next Button
+        // Next Button (vai para a ÚLTIMA página)
         const nextBtn = document.createElement('button');
         nextBtn.className = 'page-btn';
         nextBtn.innerHTML = '&raquo;';
         nextBtn.disabled = currentPage === totalPages;
+        nextBtn.title = 'Última página';
         nextBtn.addEventListener('click', () => {
             if (currentPage < totalPages) {
-                currentPage++;
+                currentPage = totalPages;
                 renderJobs();
                 window.scrollTo({ top: document.querySelector('.jobs-hero').offsetTop, behavior: 'smooth' });
             }
