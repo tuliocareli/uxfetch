@@ -65,22 +65,34 @@ async function scrapeRemotar() {
         const uniqueJobs = Array.from(new Map(extractedJobs.map(j => [j.url, j])).values());
         
         // Filtro de segurança rigoroso para Produto/Design
-        const includeRegex = /\b(ux|ui|product design|product designer|design engineer|designer|research|researcher|design ops|staff designer)\b/i;
+        const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer)\b/i;
+        const genericIncludeRegex = /\b(designer|design)\b/i;
+        
         const excludeKeywords = [
             'desenvolvedor', 'developer', 'arquiteto', 'architect', 
             'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
-            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data'
+            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data',
+            'gráfico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance'
         ];
 
-        const filtered = uniqueJobs.filter(job => {
+        const filtered = uniqueJobs.map(job => {
             const t = job.title.toLowerCase();
             // Verifica se contém palavras proibidas
             const isExcluded = excludeKeywords.some(bad => t.includes(bad));
-            if (isExcluded) return false;
+            if (isExcluded) return null;
             
-            // Verifica se dá match EXATO com a palavra isolada (ex: UI e não arqUIteto)
-            return includeRegex.test(t);
-        });
+            const isExactMatch = includeRegex.test(t);
+            const isGenericMatch = genericIncludeRegex.test(t);
+            
+            if (isExactMatch) {
+                job.needsDeepCheck = false;
+                return job;
+            } else if (isGenericMatch) {
+                job.needsDeepCheck = true; // Vaga genérica como "Designer" precisará ter a descrição lida
+                return job;
+            }
+            return null;
+        }).filter(Boolean);
 
         console.log(`[Remotar] Extraindo descrição para ${filtered.length} vagas...`);
         // Extrai a descrição real de cada vaga usando Axios respeitando o Rate Limiting (Pausa simulando humano)
@@ -101,6 +113,17 @@ async function scrapeRemotar() {
                 // Vamos pegar o texto do body, remover quebras de linha e excesso de espaços.
                 let fullText = $('body').text().replace(/\s+/g, ' ').trim();
                 
+                // --- Deep Check Semântico para vagas genéricas ("Designer Pleno") ---
+                if (job.needsDeepCheck) {
+                    const descLower = fullText.toLowerCase();
+                    const hasUxUiKeywords = /\b(ux|ui|interface|usabilidade|figma|product|produto digital|app|aplicativo|web)\b/i.test(descLower);
+                    if (!hasUxUiKeywords) {
+                        console.log(`[Remotar] ❌ Vaga descartada após ler a descrição (não é UX/UI): ${job.title}`);
+                        continue; // Pula essa vaga e não insere na lista final
+                    }
+                    console.log(`[Remotar] ✅ Vaga genérica validada pela descrição: ${job.title}`);
+                }
+
                 // Procurar onde a descrição útil começa (depois do header genérico)
                 // Usualmente a parte de "Descrição" ou "Sobre a vaga" ajuda, mas para garantir:
                 const limit = 250; 
@@ -112,13 +135,14 @@ async function scrapeRemotar() {
                 } else {
                     job.description = `Oportunidade de ${job.title} na ${job.company}. Confira todos os detalhes acessando o link da vaga...`;
                 }
+
+                jobs.push(job); // Insere no array final de vagas válidas
             } catch (err) {
-                job.description = `Oportunidade de ${job.title} na ${job.company}. Confira todos os detalhes acessando o link da vaga...`;
+                console.error(`[Remotar] Erro ao extrair a vaga ${job.title}:`, err.message);
             }
         }
 
-        jobs.push(...filtered);
-        console.log(`[Remotar] Foram encontradas e formatadas ${filtered.length} vagas exclusivas de Design.`);
+        console.log(`[Remotar] Foram encontradas e formatadas ${jobs.length} vagas exclusivas de Design.`);
 
     } catch (error) {
         console.error('[Remotar] Erro:', error);

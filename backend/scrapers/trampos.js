@@ -8,11 +8,14 @@ async function scrapeTrampos() {
     const extractedJobs = [];
 
     // Filtros rigorosos para Produto/Design
-    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|designer|research|researcher|design ops|staff designer)\b/i;
+    const includeRegex = /\b(ux|ui|product design|product designer|design engineer|research|researcher|design ops|staff designer)\b/i;
+    const genericIncludeRegex = /\b(designer|design)\b/i;
+    
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
-        'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data'
+        'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data',
+        'gráfico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance'
     ];
 
     try {
@@ -33,13 +36,24 @@ async function scrapeTrampos() {
         
         console.log(`[Trampos] Encontradas ${uniqueJobs.length} vagas totais na API. Aplicando filtros...`);
 
-        // 2. Filtro em memória
-        const filtered = uniqueJobs.filter(job => {
+        // 2. Filtro em memória inteligente
+        const filtered = uniqueJobs.map(job => {
             const t = (job.name || '').toLowerCase();
             const isExcluded = excludeKeywords.some(bad => t.includes(bad));
-            if (isExcluded) return false;
-            return includeRegex.test(t);
-        });
+            if (isExcluded) return null;
+            
+            const isExactMatch = includeRegex.test(t);
+            const isGenericMatch = genericIncludeRegex.test(t);
+            
+            if (isExactMatch) {
+                job.needsDeepCheck = false;
+                return job;
+            } else if (isGenericMatch) {
+                job.needsDeepCheck = true; // Vaga genérica como "Designer Pleno" precisará ter a descrição lida
+                return job;
+            }
+            return null;
+        }).filter(Boolean);
 
         console.log(`[Trampos] Sobraram ${filtered.length} vagas aprovadas no filtro de Design. Buscando descrições completas...`);
 
@@ -59,6 +73,17 @@ async function scrapeTrampos() {
                 // Limpar possíveis HTMLs sujos (mesmo vindo da API, o campo pode ser Rich Text)
                 const $ = cheerio.load(rawDesc);
                 let fullText = $('body').text().replace(/\s+/g, ' ').trim();
+                
+                // --- Deep Check Semântico para vagas genéricas ("Designer Pleno") ---
+                if (job.needsDeepCheck) {
+                    const descLower = fullText.toLowerCase();
+                    const hasUxUiKeywords = /\b(ux|ui|interface|usabilidade|figma|product|produto digital|app|aplicativo|web)\b/i.test(descLower);
+                    if (!hasUxUiKeywords) {
+                        console.log(`[Trampos] ❌ Vaga descartada após ler a descrição (não é UX/UI): ${job.name}`);
+                        continue; // Pula essa vaga e não insere na lista final
+                    }
+                    console.log(`[Trampos] ✅ Vaga genérica validada pela descrição: ${job.name}`);
+                }
                 
                 // Capturar apenas o resumo útil inicial (Isca)
                 let excerpt = fullText.substring(0, 250).trim();
