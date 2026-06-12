@@ -5,6 +5,7 @@ const supabase = require('./utils/supabase');
 const remotarScraper = require('./scrapers/remotar');
 const tramposScraper = require('./scrapers/trampos');
 const solidesScraper = require('./scrapers/solides');
+const gupyScraper = require('./scrapers/gupy');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -12,7 +13,8 @@ async function main() {
     const scrapers = [
         { name: 'Remotar', run: remotarScraper },
         { name: 'Trampos', run: tramposScraper },
-        { name: 'Sólides', run: solidesScraper }
+        { name: 'Sólides', run: solidesScraper },
+        { name: 'Gupy', run: gupyScraper }
     ];
 
     const results = await Promise.allSettled(scrapers.map(s => s.run()));
