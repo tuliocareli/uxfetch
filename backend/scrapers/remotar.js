@@ -9,7 +9,10 @@ async function scrapeRemotar() {
     const jobs = [];
     let browser;
     try {
-        browser = await puppeteer.launch({ headless: 'new' });
+        browser = await puppeteer.launch({ 
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         const page = await browser.newPage();
         await page.setDefaultNavigationTimeout(60000);
 

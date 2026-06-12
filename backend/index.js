@@ -132,4 +132,7 @@ async function main() {
     console.log('Orquestrador finalizado.');
 }
 
-main();
+main().catch(error => {
+    console.error('Fatal error in main orchestrator:', error);
+    process.exit(1);
+});
