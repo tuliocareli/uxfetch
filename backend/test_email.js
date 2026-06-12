@@ -2,7 +2,7 @@ require('dotenv').config();
 const { sendDailyEmail } = require('./utils/mailer');
 
 async function testEmail() {
-    const user = { email: 'tctulio2009@hotmail.com' };
+    const user = { email: 'tctulio2009@gmail.com' };
     const mockJobs = [
         {
             is_remote: true,

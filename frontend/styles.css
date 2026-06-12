@@ -1049,3 +1049,25 @@ body {
         display: flex;
     }
 }
+
+/* Buy Me A Coffee Styles */
+.nav-btn-coffee {
+    background-color: var(--white);
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-btn-coffee:hover {
+    background-color: var(--bg-blue-light);
+    border-color: var(--primary);
+    color: var(--primary) !important;
+}
