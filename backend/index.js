@@ -118,24 +118,32 @@ async function main() {
 
                     function filterJobsForSubscriber(jobsToFilter, sub) {
                         return jobsToFilter.filter(job => {
-                            // Se o usuário só quer remoto, rejeita presencial/híbrido
-                            if (sub.only_remote && !job.is_remote) return false;
+                            // 1. Remoto
+                            if (job.work_mode === 'remote') {
+                                return sub.accept_remote || sub.only_remote;
+                            }
                             
-                            // Se a vaga é remota e ele aceita remoto (ou só remoto), aceita
-                            if (job.is_remote && (sub.accept_remote || sub.only_remote)) return true;
-                            
-                            // Se a vaga é presencial/híbrida
-                            if (!job.is_remote) {
-                                // Se ele aceita mudar de cidade, aceita tudo
-                                if (sub.accept_other_cities) return true;
+                            // Se não é remoto e o usuário só quer remoto, rejeita
+                            if (sub.only_remote) return false;
+
+                            // 2. Híbrido
+                            if (job.work_mode === 'hybrid') {
+                                if (sub.accepts_hybrid === false) return false;
                                 
-                                // Se não aceita mudar de cidade, a cidade da vaga tem que bater
+                                // "Aceitar híbrido só faria sentido na cidade da pessoa"
                                 if (!sub.city) return false;
                                 const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
                                 const jobLocLower = job.location.toLowerCase();
                                 return jobLocLower.includes(subCityLower);
                             }
-                            return true;
+
+                            // 3. Regra Geográfica para Presencial
+                            if (sub.accept_other_cities) return true;
+                            
+                            if (!sub.city) return false;
+                            const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
+                            const jobLocLower = job.location.toLowerCase();
+                            return jobLocLower.includes(subCityLower);
                         });
                     }
 

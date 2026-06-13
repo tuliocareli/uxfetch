@@ -84,13 +84,21 @@ async function scrapeGupy() {
                 excerpt = `Oportunidade de ${job.name} na ${job.careerPageName || 'Empresa Confidencial'}. Confira todos os detalhes acessando o link oficial da Gupy.`;
             }
 
-            // Normalizar a Localização
+            // Normalizar a Localização e Modo de Trabalho
             let location = 'A Combinar';
+            let workMode = 'in_person'; // Default
+            
             const isRemote = job.isRemoteWork || job.workplaceType === 'remote';
+            
             if (isRemote) {
                 location = 'Remoto';
-            } else if (job.city && job.state) {
-                location = `${job.city}/${job.state}`;
+                workMode = 'remote';
+            } else if (job.workplaceType === 'hybrid') {
+                workMode = 'hybrid';
+                if (job.city && job.state) location = `${job.city}/${job.state}`;
+            } else {
+                workMode = 'in_person';
+                if (job.city && job.state) location = `${job.city}/${job.state}`;
             }
 
             jobs.push({
@@ -98,6 +106,7 @@ async function scrapeGupy() {
                 company: job.careerPageName || 'Empresa Confidencial',
                 location: location,
                 is_remote: isRemote || false,
+                work_mode: workMode,
                 url: job.jobUrl || `https://portal.gupy.io/job-search/term=${encodeURIComponent(job.name)}`,
                 source: 'Gupy',
                 description: excerpt

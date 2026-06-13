@@ -255,10 +255,10 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                     matchesInternacional = true;
                 }
 
-                if (isRemote || locLower.includes('remoto')) {
+                if (job.work_mode === 'remote' || (isRemote && !job.work_mode) || locLower.includes('remoto')) {
                     matchesRemoto = true;
                 }
-                if (locLower.includes('híbrido') || locLower.includes('hibrido')) {
+                if (job.work_mode === 'hybrid' || locLower.includes('híbrido') || locLower.includes('hibrido')) {
                     matchesHibrido = true;
                 }
                 if (!matchesRemoto && !matchesHibrido && !job.is_international) {
@@ -404,7 +404,14 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             const card = document.createElement('div');
             card.className = 'job-card';
 
-            const isRemoteBadge = job.is_remote ? '<span class="job-badge">REMOTA</span>' : '<span class="job-badge" style="background:#f4f4f5; color:#71717A;">PRESENCIAL/HÍBRIDO</span>';
+            let workModeBadge = '';
+            if (job.work_mode === 'remote' || (job.is_remote && !job.work_mode)) {
+                workModeBadge = '<span class="job-badge" style="background:#e0e7ff; color:#0055ff;">REMOTA</span>';
+            } else if (job.work_mode === 'hybrid') {
+                workModeBadge = '<span class="job-badge" style="background:#f3e8ff; color:#7c3aed;">HÍBRIDA</span>';
+            } else {
+                workModeBadge = '<span class="job-badge" style="background:#f4f4f5; color:#71717A;">PRESENCIAL</span>';
+            }
             
             let sourceBadge = '';
             if(job.source) {
@@ -425,7 +432,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             card.innerHTML = `
                 <div class="job-badges">
                     ${intlBadge}
-                    ${isRemoteBadge}
+                    ${workModeBadge}
                     ${sourceBadge}
                 </div>
                 <h3 class="job-title">${job.title}</h3>

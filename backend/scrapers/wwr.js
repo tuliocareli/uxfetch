@@ -138,6 +138,7 @@ async function scrapeWWR() {
                 company: company,
                 location: region, 
                 is_remote: true, // Sempre remoto
+                work_mode: 'remote',
                 url: link,
                 source: 'We Work Remotely',
                 description: finalDescription,

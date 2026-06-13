@@ -20,6 +20,12 @@ async function testEmail() {
     const nationalJobs = jobs.filter(j => !j.is_international);
     const intlJobs = jobs.filter(j => j.is_international);
     
+    // Forçar a primeira vaga nacional a ser híbrida para teste visual do usuário
+    if (nationalJobs.length > 0) {
+        nationalJobs[0].work_mode = 'hybrid';
+        nationalJobs[0].location = 'Belo Horizonte/MG';
+    }
+    
     const interleaved = [];
     let nIdx = 0, iIdx = 0;
     while (nIdx < nationalJobs.length || iIdx < intlJobs.length) {

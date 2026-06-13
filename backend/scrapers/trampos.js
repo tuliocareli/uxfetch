@@ -78,12 +78,23 @@ async function scrapeTrampos() {
                     excerpt = `Oportunidade de ${job.name} na ${job.company?.name || 'Empresa Confidencial'}. Acesse o link para conferir os detalhes desta vaga.`;
                 }
 
-                // Normalizar Localização
+                // Normalizar Localização e Work Mode
                 let location = 'A Combinar';
-                if (job.city && job.state) {
-                    location = `${job.city}/${job.state}`;
-                } else if (job.state) {
-                    location = job.state;
+                let workMode = 'in_person';
+
+                if (job.home_office) {
+                    location = 'Remoto';
+                    workMode = 'remote';
+                } else {
+                    if (job.city && job.state) {
+                        location = `${job.city}/${job.state}`;
+                    } else if (job.state) {
+                        location = job.state;
+                    }
+                    const textLower = fullText.toLowerCase();
+                    if (textLower.includes('híbrid') || textLower.includes('hibrid')) {
+                        workMode = 'hybrid';
+                    }
                 }
 
                 // Construção final do modelo exigido pelo Supabase
@@ -92,6 +103,7 @@ async function scrapeTrampos() {
                     company: job.company?.name || 'Empresa Confidencial',
                     location: location,
                     is_remote: job.home_office || false,
+                    work_mode: workMode,
                     url: `https://trampos.co/oportunidades/${job.id}`, // Link público do site, e não da API
                     source: 'Trampos',
                     description: excerpt

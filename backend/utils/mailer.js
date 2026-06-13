@@ -31,7 +31,24 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
         
         for (const job of slicedJobs) {
             let jobBlock = jobTemplateHtml;
-            jobBlock = jobBlock.replace(/{{modelo_trabalho}}/g, job.is_remote ? 'Home Office' : 'Híbrido/Presencial');
+            
+            let badgeText = 'PRESENCIAL';
+            let bgColor = '#E4E4E7'; // Cinza
+            let textColor = '#3F3F46'; // Cinza Escuro
+            
+            if (job.work_mode === 'remote' || (job.is_remote && !job.work_mode)) {
+                badgeText = 'HOME OFFICE';
+                bgColor = '#E0E7FF'; // Azul Claro
+                textColor = '#0055FF'; // Azul
+            } else if (job.work_mode === 'hybrid') {
+                badgeText = 'HÍBRIDO';
+                bgColor = '#F3E8FF'; // Roxo Claro
+                textColor = '#7C3AED'; // Roxo
+            }
+
+            jobBlock = jobBlock.replace(/{{modelo_trabalho}}/g, badgeText);
+            jobBlock = jobBlock.replace(/{{cor_fundo_modelo}}/g, bgColor);
+            jobBlock = jobBlock.replace(/{{cor_texto_modelo}}/g, textColor);
             jobBlock = jobBlock.replace(/{{regime}}/g, 'A Consultar'); // Placeholder, já que o scraper ainda não pega regime
             
             const tagIntl = job.is_international ? `<span style="display:inline-block; padding:4px 8px; background-color:#FEF3C7; color:#B45309; border-radius:4px; font-size:12px; font-weight:600; margin-bottom:12px; margin-left:8px; text-transform:uppercase;">🌍 INTERNACIONAL</span>` : '';
@@ -74,6 +91,26 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
         if (recentJobs.length > 0 && recentJobTemplateHtml) {
             for (const job of recentJobs) {
                 let jobBlock = recentJobTemplateHtml;
+                
+                let badgeText = 'PRESENCIAL';
+                let bgColor = '#E4E4E7';
+                let textColor = '#3F3F46';
+                
+                if (job.work_mode === 'remote' || (job.is_remote && !job.work_mode)) {
+                    badgeText = 'HOME OFFICE';
+                    bgColor = '#E0E7FF';
+                    textColor = '#0055FF';
+                } else if (job.work_mode === 'hybrid') {
+                    badgeText = 'HÍBRIDO';
+                    bgColor = '#F3E8FF';
+                    textColor = '#7C3AED';
+                }
+
+                jobBlock = jobBlock.replace(/{{modelo_trabalho}}/g, badgeText);
+                jobBlock = jobBlock.replace(/{{cor_fundo_modelo}}/g, bgColor);
+                jobBlock = jobBlock.replace(/{{cor_texto_modelo}}/g, textColor);
+                jobBlock = jobBlock.replace(/{{regime}}/g, 'A Consultar');
+
                 jobBlock = jobBlock.replace(/{{titulo_cargo}}/g, job.title);
                 jobBlock = jobBlock.replace(/{{empresa}}/g, job.company);
                 

@@ -67,15 +67,20 @@ async function scrapeProgramathor() {
 
             let descriptionSnippet = `Oportunidade na ${job.company} via Programathor.`;
 
-            // Normalizar a Localização
+            // Normalizar a Localização e Work Mode
             const isRemote = job.locationAndRemote.includes('Remoto');
             let location = 'A Combinar';
+            let workMode = 'in_person';
+            
             if (isRemote) {
                 location = 'Remoto';
+                workMode = 'remote';
             } else {
-                // Tenta extrair a cidade se houver padrão, ex: "São Paulo (Presencial)"
-                // Como pode ser complexo, simplificaremos para Presencial/Híbrido
-                location = 'Presencial/Híbrido';
+                location = 'A Combinar (Consulte Link)';
+                const textLower = job.locationAndRemote.toLowerCase() + ' ' + t;
+                if (textLower.includes('híbrid') || textLower.includes('hibrid')) {
+                    workMode = 'hybrid';
+                }
             }
 
             jobs.push({
@@ -83,6 +88,7 @@ async function scrapeProgramathor() {
                 company: job.company,
                 location: location,
                 is_remote: isRemote,
+                work_mode: workMode,
                 url: job.link,
                 source: 'Programathor',
                 description: descriptionSnippet

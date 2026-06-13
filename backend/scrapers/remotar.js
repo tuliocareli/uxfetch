@@ -51,7 +51,8 @@ async function scrapeRemotar() {
                             title: title,
                             company: company,
                             location: 'Remoto',
-                            is_remote: true, 
+                            is_remote: true,
+                            work_mode: 'remote',
                             url: url,
                             source: 'Remotar',
                             description: '' // Será preenchido na próxima etapa

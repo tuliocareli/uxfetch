@@ -48,21 +48,25 @@ async function scrapeVagas() {
 
                 let isRemote = false;
                 let location = locationRaw || 'A Combinar';
-                if (locationRaw.toLowerCase().includes('remoto') || locationRaw.toLowerCase().includes('home office')) {
+                let workMode = 'in_person';
+                
+                const fullText = (locationRaw + ' ' + title + ' ' + descriptionSnippet).toLowerCase();
+
+                if (fullText.includes('remoto') || fullText.includes('home office')) {
                     isRemote = true;
                     location = 'Remoto';
-                } else if (title.toLowerCase().includes('remoto') || title.toLowerCase().includes('home office')) {
-                    isRemote = true;
-                    location = 'Remoto';
+                    workMode = 'remote';
+                } else if (fullText.includes('híbrid') || fullText.includes('hibrid')) {
+                    workMode = 'hybrid';
                 }
 
-                if (!isRemote && location !== 'A Combinar') {
+                if (!isRemote && location !== 'A Combinar' && location !== 'Remoto') {
                     location = location.split('-')[0].split('A empresa')[0].trim();
                 }
 
                 if (!uniqueJobsMap.has(link)) {
                     uniqueJobsMap.set(link, {
-                        title, company, location, is_remote: isRemote, url: link, source: 'Vagas.com.br',
+                        title, company, location, is_remote: isRemote, work_mode: workMode, url: link, source: 'Vagas.com.br',
                         description: descriptionSnippet.substring(0, 250) + (descriptionSnippet.length > 250 ? '...' : '')
                     });
                 }

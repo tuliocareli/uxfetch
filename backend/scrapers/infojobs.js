@@ -74,21 +74,24 @@ async function scrapeInfojobs() {
 
                 let isRemote = false;
                 let location = locationRaw || 'A Combinar';
+                let workMode = 'in_person';
                 
                 // Infojobs sometimes shows "Presencial", "Híbrido", or "Remoto" inside the SVG icons area
                 const iconsArea = $el.find('.d-inline-flex').text().toLowerCase();
                 
-                if (locationRaw.toLowerCase().includes('remoto') || locationRaw.toLowerCase().includes('home office') || iconsArea.includes('teletrabalho') || iconsArea.includes('remoto')) {
+                const fullText = (locationRaw + ' ' + iconsArea + ' ' + title).toLowerCase();
+                
+                if (fullText.includes('remoto') || fullText.includes('home office') || fullText.includes('teletrabalho')) {
                     isRemote = true;
                     location = 'Remoto';
-                } else if (title.toLowerCase().includes('remoto') || title.toLowerCase().includes('home office')) {
-                    isRemote = true;
-                    location = 'Remoto';
+                    workMode = 'remote';
+                } else if (fullText.includes('híbrid') || fullText.includes('hibrid')) {
+                    workMode = 'hybrid';
                 }
 
                 if (!uniqueJobsMap.has(link)) {
                     uniqueJobsMap.set(link, {
-                        title, company, location, is_remote: isRemote, url: link, source: 'Infojobs',
+                        title, company, location, is_remote: isRemote, work_mode: workMode, url: link, source: 'Infojobs',
                         description: descriptionSnippet.substring(0, 250) + (descriptionSnippet.length > 250 ? '...' : '')
                     });
                 }

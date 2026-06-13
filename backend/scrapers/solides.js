@@ -76,12 +76,19 @@ async function scrapeSolides() {
                 excerpt = `Oportunidade de ${job.title} na ${job.companyName || 'Empresa Confidencial'}. Confira todos os detalhes acessando o link da vaga oficial.`;
             }
 
-            // Normalizar a Localização
+            // Normalizar a Localização e Modo de Trabalho
             let location = 'A Combinar';
+            let workMode = 'in_person';
+            
             if (job.homeOffice) {
                 location = 'Remoto';
-            } else if (job.city && job.state) {
-                location = `${job.city.name}/${job.state.code}`;
+                workMode = 'remote';
+            } else {
+                if (job.city && job.state) location = `${job.city.name}/${job.state.code}`;
+                const textLower = fullText.toLowerCase() + ' ' + t;
+                if (textLower.includes('híbrid') || textLower.includes('hibrid')) {
+                    workMode = 'hybrid';
+                }
             }
 
             // Constrói a URL no portal CENTRAL da Sólides usando o slug do título.
@@ -100,6 +107,7 @@ async function scrapeSolides() {
                 company: job.companyName || 'Empresa Confidencial',
                 location: location,
                 is_remote: job.homeOffice || false,
+                work_mode: workMode,
                 url: jobUrl,
                 source: 'Sólides',
                 description: excerpt
