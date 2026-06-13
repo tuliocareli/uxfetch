@@ -17,6 +17,16 @@ async function scrapeCoodesh() {
         
         const url = 'https://coodesh.com/jobs';
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+
+        const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
+        const excludeKeywords = [
+            'desenvolvedor', 'developer', 'arquiteto', 'architect', 
+            'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
+            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
+            'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+            'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
+        ];
+        
         
         // Esperar a página carregar
         await new Promise(r => setTimeout(r, 4000));
@@ -54,11 +64,6 @@ async function scrapeCoodesh() {
                     
                     const title = lines[0]; // Normalmente o primeiro texto é o cargo
                     
-                    // Se não tiver UX ou Designer no título, pula
-                    if (!title.toLowerCase().includes('ux') && !title.toLowerCase().includes('designer')) {
-                        continue;
-                    }
-                    
                     let work_mode = 'in_person';
                     const textLower = text.toLowerCase();
                     if (textLower.includes('remoto')) {
@@ -87,8 +92,16 @@ async function scrapeCoodesh() {
                 return results;
             });
 
+            // Filtro rigoroso local para garantir que seja vaga de design
+            const validJobs = extractedJobs.filter(j => {
+                const titleLower = j.title.toLowerCase();
+                const isDesign = includeRegex.test(titleLower);
+                const isExcluded = excludeKeywords.some(k => titleLower.includes(k));
+                return isDesign && !isExcluded;
+            });
+
             // Remover links duplicados e adicionar ao array final
-            extractedJobs.forEach(job => {
+            validJobs.forEach(job => {
                 if (!jobs.find(j => j.url === job.url)) {
                     jobs.push(job);
                 }

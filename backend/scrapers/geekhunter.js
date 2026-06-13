@@ -18,6 +18,16 @@ async function scrapeGeekHunter() {
         const url = 'https://www.geekhunter.com.br/vagas?q=ux';
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
         
+        const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
+        const excludeKeywords = [
+            'desenvolvedor', 'developer', 'arquiteto', 'architect', 
+            'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
+            'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
+            'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+            'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
+        ];
+        
+        
         // Esperar a hidratação do Next.js
         await new Promise(r => setTimeout(r, 5000));
         
@@ -84,10 +94,9 @@ async function scrapeGeekHunter() {
             // Filtro local para garantir que seja vaga de design
             const validJobs = extractedJobs.filter(j => {
                 const titleLower = j.title.toLowerCase();
-                return titleLower.includes('ux') || 
-                       titleLower.includes('ui') || 
-                       titleLower.includes('product design') ||
-                       titleLower.includes('designer');
+                const isDesign = includeRegex.test(titleLower);
+                const isExcluded = excludeKeywords.some(k => titleLower.includes(k));
+                return isDesign && !isExcluded;
             });
             
             // Removemos as já existentes nesta raspagem (para evitar duplicidade na mesma página)
