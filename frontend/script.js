@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const onlyRemoteCheck = document.getElementById('only_remote');
     const acceptOtherCheck = document.getElementById('accept_other_cities');
     const acceptRemoteCheck = document.getElementById('accept_remote');
+    const acceptsHybridCheck = document.getElementById('accepts_hybrid');
 
     // IBGE Selects
     const stateSelect = document.getElementById('state');
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(e.target.checked) {
             acceptOtherCheck.checked = false;
             acceptRemoteCheck.checked = false;
+            acceptsHybridCheck.checked = false;
         }
     });
 
@@ -69,6 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     acceptRemoteCheck.addEventListener('change', (e) => {
+        if(e.target.checked) {
+            onlyRemoteCheck.checked = false;
+        }
+    });
+
+    acceptsHybridCheck.addEventListener('change', (e) => {
         if(e.target.checked) {
             onlyRemoteCheck.checked = false;
         }
@@ -108,7 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
             city: finalCityString,
             accept_other_cities: acceptOtherCheck.checked,
             accept_remote: acceptRemoteCheck.checked,
-            only_remote: onlyRemoteCheck.checked
+            only_remote: onlyRemoteCheck.checked,
+            accepts_hybrid: acceptsHybridCheck.checked
         };
 
         // UI Feedback: Loading state
