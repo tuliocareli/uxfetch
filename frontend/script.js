@@ -253,26 +253,10 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
         if (activeWorkModels.size > 0) {
             filtered = filtered.filter(job => {
                 const isRemote = job.is_remote;
-                const locLower = (job.location || '').toLowerCase();
-                
-                let matchesRemoto = false;
-                let matchesHibrido = false;
-                let matchesPresencial = false;
-                let matchesInternacional = false;
-
-                if (job.is_international) {
-                    matchesInternacional = true;
-                }
-
-                if (job.work_mode === 'remote' || (isRemote && !job.work_mode) || locLower.includes('remoto')) {
-                    matchesRemoto = true;
-                }
-                if (job.work_mode === 'hybrid' || locLower.includes('híbrido') || locLower.includes('hibrido')) {
-                    matchesHibrido = true;
-                }
-                if (!matchesRemoto && !matchesHibrido && !job.is_international) {
-                    matchesPresencial = true;
-                }
+                let matchesInternacional = !!job.is_international;
+                let matchesRemoto = job.work_mode === 'remote' || (job.is_remote && !job.work_mode) || (job.is_international && !job.work_mode);
+                let matchesHibrido = job.work_mode === 'hybrid';
+                let matchesPresencial = !matchesRemoto && !matchesHibrido;
 
                 if (activeWorkModels.has('internacional') && matchesInternacional) return true;
                 if (activeWorkModels.has('remoto') && matchesRemoto) return true;
