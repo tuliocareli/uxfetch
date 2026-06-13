@@ -10,6 +10,8 @@ const programathorScraper = require('./scrapers/programathor');
 const vagasScraper = require('./scrapers/vagas');
 const infojobsScraper = require('./scrapers/infojobs');
 const wwrScraper = require('./scrapers/wwr');
+const geekhunterScraper = require('./scrapers/geekhunter');
+const coodeshScraper = require('./scrapers/coodesh');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -22,22 +24,24 @@ async function main() {
         { name: 'Programathor', run: programathorScraper },
         { name: 'Vagas.com.br', run: vagasScraper },
         { name: 'Infojobs', run: infojobsScraper },
-        { name: 'We Work Remotely', run: wwrScraper }
+        { name: 'We Work Remotely', run: wwrScraper },
+        { name: 'GeekHunter', run: geekhunterScraper },
+        { name: 'Coodesh', run: coodeshScraper }
     ];
-
-    const results = await Promise.allSettled(scrapers.map(s => s.run()));
 
     let allJobs = [];
 
-    results.forEach((result, index) => {
-        const scraperName = scrapers[index].name;
-        if (result.status === 'fulfilled') {
-            console.log(`✅ [${scraperName}] retornou ${result.value.length} vagas.`);
-            allJobs = allJobs.concat(result.value);
-        } else {
-            console.error(`❌ [${scraperName}] falhou:`, result.reason);
+    // Execução sequencial para evitar sobrecarga de memória (Puppeteer instances)
+    for (const scraper of scrapers) {
+        try {
+            console.log(`⏳ Executando scraper: ${scraper.name}...`);
+            const result = await scraper.run();
+            console.log(`✅ [${scraper.name}] retornou ${result.length} vagas.`);
+            allJobs = allJobs.concat(result);
+        } catch (error) {
+            console.error(`❌ [${scraper.name}] falhou:`, error);
         }
-    });
+    }
 
     console.log(`Total de vagas coletadas: ${allJobs.length}`);
 
