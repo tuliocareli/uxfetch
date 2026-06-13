@@ -44,7 +44,9 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
             let desc = job.description || `Oportunidade incrível na ${job.company} encontrada hoje pelo radar UX Fetch.`;
             jobBlock = jobBlock.replace(/{{breve_descricao}}/g, desc);
             
-            jobBlock = jobBlock.replace(/{{url_vaga}}/g, job.url);
+            // Usamos o redirecionador interno para evitar filtros de spam (ex: links da Gupy direto no e-mail)
+            const safeUrl = `https://uxfetch.com.br/vaga?id=${job.id}`;
+            jobBlock = jobBlock.replace(/{{url_vaga}}/g, safeUrl);
             
             jobsHtml += jobBlock;
         }
@@ -81,7 +83,8 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
                 }
                 jobBlock = jobBlock.replace(/{{cidade}}/g, locationStr);
                 
-                jobBlock = jobBlock.replace(/{{url_vaga}}/g, job.url);
+                const safeUrl = `https://uxfetch.com.br/vaga?id=${job.id}`;
+                jobBlock = jobBlock.replace(/{{url_vaga}}/g, safeUrl);
                 
                 recentJobsHtml += jobBlock;
             }
