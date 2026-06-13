@@ -116,8 +116,34 @@ async function main() {
                         console.error('Erro ao buscar vagas recentes:', recentJobsError);
                     }
 
+                    function filterJobsForSubscriber(jobsToFilter, sub) {
+                        return jobsToFilter.filter(job => {
+                            // Se o usuário só quer remoto, rejeita presencial/híbrido
+                            if (sub.only_remote && !job.is_remote) return false;
+                            
+                            // Se a vaga é remota e ele aceita remoto (ou só remoto), aceita
+                            if (job.is_remote && (sub.accept_remote || sub.only_remote)) return true;
+                            
+                            // Se a vaga é presencial/híbrida
+                            if (!job.is_remote) {
+                                // Se ele aceita mudar de cidade, aceita tudo
+                                if (sub.accept_other_cities) return true;
+                                
+                                // Se não aceita mudar de cidade, a cidade da vaga tem que bater
+                                if (!sub.city) return false;
+                                const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
+                                const jobLocLower = job.location.toLowerCase();
+                                return jobLocLower.includes(subCityLower);
+                            }
+                            return true;
+                        });
+                    }
+
                     for (const sub of subscribers) {
-                        await sendDailyEmail(sub, newJobs, recentJobs);
+                        const filteredNewJobs = filterJobsForSubscriber(newJobs, sub);
+                        const filteredRecentJobs = filterJobsForSubscriber(recentJobs, sub);
+                        
+                        await sendDailyEmail(sub, filteredNewJobs, filteredRecentJobs);
                     }
                 } else {
                     console.log('Nenhum inscrito ativo encontrado.');
