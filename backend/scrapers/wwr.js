@@ -35,8 +35,9 @@ ${htmlContent}`;
         return translatedText;
     } catch (error) {
         console.error('[WWR] Erro ao traduzir com Gemini:', error.message);
-        // Em caso de falha de rate limit ou erro na API, retorna a descrição original para não perdermos a vaga
-        return htmlContent; 
+        // Em caso de falha na API, removemos o HTML e resumimos manualmente para não quebrar o layout
+        const plainText = cheerio.load(htmlContent).text().replace(/\s+/g, ' ').trim();
+        return plainText.length > 130 ? plainText.substring(0, 130) + '...' : plainText;
     }
 }
 
