@@ -1,10 +1,11 @@
 /**
  * cookies.js - Gerenciador de Consentimento de Cookies (LGPD)
- * Lógica: O Microsoft Clarity SÓ é carregado após o usuário aceitar.
- * Se o usuário recusar, o Clarity não roda. A escolha é salva no localStorage.
+ * Lógica: Microsoft Clarity e Google Analytics (GA4) SÓ são carregados
+ * após o usuário aceitar. A escolha é salva no localStorage.
  */
 
 const CLARITY_TAG = 'x6g9oba41h';
+const GA_TAG = 'G-VC8JDMERM6';
 const CONSENT_KEY = 'uxfetch_cookie_consent';
 
 function loadClarity() {
@@ -18,6 +19,24 @@ function loadClarity() {
     })(window, document, "clarity", "script", CLARITY_TAG);
 }
 
+function loadGoogleAnalytics() {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TAG}`;
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_TAG, { anonymize_ip: true });
+}
+
+function loadAnalytics() {
+    loadClarity();
+    loadGoogleAnalytics();
+}
+
 function hideBanner() {
     const banner = document.getElementById('cookie-banner');
     if (banner) {
@@ -28,7 +47,7 @@ function hideBanner() {
 
 function handleAccept() {
     localStorage.setItem(CONSENT_KEY, 'accepted');
-    loadClarity();
+    loadAnalytics();
     hideBanner();
 }
 
@@ -45,7 +64,7 @@ function renderBanner() {
         <div class="cookie-banner__content">
             <p class="cookie-banner__text">
                 🎨 <strong>Como bom designer, adoro ver como a interface performa.</strong>
-                Usamos cookies de mapa de calor via Microsoft Clarity para entender como você usa o radar e melhorar o site.
+                Usamos cookies analíticos via Microsoft Clarity (mapas de calor) e Google Analytics (origem do tráfego) para melhorar o radar.
                 Nenhum dado sensível é coletado e ninguém vai te perseguir com anúncios.
                 <a href="lgpd.html" class="cookie-banner__link">Saiba mais</a>
             </p>
@@ -65,8 +84,8 @@ function initCookieConsent() {
     const consent = localStorage.getItem(CONSENT_KEY);
 
     if (consent === 'accepted') {
-        // Usuário já aceitou antes: carrega Clarity silenciosamente
-        loadClarity();
+        // Usuário já aceitou antes: carrega ambas as ferramentas silenciosamente
+        loadAnalytics();
     } else if (consent === 'declined') {
         // Usuário já recusou: não faz nada
     } else {
