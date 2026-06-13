@@ -147,11 +147,33 @@ async function main() {
                         });
                     }
 
+                    let emailsSentToday = 0;
                     for (const sub of subscribers) {
                         const filteredNewJobs = filterJobsForSubscriber(newJobs, sub);
                         const filteredRecentJobs = filterJobsForSubscriber(recentJobs, sub);
                         
-                        await sendDailyEmail(sub, filteredNewJobs, filteredRecentJobs);
+                        // Envia apenas se tiver vaga nova para a pessoa
+                        if (filteredNewJobs.length > 0) {
+                            try {
+                                await sendDailyEmail(sub, filteredNewJobs, filteredRecentJobs);
+                                emailsSentToday++;
+                            } catch (err) {
+                                console.error(`Falha ao enviar e-mail para ${sub.email}:`, err);
+                            }
+                        }
+                    }
+
+                    // Atualiza métricas globais no Supabase
+                    if (newJobs.length > 0 || emailsSentToday > 0) {
+                        const { error: statsError } = await supabase.rpc('increment_platform_stats', { 
+                            jobs_added: newJobs.length, 
+                            emails_added: emailsSentToday 
+                        });
+                        if (statsError) {
+                            console.error('Erro ao atualizar estatísticas da plataforma:', statsError);
+                        } else {
+                            console.log(`Métricas atualizadas: +${newJobs.length} vagas, +${emailsSentToday} e-mails.`);
+                        }
                     }
                 } else {
                     console.log('Nenhum inscrito ativo encontrado.');
