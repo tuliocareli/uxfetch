@@ -119,7 +119,10 @@ async function scrapeWWR() {
             let finalDescription = descriptionHtml;
             
             if (isBrazilian) {
-                console.log(`[WWR] Vaga identificada como Brasileira: ${jobTitle}. Pulando tradução.`);
+                console.log(`[WWR] Vaga identificada como Brasileira: ${jobTitle}. Extraindo texto limpo (sem tradução)...`);
+                // Como não passamos pelo Gemini, precisamos limpar o HTML e resumir manualmente via Cheerio
+                const plainText = cheerio.load(descriptionHtml).text().replace(/\s+/g, ' ').trim();
+                finalDescription = plainText.length > 130 ? plainText.substring(0, 130) + '...' : plainText;
             } else {
                 // A vaga passou por todos os filtros e é internacional. Vamos traduzir!
                 console.log(`[WWR] Vaga internacional encontrada: ${jobTitle} na ${company} (${region}). Iniciando tradução...`);
