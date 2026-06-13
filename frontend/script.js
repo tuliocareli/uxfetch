@@ -414,7 +414,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             card.className = 'job-card';
 
             let workModeBadge = '';
-            if (job.work_mode === 'remote' || (job.is_remote && !job.work_mode)) {
+            if (job.work_mode === 'remote' || (job.is_remote && !job.work_mode) || (job.is_international && !job.work_mode)) {
                 workModeBadge = '<span class="job-badge" style="background:#e0e7ff; color:#0055ff;">REMOTA</span>';
             } else if (job.work_mode === 'hybrid') {
                 workModeBadge = '<span class="job-badge" style="background:#f3e8ff; color:#7c3aed;">HÍBRIDA</span>';
