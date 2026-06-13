@@ -9,6 +9,7 @@ const gupyScraper = require('./scrapers/gupy');
 const programathorScraper = require('./scrapers/programathor');
 const vagasScraper = require('./scrapers/vagas');
 const infojobsScraper = require('./scrapers/infojobs');
+const wwrScraper = require('./scrapers/wwr');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -20,7 +21,8 @@ async function main() {
         { name: 'Gupy', run: gupyScraper },
         { name: 'Programathor', run: programathorScraper },
         { name: 'Vagas.com.br', run: vagasScraper },
-        { name: 'Infojobs', run: infojobsScraper }
+        { name: 'Infojobs', run: infojobsScraper },
+        { name: 'We Work Remotely', run: wwrScraper }
     ];
 
     const results = await Promise.allSettled(scrapers.map(s => s.run()));
