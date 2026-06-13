@@ -33,6 +33,10 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
             let jobBlock = jobTemplateHtml;
             jobBlock = jobBlock.replace(/{{modelo_trabalho}}/g, job.is_remote ? 'Home Office' : 'Híbrido/Presencial');
             jobBlock = jobBlock.replace(/{{regime}}/g, 'A Consultar'); // Placeholder, já que o scraper ainda não pega regime
+            
+            const tagIntl = job.is_international ? `<span style="display:inline-block; padding:4px 8px; background-color:#FEF3C7; color:#B45309; border-radius:4px; font-size:12px; font-weight:600; margin-bottom:12px; margin-left:8px; text-transform:uppercase;">🌍 INTERNACIONAL</span>` : '';
+            jobBlock = jobBlock.replace(/{{tag_internacional}}/g, tagIntl);
+            
             jobBlock = jobBlock.replace(/{{titulo_cargo}}/g, job.title);
             jobBlock = jobBlock.replace(/{{empresa}}/g, job.company);
             jobBlock = jobBlock.replace(/{{cidade}}/g, job.location);
