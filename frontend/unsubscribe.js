@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessage = document.getElementById('error-message');
     const reasonInput = document.getElementById('reason');
 
-    // Extrair email da URL (ex: unsubscribe.html?email=test@test.com)
+    // Extrair token da URL (ex: unsubscribe.html?token=b3f1-...)
     const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
+    const token = urlParams.get('token');
 
-    if (!email) {
+    if (!token) {
         form.style.display = 'none';
-        errorMessage.innerText = 'Nenhum e-mail fornecido. Link inválido.';
+        errorMessage.innerText = 'Token não encontrado. Link de descadastro inválido.';
         errorMessage.classList.remove('hidden');
         return;
     }
@@ -56,11 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 await supabase.from('unsubscribes_feedback').insert([{ reason: reason }]);
             }
 
-            // 2. DESTRUIR os dados do usuário respeitando a LGPD
-            const { data, error } = await supabase
-                .from('subscribers')
-                .delete()
-                .eq('email', email);
+            // 2. DESTRUIR os dados do usuário via função segura (RPC)
+            const { error } = await supabase.rpc('unsubscribe_by_token', { secret_token: token });
 
             if (error) {
                 throw error;

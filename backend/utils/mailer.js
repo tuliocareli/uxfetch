@@ -154,8 +154,8 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
         // Data para evitar agrupamento abusivo do Gmail
         const dataEnvio = new Date().toLocaleString('pt-BR');
         templateHtml = templateHtml.replace(/{{data_envio}}/g, dataEnvio);
-        // Link da página oficial de desinscrição com destruição de dados (LGPD)
-        templateHtml = templateHtml.replace(/{{url_unsubscribe}}/g, `https://uxfetch.com.br/unsubscribe.html?email=${user.email}`);
+        // Link da página oficial de desinscrição com destruição de dados (LGPD) - Agora via Token Seguro
+        templateHtml = templateHtml.replace(/{{url_unsubscribe}}/g, `https://uxfetch.com.br/unsubscribe.html?token=${user.token}`);
 
         const subject = `O radar do UX Fetch atualizou: Novas vagas para você, ${formattedName} 🎯`;
 
