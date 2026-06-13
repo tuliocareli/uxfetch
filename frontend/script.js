@@ -249,6 +249,11 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 let matchesRemoto = false;
                 let matchesHibrido = false;
                 let matchesPresencial = false;
+                let matchesInternacional = false;
+
+                if (job.is_international) {
+                    matchesInternacional = true;
+                }
 
                 if (isRemote || locLower.includes('remoto')) {
                     matchesRemoto = true;
@@ -256,10 +261,11 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 if (locLower.includes('híbrido') || locLower.includes('hibrido')) {
                     matchesHibrido = true;
                 }
-                if (!matchesRemoto && !matchesHibrido) {
+                if (!matchesRemoto && !matchesHibrido && !job.is_international) {
                     matchesPresencial = true;
                 }
 
+                if (activeWorkModels.has('internacional') && matchesInternacional) return true;
                 if (activeWorkModels.has('remoto') && matchesRemoto) return true;
                 if (activeWorkModels.has('hibrido') && matchesHibrido) return true;
                 if (activeWorkModels.has('presencial') && matchesPresencial) return true;
@@ -405,6 +411,11 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 sourceBadge = `<span class="job-badge" style="background:#e0f2fe; color:#0369a1;">${job.source}</span>`;
             }
 
+            let intlBadge = '';
+            if (job.is_international) {
+                intlBadge = `<span class="job-badge" style="background:#fef3c7; color:#b45309;">🌍 INTERNACIONAL</span>`;
+            }
+
             let dateStr = '';
             if(job.created_at) {
                 const dateObj = new Date(job.created_at);
@@ -413,6 +424,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
 
             card.innerHTML = `
                 <div class="job-badges">
+                    ${intlBadge}
                     ${isRemoteBadge}
                     ${sourceBadge}
                 </div>
@@ -456,7 +468,26 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             if (error) throw error;
 
             loadingIndicator.style.display = 'none';
-            allJobsCache = jobs || [];
+            
+            // Lógica de Interleaving (Sortimento)
+            const rawJobs = jobs || [];
+            const nationalJobs = rawJobs.filter(j => !j.is_international);
+            const intlJobs = rawJobs.filter(j => j.is_international);
+            
+            const interleaved = [];
+            let nIdx = 0, iIdx = 0;
+            while (nIdx < nationalJobs.length || iIdx < intlJobs.length) {
+                // A cada 3 vagas nacionais...
+                for (let k = 0; k < 3 && nIdx < nationalJobs.length; k++) {
+                    interleaved.push(nationalJobs[nIdx++]);
+                }
+                // ...injetamos 1 vaga internacional
+                if (iIdx < intlJobs.length) {
+                    interleaved.push(intlJobs[iIdx++]);
+                }
+            }
+            
+            allJobsCache = interleaved;
             applyFilters(); // Renders initially without any active filters
 
         } catch (err) {

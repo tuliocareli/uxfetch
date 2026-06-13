@@ -17,21 +17,22 @@ async function translateWithGemini(htmlContent) {
     try {
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
         
-        const prompt = `Traduza esta descrição de vaga de UX/UI/Product Design para Português do Brasil.
+        const prompt = `Crie um resumo curto e atrativo desta vaga de UX/UI/Product Design em Português do Brasil.
 IMPORTANTE:
-- Mantenha a formatação HTML original intacta.
-- Não traduza jargões técnicos da área de design e tecnologia (ex: wireframe, mockup, hand-off, UI kit, Figma, Design System, etc).
-- Retorne apenas o HTML traduzido, sem adicionar marcações markdown extras como \`\`\`html.
+- Escreva no MÁXIMO 2 ou 3 frases curtas (cerca de 120 caracteres, ideal para um card pequeno).
+- Retorne APENAS TEXTO PURO. É estritamente proibido retornar tags HTML, imagens, links ou markdown.
+- Termine o texto com "..." (reticências).
+- Não traduza jargões técnicos da área de design e tecnologia (ex: wireframe, mockup, hand-off, UI kit).
 
-HTML da vaga:
+HTML da vaga original:
 ${htmlContent}`;
 
         const result = await model.generateContent(prompt);
         let translatedText = result.response.text();
         
-        // Remove markdown tags caso o modelo insista em retorná-las
-        translatedText = translatedText.replace(/^```html\s*/i, '').replace(/```$/i, '');
-        return translatedText.trim();
+        // Remove quebras de linha duplas e espaços extras
+        translatedText = translatedText.replace(/\\n+/g, ' ').trim();
+        return translatedText;
     } catch (error) {
         console.error('[WWR] Erro ao traduzir com Gemini:', error.message);
         // Em caso de falha de rate limit ou erro na API, retorna a descrição original para não perdermos a vaga
