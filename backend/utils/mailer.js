@@ -68,24 +68,32 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
             jobsHtml += jobBlock;
         }
 
+        // Bloco final da seção de vagas novas: Texto condicional + Botão Fixo
+        let callToActionHtml = `
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px; margin-bottom:24px; text-align:center;">
+            <tr>
+                <td>`;
+                
         if (jobs.length > limit) {
             const excessCount = jobs.length - limit;
-            jobsHtml += `
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px; margin-bottom:24px; text-align:center;">
-                <tr>
-                    <td>
-                        <p style="font-size:16px; color:#4A5568; margin-bottom:16px;">O radar encontrou mais <strong>${excessCount} vagas</strong> inéditas hoje!</p>
-                        <a href="https://uxfetch.com.br/vagas" class="btn" style="
-                display: inline-block;
-                background-color: #0055ff;
-                color: #ffffff;
-                text-decoration: none;
-                padding: 16px 32px; border-radius:8px;">Ver todas no Mural Web &rarr;</a>
-                    </td>
-                </tr>
-            </table>
-            `;
+            callToActionHtml += `<p style="font-size:16px; color:#4A5568; margin-bottom:16px;">O radar encontrou mais <strong>${excessCount} vagas</strong> inéditas hoje!</p>`;
+        } else {
+            callToActionHtml += `<p style="font-size:16px; color:#4A5568; margin-bottom:16px;">Quer explorar o histórico completo ou usar os filtros avançados?</p>`;
         }
+
+        callToActionHtml += `
+                    <a href="https://uxfetch.com.br/vagas" class="btn" style="
+            display: inline-block;
+            background-color: #0055ff;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 16px 32px; border-radius:8px; font-weight: bold;">Acessar o Mural Web &rarr;</a>
+                </td>
+            </tr>
+        </table>
+        `;
+        
+        jobsHtml += callToActionHtml;
 
         let recentJobsHtml = '';
         if (recentJobs.length > 0 && recentJobTemplateHtml) {
