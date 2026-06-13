@@ -46,7 +46,23 @@ async function main() {
         const { data: existingJobs } = await supabase.from('jobs').select('url');
         const existingUrls = new Set((existingJobs || []).map(j => j.url));
         
-        const newJobs = allJobs.filter(j => !existingUrls.has(j.url));
+        let newJobs = allJobs.filter(j => !existingUrls.has(j.url));
+        
+        // Intercala vagas nacionais e internacionais (3 pra 1) para o e-mail
+        const nationalJobs = newJobs.filter(j => !j.is_international);
+        const intlJobs = newJobs.filter(j => j.is_international);
+        const interleaved = [];
+        let nIdx = 0, iIdx = 0;
+        while (nIdx < nationalJobs.length || iIdx < intlJobs.length) {
+            for (let k = 0; k < 3 && nIdx < nationalJobs.length; k++) {
+                interleaved.push(nationalJobs[nIdx++]);
+            }
+            if (iIdx < intlJobs.length) {
+                interleaved.push(intlJobs[iIdx++]);
+            }
+        }
+        newJobs = interleaved;
+        
         console.log(`Vagas inéditas encontradas hoje: ${newJobs.length}`);
 
         console.log('Salvando/Atualizando histórico no Supabase...');
