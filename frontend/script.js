@@ -111,13 +111,23 @@ document.addEventListener('DOMContentLoaded', () => {
             finalCityString = `${citySelect.value} - ${stateSelect.value}`;
         }
 
+        // Capture Turnstile Token
+        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]');
+        const turnstileToken = turnstileResponse ? turnstileResponse.value : null;
+
+        if (!turnstileToken) {
+            alert('Por favor, aguarde a verificação de segurança (Anti-Spam) terminar antes de enviar.');
+            return;
+        }
+
         const payload = {
             email: document.getElementById('email').value,
             city: finalCityString,
             accept_other_cities: acceptOtherCheck.checked,
             accept_remote: acceptRemoteCheck.checked,
             only_remote: onlyRemoteCheck.checked,
-            accepts_hybrid: acceptsHybridCheck.checked
+            accepts_hybrid: acceptsHybridCheck.checked,
+            turnstileToken: turnstileToken
         };
 
         // UI Feedback: Loading state
@@ -125,18 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btnText.classList.add('hidden');
         loader.classList.remove('hidden');
 
-        // Real Supabase API Call
+        // Real Supabase API Call (via Edge Function)
         try {
-            const { data, error } = await supabase
-                .from('subscribers')
-                .insert([payload]);
+            const { data, error } = await supabase.functions.invoke('subscribe', {
+                body: payload
+            });
 
             if (error) {
-                if (error.code === '23505') {
-                    console.log('Usuário já inscrito.');
-                } else {
-                    throw error;
-                }
+                throw error;
             }
             
             // On success
