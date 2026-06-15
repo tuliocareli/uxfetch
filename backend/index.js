@@ -12,6 +12,8 @@ const infojobsScraper = require('./scrapers/infojobs');
 const wwrScraper = require('./scrapers/wwr');
 const geekhunterScraper = require('./scrapers/geekhunter');
 const coodeshScraper = require('./scrapers/coodesh');
+const greenhouseScraper = require('./scrapers/greenhouse');
+const inhireScraper = require('./scrapers/inhire');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -26,7 +28,9 @@ async function main() {
         { name: 'Infojobs', run: infojobsScraper },
         { name: 'We Work Remotely', run: wwrScraper },
         { name: 'GeekHunter', run: geekhunterScraper },
-        { name: 'Coodesh', run: coodeshScraper }
+        { name: 'Coodesh', run: coodeshScraper },
+        { name: 'Greenhouse', run: greenhouseScraper },
+        { name: 'Inhire', run: inhireScraper }
     ];
 
     let allJobs = [];

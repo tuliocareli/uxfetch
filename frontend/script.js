@@ -180,6 +180,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
     const filterPills = document.querySelectorAll('.filter-pill');
     const stateSelect = document.getElementById('vagas-state');
     const citySelect = document.getElementById('vagas-city');
+    const senioritySelect = document.getElementById('vagas-seniority');
 
     let allJobsCache = [];
     let activeWorkModels = new Set(); // 'remoto', 'hibrido', 'presencial'
@@ -231,6 +232,10 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
         citySelect.addEventListener('change', () => applyFilters());
     }
 
+    if (senioritySelect) {
+        senioritySelect.addEventListener('change', () => applyFilters());
+    }
+
     // Toggle Pills Logic
     filterPills.forEach(pill => {
         pill.addEventListener('click', () => {
@@ -276,6 +281,22 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 const loc = job.location || '';
                 if (selectedState && !loc.includes(selectedState)) return false;
                 if (selectedCity && !loc.toLowerCase().includes(selectedCity.toLowerCase())) return false;
+                return true;
+            });
+        }
+
+        // 3. Filter by Seniority
+        const selectedSeniority = senioritySelect ? senioritySelect.value : 'all';
+        if (selectedSeniority !== 'all') {
+            filtered = filtered.filter(job => {
+                const t = job.title.toLowerCase();
+                if (selectedSeniority === 'estagio_junior') {
+                    return /\b(est[áa]gio|trainee|j[úu]nior|junior|jr\.?)\b/i.test(t);
+                } else if (selectedSeniority === 'pleno') {
+                    return /\b(pleno|pl\.?|mid[\s-]?level)\b/i.test(t);
+                } else if (selectedSeniority === 'senior_lead_head') {
+                    return /\b(s[êe]nior|senior|sr\.?|lead|head|staff|principal|especialista|manager|diretor)\b/i.test(t);
+                }
                 return true;
             });
         }

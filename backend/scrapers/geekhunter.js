@@ -15,8 +15,19 @@ async function scrapeGeekHunter() {
         const page = await browser.newPage();
         await page.setViewport({ width: 1280, height: 1000 });
         
-        const url = 'https://www.geekhunter.com.br/vagas?q=ux';
+        const url = 'https://www.geekhunter.com/pt/vagas';
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+        
+        await new Promise(r => setTimeout(r, 4000));
+        
+        // Digitar "ux" no campo de busca para forçar o filtro
+        const searchInput = await page.$('input[placeholder*="cargo"]');
+        if (searchInput) {
+            await searchInput.type('ux');
+            await new Promise(r => setTimeout(r, 500));
+            await page.keyboard.press('Enter');
+            await new Promise(r => setTimeout(r, 5000)); // Aguarda busca carregar
+        }
         
         const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
         const excludeKeywords = [
@@ -44,16 +55,25 @@ async function scrapeGeekHunter() {
                 // Em sites Next.js (App Router), os links contêm o card da vaga
                 for (const node of jobNodes) {
                     const href = node.href;
-                    // Geralmente os dados estão dentro de divs, h2, h3, etc
-                    // O layout varia, mas vamos tentar pegar todo o texto interno e deduzir
-                    const textContent = node.innerText || '';
+                    
+                    let card = node.parentElement;
+                    while (card && card.tagName !== 'DIV' && card.parentElement) {
+                        card = card.parentElement;
+                    }
+                    
+                    const textContent = card ? card.innerText : node.innerText;
                     if (!textContent.trim()) continue;
                     
                     const lines = textContent.split('\n').map(l => l.trim()).filter(l => l);
                     if (lines.length < 2) continue;
 
                     // A primeira linha costuma ser o cargo, e as outras são tags (remoto, nível, empresa)
-                    const title = lines[0];
+                    // Em alguns casos, a primeira linha é 'x vagas disponíveis', então procuramos a vaga
+                    let titleIndex = 0;
+                    if (lines[0].toLowerCase().includes('vagas disponíveis')) {
+                        titleIndex = 2; // Pula 'vagas disponíveis' e 'Mais recentes'
+                    }
+                    const title = lines.length > titleIndex ? lines[titleIndex] : lines[0];
                     // Se não tiver UX/Product Designer no nome, podemos pular (filtrar depois)
                     
                     // Extrair Modalidade

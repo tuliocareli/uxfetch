@@ -56,7 +56,16 @@ async function scrapeCoodesh() {
                 const results = [];
                 for (const a of links) {
                     const url = a.href;
-                    const text = a.innerText.trim();
+                    
+                    let card = a.parentElement;
+                    while (card && card.tagName !== 'DIV' && card.parentElement) {
+                        card = card.parentElement;
+                    }
+                    if (card && card.innerText.length < 20 && card.parentElement) {
+                        card = card.parentElement;
+                    }
+                    
+                    const text = card ? card.innerText.trim() : a.innerText.trim();
                     if (!text) continue;
                     
                     const lines = text.split('\n').map(l => l.trim()).filter(l => l);

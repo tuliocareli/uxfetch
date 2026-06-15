@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://uxfetch.com.br/sitemap.xml
