@@ -869,11 +869,15 @@ body {
     gap: 12px;
     flex: 1;
     min-width: 300px;
+    flex-wrap: wrap;
 }
 
 .filter-select {
     padding: 10px 16px !important;
     font-size: 0.9rem !important;
+    appearance: auto !important;
+    flex: 1;
+    min-width: 120px;
 }
 
 .jobs-container {
