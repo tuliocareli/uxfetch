@@ -5,7 +5,7 @@ async function scrapeSolides() {
     console.log('[Sólides] Iniciando scraping via API V3...');
     const jobs = [];
     const MAX_PAGES = 5; // 14 vagas por página = 70 por query
-    const queries = ['ux', 'product design', 'designer']; 
+    const queries = ['ux', 'product design', 'designer', 'design research', 'design system', 'ux researcher', 'ux research']; 
     const extractedJobs = [];
 
     // Filtros rigorosos para Produto/Design

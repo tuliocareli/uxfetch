@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch | Como era antes da IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+            </a>
+            
+            <nav class="desktop-nav">
+                <a href="#" class="nav-link" style="color: var(--primary);">Vagas Recentes</a>
+                <a href="#" class="nav-link">Sobre o Projeto</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="jobs-hero">
+            <h1>Mural de <span class="highlight">Oportunidades</span></h1>
+            <p>Estado dos dados sem a IA (Raw Scrape Data).</p>
+        </section>
+        
+        <section class="filters-bar">
+            <div class="filters-container">
+                <div class="filter-pills">
+                    <button class="filter-pill">Remoto</button>
+                    <button class="filter-pill">Híbrido</button>
+                    <button class="filter-pill">Presencial</button>
+                </div>
+                <div class="filter-location">
+                    <select class="custom-select filter-select" style="font-weight: 500;">
+                        <option value="all" selected>Qualquer Nível</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="jobs-container">
+            <div id="jobsGrid" class="jobs-grid" style="display: grid;">
+                
+                <!-- Vaga com HTML sujo do Greenhouse/Inhire -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="source-badge">api.greenhouse.io/v1/boards...</span>
+                    </div>
+                    <h3 class="job-title">[URGENTE] UX/UI Designer Pleno/Sênior 🚀</h3>
+                    <p class="job-company">Empresa Confidencial LTDA</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        São Paulo / SP (Aceita Remoto)
+                    </div>
+                    <!-- Simulando o erro onde a tag p quebrava o espaçamento do card -->
+                    <div class="job-description">
+                        <p><strong>Descrição da vaga:</strong><br><br>Estamos buscando um profissional focado em entregas de valor.</p>
+                        <ul><li>HTML, CSS, React</li><li>Figma</li></ul>
+                        <p>Benefícios: VR, VT, Plano de Saúde.</p>
+                    </div>
+                    <a href="#" class="job-btn">Ver Vaga Completa</a>
+                    <div class="job-date">Capturada em 2026-06-12T14:32:00.000Z</div>
+                </div>
+
+                <!-- Vaga com blocos JSON da Gupy/Gupy Draft.js -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="source-badge">gupy.io/vagas/frontend/44</span>
+                    </div>
+                    <h3 class="job-title">Product Designer Sênior (Vaga #8921)</h3>
+                    <p class="job-company">Itaú Unibanco S.A - Diretoria de Cartões</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Pólo Tecnológico, São Paulo - Presencial
+                    </div>
+                    <!-- Simulando o retorno Draft.js stringificado na tela -->
+                    <p class="job-description">{"blocks":[{"key":"3g5f","text":"Venha fazer parte do time Itaú, o maior banco privado da América Latina...","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}</p>
+                    <a href="#" class="job-btn">Acessar Gupy</a>
+                    <div class="job-date">Capturada em Wed Jun 10 2026 03:15:00 GMT-0300</div>
+                </div>
+
+                <!-- Vaga com CAIXA ALTA e dados escapados da Coodesh -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="source-badge">coodesh.com/vagas/remoto/992</span>
+                    </div>
+                    <h3 class="job-title">DESIGNER UX/UI JUNIOR - REMOTO VAGA AFIRMATIVA</h3>
+                    <p class="job-company">Coodesh Talent Solutions</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Qualquer Lugar
+                    </div>
+                    <!-- Simulando caracteres escapados ruins -->
+                    <p class="job-description">A vaga exige conhecimento em User Experience &amp; User Interface. Voc&ecirc; dever&aacute; ter dom&iacute;nio de wireframes e prototipagem. Sal&aacute;rio a combinar. Enviar curr&iacute;culo pelo site.</p>
+                    <a href="#" class="job-btn">Ir para Coodesh</a>
+                    <div class="job-date">Capturada em 16900030000 (Timestamp)</div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

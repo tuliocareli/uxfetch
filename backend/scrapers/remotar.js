@@ -16,7 +16,7 @@ async function scrapeRemotar() {
         const page = await browser.newPage();
         await page.setDefaultNavigationTimeout(60000);
 
-        const queries = ['product design', 'ux', 'ui', 'design engineer', 'design ops', 'staff designer'];
+        const queries = ['product design', 'ux', 'ui', 'design engineer', 'design ops', 'staff designer', 'design research', 'design system', 'ux researcher', 'ux research'];
         const extractedJobs = [];
 
         // Acessa a página principal uma vez

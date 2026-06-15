@@ -6,7 +6,7 @@ async function scrapeGupy() {
     const jobs = [];
     const MAX_PAGES = 5; // 50 vagas por página = 250 por query
     const LIMIT = 50;
-    const queries = ['ux', 'product design', 'designer']; 
+    const queries = ['ux', 'product design', 'designer', 'design research', 'design system', 'ux researcher', 'ux research']; 
     const extractedJobs = [];
 
     // Filtros rigorosos para Produto/Design

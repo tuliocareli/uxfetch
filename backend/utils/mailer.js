@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const EMAIL_CONTATO = "contato@uxfetch.com.br"; // TODO: Substituir por vagas@meudominio.com
 
-async function sendDailyEmail(user, jobs, recentJobs = []) {
+async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false) {
     if (!jobs || jobs.length === 0) {
         console.log(`Nenhuma vaga para o usuário ${user.email}. Pulando e-mail.`);
         return;
@@ -147,7 +147,18 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
         const name = user.email.split('@')[0];
         const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-        templateHtml = templateHtml.replace(/{{nome}}/g, formattedName);
+        let introTitle = 'Novas oportunidades no radar!';
+        let introText = `Fala <strong>${formattedName}</strong>, o motor do UX Fetch terminou a varredura de hoje. Filtramos os portais de RH e separamos as oportunidades de Produto e Design que dão match com você. Confere o que está em alta:`;
+        let subject = `O radar do UX Fetch atualizou: Novas vagas para você, ${formattedName} 🎯`;
+
+        if (isDigestMode) {
+            introTitle = 'Boletim Diário UX Fetch 📌';
+            introText = `Fala <strong>${formattedName}</strong>! Hoje o mercado deu uma respirada e não detectamos vagas inéditas exclusivas para o seu perfil. Mas para manter o seu radar ativo, separamos as melhores oportunidades recentes que continuam em aberto e dão match com você:`;
+            subject = `📌 Radar UX Fetch: Vagas recentes ainda em aberto para ${formattedName}!`;
+        }
+
+        templateHtml = templateHtml.replace(/{{intro_title}}/g, introTitle);
+        templateHtml = templateHtml.replace(/{{intro_text}}/g, introText);
         templateHtml = templateHtml.replace(/{{VAGAS_PLACEHOLDER}}/g, jobsHtml);
         
         if (recentJobsHtml) {
@@ -164,8 +175,6 @@ async function sendDailyEmail(user, jobs, recentJobs = []) {
         templateHtml = templateHtml.replace(/{{data_envio}}/g, dataEnvio);
         // Link da página oficial de desinscrição com destruição de dados (LGPD) - Agora via Token Seguro
         templateHtml = templateHtml.replace(/{{url_unsubscribe}}/g, `https://uxfetch.com.br/unsubscribe.html?token=${user.token}`);
-
-        const subject = `O radar do UX Fetch atualizou: Novas vagas para você, ${formattedName} 🎯`;
 
         const { data, error } = await resend.emails.send({
             from: 'UX Fetch <contato@uxfetch.com.br>',

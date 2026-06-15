@@ -1,52 +1,58 @@
 require('dotenv').config();
-const supabase = require('./utils/supabase');
+const { createClient } = require('@supabase/supabase-js');
 const { sendDailyEmail } = require('./utils/mailer');
 
-async function testEmail() {
-    console.log('Buscando vagas no banco de dados...');
-    // Busca vagas recentes misturadas (nacionais e internacionais)
-    const { data: jobs, error } = await supabase
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+async function sendTestEmail() {
+    console.log("Iniciando envio de e-mail de teste...");
+    
+    // 1. Buscar o usuário
+    const targetEmail = 'tctulio2009@gmail.com';
+    let { data: user, error: userError } = await supabase
+        .from('subscribers')
+        .select('*')
+        .eq('email', targetEmail)
+        .single();
+        
+    if (userError || !user) {
+        console.log("Usuário não encontrado na base. Criando usuário mock para o teste...");
+        user = {
+            email: targetEmail,
+            token: '00000000-0000-0000-0000-000000000000',
+            state: '',
+            city: '',
+            work_modes: ['remote', 'hybrid', 'in_person']
+        };
+    } else {
+        console.log(`Usuário encontrado! Token de segurança: ${user.token}`);
+    }
+
+    // 2. Pegar algumas vagas para colocar no e-mail
+    const { data: jobs, error: jobsError } = await supabase
         .from('jobs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(50);
-
-    if (error) {
-        console.error('Erro:', error);
+        .limit(8);
+        
+    if (jobsError || !jobs || jobs.length === 0) {
+        console.error("Erro ao buscar vagas ou banco vazio:", jobsError);
         return;
     }
-
-    // Intercalando as vagas para o e-mail (3 nacionais para 1 internacional)
-    const nationalJobs = jobs.filter(j => !j.is_international);
-    const intlJobs = jobs.filter(j => j.is_international);
     
-    // Forçar a primeira vaga nacional a ser híbrida para teste visual do usuário
-    if (nationalJobs.length > 0) {
-        nationalJobs[0].work_mode = 'hybrid';
-        nationalJobs[0].location = 'Belo Horizonte/MG';
+    // Dividir em "novas" e "recentes" simulando o scraper
+    const newJobs = jobs.slice(0, 4);
+    const recentJobs = jobs.slice(4, 8);
+    
+    console.log(`Montando e-mail com ${newJobs.length} vagas novas e ${recentJobs.length} recentes.`);
+
+    // 3. Disparar e-mail
+    try {
+        await sendDailyEmail(user, newJobs, recentJobs);
+        console.log("E-mail de teste disparado com sucesso! Verifique a caixa de entrada (e o Spam, por garantia).");
+    } catch (e) {
+        console.error("Falha ao enviar:", e);
     }
-    
-    const interleaved = [];
-    let nIdx = 0, iIdx = 0;
-    while (nIdx < nationalJobs.length || iIdx < intlJobs.length) {
-        for (let k = 0; k < 3 && nIdx < nationalJobs.length; k++) {
-            interleaved.push(nationalJobs[nIdx++]);
-        }
-        if (iIdx < intlJobs.length) {
-            interleaved.push(intlJobs[iIdx++]);
-        }
-    }
-
-    console.log(`Disparando e-mail de teste para tctulio2009@gmail.com com ${interleaved.length} vagas intercaladas...`);
-    
-    // O usuário de teste
-    const testUser = { email: 'tctulio2009@gmail.com' };
-    
-    // Pegar algumas para 'vagas recentes' só para o template não quebrar
-    const recentJobs = nationalJobs.slice(0, 2);
-
-    await sendDailyEmail(testUser, interleaved, recentJobs);
-    console.log('🚀 E-mail de teste enviado com sucesso!');
 }
 
-testEmail().catch(console.error);
+sendTestEmail();

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch | Documentação da Quebra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Desabilitando o clamp apenas para simular a quebra original no card bugado */
+        .bug-description {
+            display: block !important;
+            -webkit-line-clamp: unset !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            white-space: normal !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+            </a>
+            <nav class="desktop-nav">
+                <a href="#" class="nav-link" style="color: var(--primary);">Vagas Recentes</a>
+                <a href="#" class="nav-link">Sobre o Projeto</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="jobs-hero">
+            <h1>Mural de <span class="highlight">Oportunidades</span></h1>
+            <p>Vagas de Product Design e UI/UX ativas rastreadas pelo nosso motor. <br>Exibindo as mais recentes coletadas.</p>
+        </section>
+        
+        <section class="filters-bar">
+            <div class="filters-container">
+                <div class="filter-pills">
+                    <button class="filter-pill">Remoto</button>
+                    <button class="filter-pill">Híbrido</button>
+                    <button class="filter-pill">Presencial</button>
+                </div>
+                <div class="filter-location">
+                    <select class="custom-select filter-select" style="font-weight: 500;">
+                        <option value="all" selected>Qualquer Nível</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="jobs-container">
+            <div id="jobsGrid" class="jobs-grid" style="display: grid;">
+                
+                <!-- Vaga Normal 1 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="source-badge">Nubank</span>
+                    </div>
+                    <h3 class="job-title">Product Designer Pleno</h3>
+                    <p class="job-company">Nubank</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Remoto
+                    </div>
+                    <p class="job-description">Procuramos um designer apaixonado por criar produtos financeiros simples e intuitivos. Você irá trabalhar diretamente com PMs e engenheiros para criar a próxima geração de cartões de crédito.</p>
+                    <a href="#" class="job-btn">Ver Vaga Completa</a>
+                    <div class="job-date">Há 2 horas</div>
+                </div>
+
+                <!-- A VAGA QUEBRADA (Raw HTML Inhire/Greenhouse em inglês sem limite de texto) -->
+                <div class="job-card" style="height: fit-content;">
+                    <div class="job-header">
+                        <span class="source-badge">greenhouse.io</span>
+                    </div>
+                    <h3 class="job-title">Senior Product Designer</h3>
+                    <p class="job-company">Brex</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Remote (Brazil)
+                    </div>
+                    <div class="job-description bug-description" style="color: var(--gray-600); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+                        <p><strong>About the Role</strong></p>
+                        <p>We are looking for a Senior Product Designer to join our core financial platform team. You will be responsible for leading the UX vision and delivering pixel-perfect interfaces.</p>
+                        <br>
+                        <p><strong>Responsibilities:</strong></p>
+                        <ul>
+                            <li>Lead the end-to-end design process from concept to implementation.</li>
+                            <li>Collaborate cross-functionally with product managers, engineers, and researchers to drive product strategy.</li>
+                            <li>Create wireframes, storyboards, user flows, and interactive prototypes.</li>
+                            <li>Establish and promote design guidelines, best practices, and standards.</li>
+                            <li>Conduct user research and evaluate user feedback.</li>
+                            <li>Present and defend your design decisions to executives and stakeholders.</li>
+                            <li>Mentor junior designers on the team.</li>
+                        </ul>
+                        <br>
+                        <p><strong>Requirements:</strong></p>
+                        <ul>
+                            <li>5+ years of experience in product design, ideally in fintech.</li>
+                            <li>A portfolio demonstrating deep UX thinking and UI excellence.</li>
+                            <li>Proficiency in Figma, Protopie, and other design tools.</li>
+                            <li>Strong communication skills in English (written and verbal).</li>
+                        </ul>
+                        <br>
+                        <p><strong>Benefits:</strong></p>
+                        <p>Competitive salary, remote-first culture, health insurance, home office stipend, and flexible PTO.</p>
+                    </div>
+                    <a href="#" class="job-btn">Ver Vaga Completa</a>
+                    <div class="job-date">Há 5 horas</div>
+                </div>
+
+                <!-- Vaga Normal 2 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="source-badge">Gupy</span>
+                    </div>
+                    <h3 class="job-title">UX/UI Designer Sênior</h3>
+                    <p class="job-company">Mercado Livre</p>
+                    <div class="job-location">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Osasco, SP (Híbrido)
+                    </div>
+                    <p class="job-description">Venha desenhar o futuro do e-commerce na América Latina. O Mercado Livre está em busca de um perfil sênior para atuar na tribo de pagamentos do Mercado Pago, focando em usabilidade e conversão.</p>
+                    <a href="#" class="job-btn">Ver Vaga Completa</a>
+                    <div class="job-date">Há 1 dia</div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
