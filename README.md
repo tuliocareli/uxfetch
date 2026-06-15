@@ -35,7 +35,8 @@ O projeto foi desenhado focando em escalabilidade e custo zero de infraestrutura
 
 O UX Fetch foi projetado sob o princípio de *Privacy by Design*.
 *   Coletamos apenas o mínimo necessário: e-mail, cidade e preferência de trabalho.
-*   Não há rastreamento via cookies de marketing.
+*   **Telemetria transparente:** Utilizamos Google Analytics e Microsoft Clarity apenas para entender gargalos na interface, sempre com anonimização de IPs e **somente ativados após o consentimento explícito (Opt-in)** via banner de cookies.
+*   Não possuímos cookies de rastreamento de marketing (ex: Meta Pixel, Google Ads Retargeting).
 *   Os dados não são vendidos ou compartilhados com terceiros.
 *   Os usuários possuem autonomia total para exclusão de seus dados via um clique (Opt-out) no rodapé de qualquer e-mail recebido.
 
