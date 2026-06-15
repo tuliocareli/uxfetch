@@ -23,10 +23,11 @@ Como designers, passamos muito tempo otimizando a jornada dos usuários, mas a j
 
 O projeto foi desenhado focando em escalabilidade e custo zero de infraestrutura, dividindo as responsabilidades entre diferentes plataformas *Serverless*:
 
-*   **Frontend (Landing Page):** HTML/CSS/JS focado em performance, acessibilidade e conversão. Hospedado na **Vercel**.
-*   **Database & Auth:** **Supabase** (PostgreSQL). Gerencia a tabela de usuários (`subscribers`) e o repositório temporário de oportunidades (`jobs`) com regras de segurança estritas (RLS).
-*   **Scraper Engine:** **Node.js + Puppeteer**. Roda no modo *headless* via **GitHub Actions** (bypass de limites de CPU e mitigação de bloqueios de IP).
-*   **Email Delivery:** Integração com a API do **Resend**, acionada via lógica de cruzamento de dados diário.
+*   **Frontend & Telemetria:** HTML/CSS/JS focado em performance. Hospedado na **Vercel**. Métricas orgânicas e mapas de calor com **Google Analytics (GA4)** e **Microsoft Clarity** (sob consentimento).
+*   **Database & Auth:** **Supabase** (PostgreSQL). Gerencia a tabela de usuários (`subscribers`) e o repositório de vagas (`jobs`) com regras de segurança estritas (RLS).
+*   **Segurança (Anti-Spam):** O formulário é blindado pelo **Cloudflare Turnstile** invisível, que valida a humanidade do tráfego e aciona uma **Supabase Edge Function** (Deno) para inserir os dados com segurança máxima, descartando bots.
+*   **Scraper Engine & AI:** **Node.js + Puppeteer**. Roda no modo *headless* via **GitHub Actions**. Antes de exibir as vagas, os dados passam por uma sanitização via Inteligência Artificial usando o **Google Gemini** para padronização semântica.
+*   **Email Delivery:** Integração com a API do **Resend** (Amazon SES), acionada via lógica de cruzamento de dados diário.
 
 ---
 
