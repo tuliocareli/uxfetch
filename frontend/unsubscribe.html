@@ -55,16 +55,29 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container footer-container">
-            <div class="footer-logo">
-                <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
+            <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-bottom: 32px;">
+                <!-- Coluna Esquerda -->
+                <div class="footer-col">
+                    <div class="footer-logo" style="margin-bottom: 16px;">
+                        <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
+                    </div>
+                    <p class="footer-description" style="margin-top: 0;">
+                        Feito para fortalecer o ecossistema.<br>
+                        <span style="color: var(--gray-300); font-style: italic;">O UXfetch é um radar, não um destino. Todas as vagas listadas redirecionam o candidato de forma gratuita para a plataforma oficial.</span>
+                    </p>
+                </div>
+
+                <!-- Coluna Direita -->
+                <div class="footer-col" style="display: flex; flex-direction: column; gap: 16px; justify-content: flex-end;">
+                    <p class="footer-description" style="font-size: 0.85rem; color: var(--gray-400); margin: 0;">
+                        O UXfetch é uma ferramenta viva e cresce com quem usa. Sugestões de portais, bugs ou ideias: manda um email.
+                    </p>
+                    <p class="footer-description" style="margin: 0;">
+                        Quer apoiar o projeto? <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" style="color: var(--white); text-decoration: underline;">Apoie com um café ☕</a><br>
+                        Dúvidas ou sugestões? <a href="mailto:contato@uxfetch.com.br" style="color: var(--white); text-decoration: underline;">contato@uxfetch.com.br</a>
+                    </p>
+                </div>
             </div>
-            
-            <p class="footer-description">
-                Feito para fortalecer o ecossistema.<br>
-                O UXfetch é uma ferramenta viva. Se você tiver sugestões de novos portais para o robô rastrear ou ideias de melhoria na interface, o projeto é totalmente aberto a feedbacks.<br><br>
-                Quer apoiar o projeto? <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" style="color: var(--white); text-decoration: underline;">Apoie com um café ☕</a><br>
-                Dúvidas ou sugestões? <a href="mailto:contato@uxfetch.com.br" style="color: var(--white); text-decoration: underline;">contato@uxfetch.com.br</a>
-            </p>
 
             <hr class="footer-divider">
 
