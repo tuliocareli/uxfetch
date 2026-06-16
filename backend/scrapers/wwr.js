@@ -11,7 +11,8 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 async function translateWithGemini(htmlContent) {
     if (!genAI) {
         console.warn('[WWR] Aviso: GEMINI_API_KEY não configurada. Pulando tradução.');
-        return htmlContent;
+        const plainText = cheerio.load(htmlContent).text().replace(/\s+/g, ' ').trim();
+        return plainText.length > 130 ? plainText.substring(0, 130) + '...' : plainText;
     }
 
     try {
