@@ -116,26 +116,21 @@ async function main() {
                 console.log(`Preparando disparo de e-mails para ${subscribers.length} inscrito(s)...`);
                 const { sendDailyEmail } = require('./utils/mailer');
                 
-                // Busca vagas recentes (últimos 7 dias)
-                const sevenDaysAgo = new Date();
-                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                // Busca vagas antigas (últimos 30 dias) para preenchimento de cota (backfill)
+                const thirtyDaysAgoForBackfill = new Date();
+                thirtyDaysAgoForBackfill.setDate(thirtyDaysAgoForBackfill.getDate() - 30);
 
                 const { data: recentJobsData, error: recentJobsError } = await supabase
                     .from('jobs')
                     .select('*')
-                    .gte('created_at', sevenDaysAgo.toISOString());
+                    .gte('created_at', thirtyDaysAgoForBackfill.toISOString());
 
-                let recentJobs = [];
                 let validRecentJobs = [];
                 if (!recentJobsError && recentJobsData) {
                     const newJobsUrls = new Set(newJobs.map(j => j.url));
                     validRecentJobs = recentJobsData.filter(j => !newJobsUrls.has(j.url));
-                    
-                    // Sorteia até 3 vagas extras como recomendadas
-                    const shuffled = [...validRecentJobs].sort(() => 0.5 - Math.random());
-                    recentJobs = shuffled.slice(0, 3);
                 } else if (recentJobsError) {
-                    console.error('Erro ao buscar vagas recentes:', recentJobsError);
+                    console.error('Erro ao buscar vagas antigas:', recentJobsError);
                 }
 
                 function filterJobsForSubscriber(jobsToFilter, sub) {
@@ -192,7 +187,17 @@ async function main() {
                     }
 
                     const filteredPrimaryJobs = filterJobsForSubscriber(uniquePrimary, sub);
-                    const filteredRecentJobs = filterJobsForSubscriber(recentJobs, sub);
+                    const filteredRecentJobsAll = filterJobsForSubscriber(validRecentJobs, sub);
+                    
+                    // Minimum Payload Logic (Backfill up to 7 jobs)
+                    const TARGET_PAYLOAD = 7;
+                    let filteredRecentJobs = [];
+                    
+                    if (filteredPrimaryJobs.length < TARGET_PAYLOAD && filteredRecentJobsAll.length > 0) {
+                        const needed = TARGET_PAYLOAD - filteredPrimaryJobs.length;
+                        const shuffled = [...filteredRecentJobsAll].sort(() => 0.5 - Math.random());
+                        filteredRecentJobs = shuffled.slice(0, needed);
+                    }
                     
                     if (filteredPrimaryJobs.length > 0) {
                         try {
