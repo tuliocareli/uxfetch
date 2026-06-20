@@ -28,6 +28,44 @@
       "description": "Um agregador automatizado focado em centralizar as melhores oportunidades de Product Design e UI/UX."
     }
     </script>
+    <style>
+        /* ==========================================
+         * UX FETCH - CARROSSEL CLEAN (ESTILO REFERÊNCIA)
+         * ========================================== */
+        .uxf-section { background: #ffffff; border-radius: 24px; padding: 40px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
+        .uxf-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+        .uxf-header-text { max-width: 600px; }
+        .uxf-tag { display: inline-block; background: var(--bg-blue-medium); color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 12px; border-radius: 100px; margin-bottom: 12px; }
+        .uxf-title { font-size: 2rem; font-weight: 800; color: var(--text-dark); margin: 0 0 8px 0; letter-spacing: -0.5px; }
+        .uxf-subtitle { font-size: 1rem; color: #4A5568; margin: 0; font-weight: 400; }
+        .uxf-controls { display: flex; gap: 12px; }
+        .uxf-control-btn { background: var(--bg-blue-lightest); border: 1px solid var(--border-color); color: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
+        .uxf-control-btn:hover { border-color: var(--primary); background: var(--bg-blue-light); color: var(--primary-dark); }
+        .uxf-carousel-wrapper { position: relative; margin: 0 -40px; padding: 0 40px; }
+        .uxf-carousel { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 20px; -ms-overflow-style: none; scrollbar-width: none; }
+        .uxf-carousel::-webkit-scrollbar { display: none; }
+        .uxf-card { flex: 0 0 280px; height: 380px; scroll-snap-align: start; border-radius: 20px; position: relative; overflow: hidden; display: block; text-decoration: none; background: var(--bg-blue-lightest); transition: transform 0.3s ease; border: 1px solid var(--border-color); }
+        .uxf-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 12px 24px rgba(0, 85, 255, 0.1); }
+        .uxf-card-img-wrapper { width: 100%; height: 250px; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+        .uxf-card-img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; box-shadow: -10px 10px 20px rgba(0,0,0,0.1); transition: transform 0.4s ease; }
+        .uxf-card:hover .uxf-card-img { transform: scale(1.05); }
+        .uxf-card-icon { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; color: var(--white); z-index: 10; background: var(--primary); transition: transform 0.2s, background 0.2s; box-shadow: 0 2px 8px rgba(0, 85, 255, 0.2); }
+        .uxf-card:hover .uxf-card-icon { transform: scale(1.1); background: var(--primary-dark); }
+        .uxf-card-content { position: absolute; bottom: 0; left: 0; width: 100%; height: 130px; padding: 16px 20px; background: var(--white); color: var(--text-dark); box-sizing: border-box; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
+        .uxf-stars { color: #fbbf24; font-size: 0.8rem; margin-bottom: 4px; letter-spacing: 2px; }
+        .uxf-book-title { font-size: 1.1rem; font-weight: 700; margin: 0 0 4px 0; line-height: 1.3; color: var(--text-dark); }
+        .uxf-book-desc { font-size: 0.85rem; color: #4A5568; margin: 0; line-height: 1.4; font-weight: 500; }
+        .uxf-pagination { font-size: 0.875rem; color: #718096; font-weight: 600; display: flex; align-items: center; margin-right: 16px; }
+        
+        .uxf-disclaimer { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: #718096; line-height: 1.6; }
+        @media (max-width: 768px) {
+            .uxf-section { padding: 30px 20px; border-radius: 16px; }
+            .uxf-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .uxf-controls { display: none; }
+            .uxf-carousel-wrapper { margin: 0 -20px; padding: 0 20px; }
+            .uxf-card { flex: 0 0 260px; height: 350px; }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -210,6 +248,129 @@
             </div>
         </section>
 
+        <!-- UX BOOKS CAROUSEL SECTION -->
+        <section class="container" style="margin-bottom: 60px;">
+            <div class="uxf-section">
+                <div class="uxf-header">
+                    <div class="uxf-header-text">
+                        <span class="uxf-tag">Recomendações</span>
+                        <h2 class="uxf-title">Biblioteca UXfetch</h2>
+                        <p class="uxf-subtitle">Minha curadoria com os livros definitivos para elevar o seu nível no design.</p>
+                    </div>
+                    
+                    <!-- Controls (Top Right) -->
+                    <div class="uxf-controls">
+                        <span class="uxf-pagination" id="uxfPagination">1 de 6</span>
+                        <button class="uxf-control-btn" id="uxfPrev" aria-label="Anterior">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                        <button class="uxf-control-btn" id="uxfNext" aria-label="Próximo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="uxf-carousel-wrapper">
+                    <div class="uxf-carousel" id="uxfCarousel">
+                        <!-- Livro 1 -->
+                        <a href="https://amzn.to/4a9PDDO" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                            <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                            <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/6555324473.01.LZZZZZZZ.jpg" alt="O design do dia a dia"></div>
+                            <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">O design do dia a dia</h3><p class="uxf-book-desc">"A bíblia do design centrado no usuário"</p></div>
+                        </a>
+                        <!-- Livro 2 -->
+                        <a href="https://amzn.to/4xy542x" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                            <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                            <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/0321965515.01.LZZZZZZZ.jpg" alt="Não me faça pensar"></div>
+                            <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Não me faça pensar</h3><p class="uxf-book-desc">"Usabilidade sem enrolação"</p></div>
+                        </a>
+                    <!-- Livro 3 -->
+                    <a href="https://amzn.to/4vYL0F0" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/8575228331.01.LZZZZZZZ.jpg" alt="Lean UX"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Lean UX</h3><p class="uxf-book-desc">"Design ágil que entrega resultado"</p></div>
+                    </a>
+                    <!-- Livro 4 -->
+                    <a href="https://amzn.to/4w43nsh" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/B08VJLLFTN.01.LZZZZZZZ.jpg" alt="Hooked (Engajado)"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Hooked</h3><p class="uxf-book-desc">"Como criar produtos formadores de hábitos"</p></div>
+                    </a>
+                    <!-- Livro 5 -->
+                    <a href="https://amzn.to/4ei1m5H" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/1118766571.01.LZZZZZZZ.jpg" alt="About Face"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">About Face</h3><p class="uxf-book-desc">"O manual definitivo de interação"</p></div>
+                    </a>
+                    <!-- Livro 6 -->
+                    <a href="https://amzn.to/4oy6q9m" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/6586057655.01.LZZZZZZZ.jpg" alt="Estratégia de UX"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Estratégia de UX</h3><p class="uxf-book-desc">"Entre Experiência e negócios"</p></div>
+                    </a>
+                    <!-- Livro 7 -->
+                    <a href="https://link.amazon/B0hD9tsdX" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/0307887898.01.LZZZZZZZ.jpg" alt="A Startup Enxuta"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">A Startup Enxuta</h3><p class="uxf-book-desc">"O ciclo que valida ideias antes de construir demais"</p></div>
+                    </a>
+                    <!-- Livro 8 -->
+                    <a href="https://link.amazon/B0ij2dDmw" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/8575228129.01.LZZZZZZZ.jpg" alt="Redação Estratégica para UX"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Redação Estratégica</h3><p class="uxf-book-desc">"Palavra é interface também"</p></div>
+                    </a>
+                    <!-- Livro 9 -->
+                    <a href="https://link.amazon/B0hCM5AvW" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/8551001523.01.LZZZZZZZ.jpg" alt="Sprint"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Sprint</h3><p class="uxf-book-desc">"Valide ideia em 5 dias, não 5 meses"</p></div>
+                    </a>
+                    <!-- Livro 10 -->
+                    <a href="https://link.amazon/B03ncfDcH" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/8550819867.01.LZZZZZZZ.jpg" alt="Gestão de Produto na Prática"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Gestão de Produto</h3><p class="uxf-book-desc">"O manual que ninguém te dá no 1º dia de PM"</p></div>
+                    </a>
+                    <!-- Livro 11 -->
+                    <a href="https://link.amazon/B0bDbC2Ua" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/B0DT79P2PF.01.LZZZZZZZ.jpg" alt="Product Design"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Product Design</h3><p class="uxf-book-desc">"Psicologia de produto que vende sem esforço"</p></div>
+                    </a>
+                    <!-- Livro 12 -->
+                    <a href="https://link.amazon/B05Fy51IZ" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/1491904909.01.LZZZZZZZ.jpg" alt="Mapeamento da história do usuário"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Story Mapping</h3><p class="uxf-book-desc">"Veja o produto inteiro antes de construir telas"</p></div>
+                    </a>
+                    <!-- Livro 13 -->
+                    <a href="https://link.amazon/B09vxtg7C" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/1492079227.01.LZZZZZZZ.jpg" alt="Articulando Decisões de Design"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Articulando Decisões</h3><p class="uxf-book-desc">"Defenda seu design sem depender de 'eu acho'"</p></div>
+                    </a>
+                    <!-- Livro 14 -->
+                    <a href="https://link.amazon/B04HQzuSr" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/149205531X.01.LZZZZZZZ.jpg" alt="Leis da Psicologia Aplicadas a UX"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Leis da Psicologia UX</h3><p class="uxf-book-desc">"A ciência de porquê a interface funciona (ou não)"</p></div>
+                    </a>
+                    <!-- Livro 15 -->
+                    <a href="https://link.amazon/B07Td2XmA" target="_blank" rel="noopener noreferrer" class="uxf-card" title="Abrir na Amazon">
+                        <div class="uxf-card-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></div>
+                        <div class="uxf-card-img-wrapper"><img class="uxf-card-img" src="https://images-na.ssl-images-amazon.com/images/P/B096Y8X2BF.01.LZZZZZZZ.jpg" alt="Design de Produto: Uma visão Product-Led"></div>
+                        <div class="uxf-card-content"><div class="uxf-stars">★★★★★</div><h3 class="uxf-book-title">Product-Led Design</h3><p class="uxf-book-desc">"Design que se prova com dado, não só intuição"</p></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="uxf-disclaimer">
+                Como Participante Associados da Amazon, ganho por compras qualificadas. Comprando pelos links acima você apoia o projeto UXfetch a arcar com os custos de hospedagem e envio de e-mails, sem pagar nada a mais por isso.
+            </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- FOOTER -->
@@ -249,6 +410,55 @@
     </footer>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const carousel = document.getElementById('uxfCarousel');
+            const prevBtn = document.getElementById('uxfPrev');
+            const nextBtn = document.getElementById('uxfNext');
+            const pagination = document.getElementById('uxfPagination');
+            
+            if(carousel && prevBtn && nextBtn) {
+                // Embaralha a ordem dos livros (Randomize)
+                const cards = Array.from(carousel.querySelectorAll('.uxf-card'));
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+                cards.forEach(card => carousel.appendChild(card));
+
+                const getScrollAmount = () => {
+                    const card = carousel.querySelector('.uxf-card');
+                    if (!card) return 304;
+                    const style = window.getComputedStyle(carousel);
+                    const gap = parseInt(style.gap) || 24;
+                    return card.offsetWidth + gap;
+                };
+
+                const updatePagination = () => {
+                    if (!pagination) return;
+                    const scrollAmount = getScrollAmount();
+                    const total = carousel.querySelectorAll('.uxf-card').length;
+                    if (scrollAmount <= 0) return;
+                    
+                    let index = Math.round(carousel.scrollLeft / scrollAmount) + 1;
+                    if (index > total) index = total;
+                    if (index < 1) index = 1;
+                    
+                    pagination.textContent = `${index} de ${total}`;
+                };
+
+                nextBtn.addEventListener('click', () => carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' }));
+                
+                carousel.addEventListener('scroll', () => {
+                    window.requestAnimationFrame(updatePagination);
+                });
+                
+                // Initialize pagination
+                updatePagination();
+            }
+        });
+    </script>
     <script src="script.js"></script>
     <script src="cookies.js"></script>
 </body>

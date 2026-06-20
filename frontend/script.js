@@ -443,14 +443,23 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 intlBadge = `<span class="job-badge" style="background:#fef3c7; color:#b45309;">🌍 INTERNACIONAL</span>`;
             }
 
+            let newBadge = '';
             let dateStr = '';
             if(job.created_at) {
                 const dateObj = new Date(job.created_at);
                 dateStr = dateObj.toLocaleDateString('pt-BR');
+                
+                // Lógica de Escassez / FOMO Visual
+                const diffTime = Math.abs(new Date() - dateObj);
+                const diffHours = diffTime / (1000 * 60 * 60); 
+                if (diffHours <= 48) {
+                    newBadge = `<span class="job-badge" style="background: linear-gradient(90deg, #FF6B6B 0%, #FF4B4B 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 4px rgba(255, 75, 75, 0.3);">✨ NOVA</span>`;
+                }
             }
 
             card.innerHTML = `
                 <div class="job-badges">
+                    ${newBadge}
                     ${intlBadge}
                     ${workModeBadge}
                     ${sourceBadge}
