@@ -235,24 +235,7 @@ async function main() {
         }
     }
 
-    console.log('Executando limpeza de banco de dados (Removendo vagas com mais de 30 dias)...');
-    try {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
-        const { error: deleteError } = await supabase
-            .from('jobs')
-            .delete()
-            .lt('created_at', thirtyDaysAgo.toISOString());
-            
-        if (deleteError) {
-            console.error('Erro ao limpar vagas antigas:', deleteError);
-        } else {
-            console.log('Limpeza concluída com sucesso!');
-        }
-    } catch (error) {
-        console.error('Erro inesperado na rotina de limpeza:', error);
-    }
+    console.log('Rotina de limpeza de banco desativada para retenção histórica permanente.');
 
     console.log('Orquestrador finalizado.');
 }
