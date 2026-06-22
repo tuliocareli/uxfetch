@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados do Radar | UX Fetch</title>
+    <meta name="description" content="Dashboard em tempo real sobre o estado do mercado de Product Design, UI e UX no Brasil.">
+    <meta property="og:title" content="UX Fetch | Dados do Radar">
+    <meta property="og:description" content="Veja métricas em tempo real sobre vagas remotas, híbridas e presenciais de Design.">
+    <meta property="og:image" content="https://uxfetch.com.br/assets/logo.svg">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+        .disclaimer-box {
+            background-color: var(--bg-blue-lightest);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .metric-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+        .metric-card-title {
+            font-size: 1rem;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        .metric-big-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .metric-subtitle {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Grid spans */
+        .col-span-12 { grid-column: span 12; }
+        .col-span-8 { grid-column: span 8; }
+        .col-span-4 { grid-column: span 4; }
+        .col-span-6 { grid-column: span 6; }
+
+        @media (max-width: 900px) {
+            .col-span-8, .col-span-4, .col-span-6 { grid-column: span 12; }
+        }
+
+        #loadingData {
+            text-align: center;
+            padding: 60px 0;
+            grid-column: span 12;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+            </a>
+            <nav class="desktop-nav">
+                <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="nav-link" style="color: var(--primary);">Dados do Radar</a>
+                <a href="index.html#sobre" class="nav-link">Sobre o Projeto</a>
+                <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" class="nav-btn-coffee">☕ Apoiar Projeto</a>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu principal">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="close-menu-btn" id="closeMenuBtn" aria-label="Fechar menu">&times;</button>
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-nav-link">Início</a>
+                <a href="vagas.html" class="mobile-nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="mobile-nav-link" style="color: var(--primary);">Dados do Radar</a>
+                <a href="index.html#sobre" class="mobile-nav-link">Sobre o Projeto</a>
+                <a href="termos.html" class="mobile-nav-link">Termos e Privacidade</a>
+            </nav>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <section class="jobs-hero" style="padding-bottom: 20px;">
+            <h1>State of <span class="highlight">UX</span></h1>
+            <p>Radar e métricas do mercado de Design de Produto no Brasil.</p>
+        </section>
+
+        <div class="dashboard-container">
+            <div class="disclaimer-box">
+                <strong>Amostragem:</strong> Estes dados não representam 100% do mercado global. Eles são um termômetro em tempo real baseado nas centenas de vagas capturadas ativamente pelo nosso motor de inteligência nos últimos 30 dias.
+            </div>
+
+            <div class="metrics-grid" id="dashboard-content" style="display: none;">
+                <!-- Row 1 -->
+                <div class="metric-card col-span-4" style="justify-content: center; align-items: center; text-align: center;">
+                    <h3 class="metric-card-title">Vagas Capturadas (30 dias)</h3>
+                    <div class="metric-big-number" id="totalJobs">--</div>
+                    <div class="metric-subtitle">Oportunidades mapeadas e filtradas.</div>
+                </div>
+                
+                <div class="metric-card col-span-8">
+                    <h3 class="metric-card-title">Cadência de Vagas Publicadas</h3>
+                    <div class="chart-container">
+                        <canvas id="cadenciaChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="metric-card col-span-4">
+                    <h3 class="metric-card-title">Modelo de Trabalho</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="workModeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="metric-card col-span-4">
+                    <h3 class="metric-card-title">Nível de Experiência (Estimado)</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="seniorityChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="metric-card col-span-4">
+                    <h3 class="metric-card-title">Nacional x Internacional</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="intlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loadingData">
+                <span class="loader" style="border-top-color: var(--primary); border-width: 4px; width: 40px; height: 40px;"></span>
+                <p style="margin-top: 16px; color: var(--primary); font-weight: 500;">Calculando dados de mercado...</p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-bottom: 32px;">
+                <div class="footer-col">
+                    <div class="footer-logo" style="margin-bottom: 16px;">
+                        <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
+                    </div>
+                    <p class="footer-description" style="margin-top: 0;">
+                        Feito para fortalecer o ecossistema.<br>
+                        <span style="color: var(--gray-300); font-style: italic;">O UXfetch é um radar, não um destino. Todas as vagas listadas redirecionam o candidato de forma gratuita para a plataforma oficial.</span>
+                    </p>
+                </div>
+                <div class="footer-col" style="display: flex; flex-direction: column; gap: 16px; justify-content: flex-end;">
+                    <p class="footer-description" style="font-size: 0.85rem; color: var(--gray-400); margin: 0;">
+                        O UXfetch é uma ferramenta viva e cresce com quem usa. Sugestões de portais, bugs ou ideias: manda um email.
+                    </p>
+                    <p class="footer-description" style="margin: 0;">
+                        Quer apoiar o projeto? <a href="https://buymeacoffee.com/uxfetch" target="_blank" style="color: var(--white); text-decoration: underline;">Apoie com um café ☕</a><br>
+                        Dúvidas ou sugestões? <a href="mailto:contato@uxfetch.com.br" style="color: var(--white); text-decoration: underline;">contato@uxfetch.com.br</a>
+                    </p>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="footer-bottom">
+                <p>2026 UXfetch. Desenvolvido por <a href="https://tuliocareli.com" target="_blank" style="color: inherit;">tuliocareli.com</a></p>
+                <a href="termos.html">Termos e Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="dados.js"></script>
+</body>
+</html>
