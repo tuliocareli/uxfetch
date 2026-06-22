@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const periodFilter = document.getElementById('periodFilter');
     if (!periodFilter) return;
 
-    // Gerar meses a partir de Junho de 2025
-    const startYear = 2025;
+    // Gerar meses a partir de Junho de 2026
+    const startYear = 2026;
     const startMonth = 5; // Junho (0-indexed)
     const currentDate = new Date();
     let currY = currentDate.getFullYear();
