@@ -480,6 +480,46 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
         renderPagination(filteredJobsCache.length);
     }
 
+    function injectJobSchema(jobs) {
+        // Remove existing dynamic schema if any
+        const existing = document.getElementById('dynamic-job-schema');
+        if (existing) existing.remove();
+
+        const jobsToSchema = jobs.slice(0, 10); // Limit to top 10 for performance/size
+        if (jobsToSchema.length === 0) return;
+
+        const schemaArray = jobsToSchema.map(job => {
+            return {
+                "@context": "https://schema.org/",
+                "@type": "JobPosting",
+                "title": job.title,
+                "description": job.description || 'Vaga encontrada pelo radar UX Fetch.',
+                "datePosted": job.created_at ? new Date(job.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                "hiringOrganization": {
+                    "@type": "Organization",
+                    "name": job.company || 'Empresa Confidencial'
+                },
+                "jobLocation": {
+                    "@type": "Place",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": job.location || 'Brasil',
+                        "addressCountry": "BR"
+                    }
+                },
+                "jobLocationType": job.work_mode === 'remote' || job.is_remote ? "TELECOMMUTE" : undefined,
+                "employmentType": "FULL_TIME",
+                "url": job.url || "https://uxfetch.com.br/vagas.html"
+            };
+        });
+
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'dynamic-job-schema';
+        script.textContent = JSON.stringify(schemaArray);
+        document.head.appendChild(script);
+    }
+
     async function fetchJobs() {
         if (!window.supabase) {
             console.error('Supabase client is not loaded');
@@ -525,6 +565,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             
             allJobsCache = interleaved;
             applyFilters(); // Renders initially without any active filters
+            injectJobSchema(interleaved);
 
         } catch (err) {
             console.error('Error fetching jobs:', err);
