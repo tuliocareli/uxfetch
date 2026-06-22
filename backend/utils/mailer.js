@@ -7,6 +7,22 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const EMAIL_CONTATO = "contato@uxfetch.com.br"; // TODO: Substituir por vagas@meudominio.com
 
+function getDominantRole(jobs) {
+    const roleMap = {};
+    for (const job of jobs) {
+        const title = (job.title || '').toLowerCase();
+        if (title.includes('product designer'))        roleMap['Product Designer']  = (roleMap['Product Designer']  || 0) + 1;
+        else if (title.includes('ux designer'))        roleMap['UX Designer']       = (roleMap['UX Designer']       || 0) + 1;
+        else if (title.includes('ux researcher') || title.includes('pesquisador'))
+                                                       roleMap['UX Researcher']     = (roleMap['UX Researcher']     || 0) + 1;
+        else if (title.includes('ui designer'))        roleMap['UI Designer']       = (roleMap['UI Designer']       || 0) + 1;
+        else if (title.includes('service designer'))   roleMap['Service Designer']  = (roleMap['Service Designer']  || 0) + 1;
+        else                                           roleMap['Design']            = (roleMap['Design']            || 0) + 1;
+    }
+    const sorted = Object.entries(roleMap).sort((a, b) => b[1] - a[1]);
+    return sorted.length > 0 ? sorted[0][0] : 'Design';
+}
+
 async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false) {
     if (!jobs || jobs.length === 0) {
         console.log(`Nenhuma vaga para o usuário ${user.email}. Pulando e-mail.`);
@@ -149,12 +165,23 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
 
         let introTitle = 'Novas oportunidades no radar!';
         let introText = `Fala <strong>${formattedName}</strong>, o motor do UX Fetch terminou a varredura de hoje. Filtramos os portais de RH e separamos as oportunidades de Produto e Design que dão match com você. Confere o que está em alta:`;
-        let subject = `O radar do UX Fetch atualizou: Novas vagas para você, ${formattedName} 🎯`;
+
+        // Subject dinâmico baseado nas vagas reais do dia
+        const dominantRole = getDominantRole(jobs);
+        const jobCount = jobs.length;
+        let subject;
+        if (jobCount === 1) {
+            subject = `Encontrei 1 vaga de ${dominantRole} que pode ser a sua hoje`;
+        } else if (jobCount <= 5) {
+            subject = `Encontrei ${jobCount} vagas de ${dominantRole} abertas hoje`;
+        } else {
+            subject = `${jobCount} vagas de Design no radar hoje — confira antes que fechem`;
+        }
 
         if (isDigestMode) {
             introTitle = 'Boletim Diário UX Fetch 📌';
-            introText = `Fala <strong>${formattedName}</strong>! Hoje o mercado deu uma respirada e não detectamos vagas inéditas exclusivas para o seu perfil. Mas para manter o seu radar ativo, separamos as melhores oportunidades recentes que continuam em aberto e dão match com você:`;
-            subject = `📌 Radar UX Fetch: Vagas recentes ainda em aberto para ${formattedName}!`;
+            introText = `Fala <strong>${formattedName}</strong>! Hoje o mercado deu uma respirada e não detectamos vagas inéditas para o seu perfil. Para manter o radar ativo, separamos as melhores oportunidades recentes que continuam em aberto:`;
+            subject = `Nada novo hoje, mas essas ${recentJobs.length} vagas ainda estão abertas`;
         }
 
         templateHtml = templateHtml.replace(/{{intro_title}}/g, introTitle);
