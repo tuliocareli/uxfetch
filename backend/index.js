@@ -113,7 +113,53 @@ async function main() {
             if (subError) {
                 console.error('Erro ao buscar inscritos:', subError);
             } else if (subscribers && subscribers.length > 0) {
-                console.log(`Preparando disparo de e-mails para ${subscribers.length} inscrito(s)...`);
+                // FREQUÊNCIA INTELIGENTE (SUNSET POLICY)
+                const todayDayOfWeek = new Date().getDay(); // 0 = Domingo, 5 = Sexta
+                const ENGAGEMENT_WEEKLY_DAYS = 15;
+                const ENGAGEMENT_SUNSET_DAYS = 60;
+                
+                const activeSubscribers = [];
+                const sunsetUsers = [];
+                
+                for (const sub of subscribers) {
+                    const baseDate = sub.last_opened_at || sub.created_at;
+                    const daysSinceLastInteraction = (Date.now() - new Date(baseDate).getTime()) / (1000 * 60 * 60 * 24);
+                    
+                    if (daysSinceLastInteraction > ENGAGEMENT_SUNSET_DAYS) {
+                        sunsetUsers.push(sub.email);
+                        continue;
+                    }
+                    
+                    if (daysSinceLastInteraction <= ENGAGEMENT_WEEKLY_DAYS) {
+                        // Usuário engajado
+                        activeSubscribers.push(sub);
+                    } else {
+                        // Usuário "frio", recebe só na sexta-feira
+                        if (todayDayOfWeek === 5) {
+                            sub.isWeeklyDigest = true; // Flag para o mailer adicionar a mensagem de reengajamento
+                            activeSubscribers.push(sub);
+                        }
+                    }
+                }
+                
+                // Aplica o Sunset assincronamente
+                if (sunsetUsers.length > 0) {
+                    console.log(`Aplicando Sunset Policy: ${sunsetUsers.length} usuários inativos há mais de ${ENGAGEMENT_SUNSET_DAYS} dias serão desativados.`);
+                    supabase.from('subscribers')
+                        .update({ is_active: false })
+                        .in('email', sunsetUsers)
+                        .then(({error}) => {
+                            if (error) console.error('Erro no Sunset Policy:', error);
+                            else console.log('Sunset Policy aplicado no banco.');
+                        });
+                }
+
+                if (activeSubscribers.length === 0) {
+                    console.log('Nenhum inscrito engajado ou elegível na régua semanal para receber hoje.');
+                    return;
+                }
+
+                console.log(`Preparando disparo de e-mails para ${activeSubscribers.length} inscrito(s) engajados hoje (de ${subscribers.length} ativos totais)...`);
                 const { sendDailyEmail } = require('./utils/mailer');
                 
                 // Busca vagas antigas (últimos 30 dias) para preenchimento de cota (backfill)
@@ -134,29 +180,64 @@ async function main() {
                 }
 
                 function filterJobsForSubscriber(jobsToFilter, sub) {
+                    // 0. Prepara preferências (com defaults)
+                    const prefRoles = (sub.preferred_roles && sub.preferred_roles.length > 0) 
+                        ? sub.preferred_roles 
+                        : ['ux_ui', 'leadership']; // Default: só produto e ux/liderança
+                    
+                    const prefSen = (sub.preferred_seniorities && sub.preferred_seniorities.length > 0)
+                        ? sub.preferred_seniorities
+                        : ['junior', 'pleno', 'senior', 'especialista']; // Default: todas
+
                     return jobsToFilter.filter(job => {
-                        // 1. Remoto
+                        const t = job.title.toLowerCase();
+                        
+                        // --- A. FILTRO DE ÁREA (ROLE) ---
+                        const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+                        const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media)\b/i.test(t);
+                        const isOthers = /\b(motion|3d|ilustra|service|researcher|pesquisador|writer)\b/i.test(t);
+                        const isUxUi = !isLeadership && !isGraphic && !isOthers;
+
+                        let roleMatch = false;
+                        if (prefRoles.includes('leadership') && isLeadership) roleMatch = true;
+                        if (prefRoles.includes('graphic') && isGraphic) roleMatch = true;
+                        if (prefRoles.includes('others') && isOthers) roleMatch = true;
+                        if (prefRoles.includes('ux_ui') && isUxUi) roleMatch = true;
+                        
+                        if (!roleMatch) return false;
+
+                        // --- B. FILTRO DE SENIORIDADE ---
+                        const isJunior = /\b(est[áa]gio|trainee|j[úu]nior|junior|jr\.?)\b/i.test(t);
+                        const isPleno = /\b(pleno|pl\.?|mid[\s-]?level)\b/i.test(t);
+                        const isEspecialista = /\b(lead|head|staff|principal|especialista|manager|diretor)\b/i.test(t);
+                        const isSenior = /\b(s[êe]nior|senior|sr\.?)\b/i.test(t);
+                        const isUnspecified = !isJunior && !isPleno && !isEspecialista && !isSenior;
+
+                        let senMatch = false;
+                        if (prefSen.includes('junior') && isJunior) senMatch = true;
+                        if (prefSen.includes('pleno') && (isPleno || isUnspecified)) senMatch = true;
+                        if (prefSen.includes('senior') && (isSenior || isUnspecified)) senMatch = true;
+                        if (prefSen.includes('especialista') && isEspecialista) senMatch = true;
+
+                        if (!senMatch) return false;
+
+                        // --- C. FILTRO DE FORMATO/LOCALIZAÇÃO ---
                         if (job.work_mode === 'remote') {
                             return sub.accept_remote || sub.only_remote;
                         }
                         
-                        // Se não é remoto e o usuário só quer remoto, rejeita
                         if (sub.only_remote) return false;
 
-                        // 2. Híbrido
                         if (job.work_mode === 'hybrid') {
                             if (sub.accepts_hybrid === false) return false;
-                            
-                            // "Aceitar híbrido só faria sentido na cidade da pessoa"
                             if (!sub.city) return false;
                             const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
                             const jobLocLower = job.location.toLowerCase();
                             return jobLocLower.includes(subCityLower);
                         }
 
-                        // 3. Regra Geográfica para Presencial
+                        // Presencial
                         if (sub.accept_other_cities) return true;
-                        
                         if (!sub.city) return false;
                         const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
                         const jobLocLower = job.location.toLowerCase();
@@ -165,7 +246,7 @@ async function main() {
                 }
 
                 let emailsSentToday = 0;
-                for (const sub of subscribers) {
+                for (const sub of activeSubscribers) {
                     // Se o usuário foi criado nas últimas 48h, entregamos as vagas que ele perdeu
                     const isNewUser = (Date.now() - new Date(sub.created_at).getTime()) < (48 * 60 * 60 * 1000);
                     let primaryJobs = [...newJobs];

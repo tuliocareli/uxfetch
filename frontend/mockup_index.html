@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch | O radar de vagas para Product Design & UI/UX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+            </a>
+            
+            <nav class="desktop-nav">
+                <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="nav-link">Dados do Radar</a>
+                <a href="index.html#sobre" class="nav-link">Sobre o Projeto</a>
+                <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" class="nav-btn-coffee">☕ Apoiar Projeto</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container hero-container">
+            <div class="hero-text" id="hero-text-container">
+                <h1>Todas (<span class="relative-inline">ou quase todas<img src="assets/linha.svg" class="linha-svg" alt=""></span>) as vagas de Product Design e UI/UX. Em um só lugar.</h1>
+                <p>Um agregador automatizado e gratuito, construído de designer para designer, focado em centralizar as melhores oportunidades do mercado de produto.</p>
+            </div>
+
+            <div class="form-card" style="border: none; box-shadow: none; padding: 0; background: transparent; max-width: 900px; margin: 0 auto;">
+                
+                <!-- ETAPA 1: Captura de E-mail (O que existe hoje) -->
+                <div id="mockup-step1">
+                    <form id="subscribe-form-step1">
+                        <div class="input-group-row">
+                            <div class="input-group input-with-icon">
+                                <input type="email" id="email" name="email" required placeholder="Seu melhor email">
+                                <svg class="input-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="input-group" style="display: flex; flex-direction: row; gap: 16px; align-items: stretch;">
+                                <select id="state" name="state" required style="width: 35%; cursor: pointer;" class="custom-select">
+                                    <option value="" disabled selected>UF</option>
+                                    <option value="SP">SP</option>
+                                </select>
+                                <select id="city" name="city" required style="width: 65%; cursor: pointer;" class="custom-select">
+                                    <option value="" disabled selected>Selecione a Cidade</option>
+                                    <option value="Sao Paulo">São Paulo</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group-row" style="justify-content: center; gap: 16px; margin-top: 16px; margin-bottom: 40px; flex-wrap: wrap;">
+                            <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                <input type="checkbox" id="accepts_hybrid" name="accepts_hybrid" checked>
+                                <span class="checkmark"></span>
+                                Híbridas na minha cidade
+                            </label>
+                            <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                <input type="checkbox" id="accept_remote" name="accept_remote" checked>
+                                <span class="checkmark"></span>
+                                Vagas 100% remotas
+                            </label>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <button type="submit" id="submit-btn-step1" class="btn-primary" style="width: auto; padding: 20px 64px; border-radius: 16px;">
+                                <span class="btn-text" style="font-size: 1.25rem;">Acompanhar o mercado</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ETAPA 2: Progressive Profiling (Filtros de Área/Senioridade) -->
+                <div id="mockup-step2" class="hidden">
+                    <div class="alert-success" style="margin-bottom: 32px; text-align: center; background-color: #f0fdf4; border-color: #bbf7d0; color: #166534; padding: 16px; border-radius: 12px; font-weight: 500;">
+                        ✨ Sucesso! Seu e-mail já foi adicionado ao radar.
+                    </div>
+                    
+                    <form id="preferences-form-step2" style="max-width: 600px; margin: 0 auto;">
+                        <div class="input-group" style="width: 100%;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-dark); text-align: left;">Área de atuação (Selecione uma ou mais)</label>
+                            <div style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
+                                <label class="checkbox-item custom-checkbox" style="width: 100%; justify-content: flex-start; white-space: normal; line-height: 1.4;">
+                                    <input type="checkbox" name="role_ux_ui" checked>
+                                    <span class="checkmark"></span>
+                                    UX/UI & Product Design <span style="color: #718096; font-size: 0.85em; font-weight: 400; margin-left: 4px;">(Product Designer, UX, UI, Interaction)</span>
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="width: 100%; justify-content: flex-start; white-space: normal; line-height: 1.4;">
+                                    <input type="checkbox" name="role_graphic">
+                                    <span class="checkmark"></span>
+                                    Design Gráfico & Visual <span style="color: #718096; font-size: 0.85em; font-weight: 400; margin-left: 4px;">(Graphic, Visual, Web, Brand)</span>
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="width: 100%; justify-content: flex-start; white-space: normal; line-height: 1.4;">
+                                    <input type="checkbox" name="role_leadership">
+                                    <span class="checkmark"></span>
+                                    Liderança & Management <span style="color: #718096; font-size: 0.85em; font-weight: 400; margin-left: 4px;">(Staff, Principal, Head, Design Ops)</span>
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="width: 100%; justify-content: flex-start; white-space: normal; line-height: 1.4;">
+                                    <input type="checkbox" name="role_others">
+                                    <span class="checkmark"></span>
+                                    Outras Áreas <span style="color: #718096; font-size: 0.85em; font-weight: 400; margin-left: 4px;">(Motion, 3D, Ilustração)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="width: 100%; margin-top: 32px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-dark); text-align: left;">Nível de Experiência (Selecione um ou mais)</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                                <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                    <input type="checkbox" name="sen_junior">
+                                    <span class="checkmark"></span>
+                                    Júnior / Trainee
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                    <input type="checkbox" name="sen_pleno">
+                                    <span class="checkmark"></span>
+                                    Pleno (Mid-level)
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                    <input type="checkbox" name="sen_senior">
+                                    <span class="checkmark"></span>
+                                    Sênior
+                                </label>
+                                <label class="checkbox-item custom-checkbox" style="white-space: nowrap;">
+                                    <input type="checkbox" name="sen_especialista">
+                                    <span class="checkmark"></span>
+                                    Especialista / Liderança
+                                </label>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+                            <button type="button" id="submit-btn-step2" class="btn-primary" style="width: 100%; padding: 20px; border-radius: 16px;" onclick="finishFlow(this)">
+                                <span class="btn-text" style="font-size: 1.25rem;">Salvar Preferências</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="mockup-step3" class="hidden alert-success" style="margin-top: 24px; text-align: center;">
+                    <strong>Tudo configurado!</strong> Agora é só ficar de olho na sua caixa de entrada.
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('subscribe-form-step1').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simula o INSERT no banco
+            const btn = document.getElementById('submit-btn-step1');
+            btn.innerHTML = 'Salvando...';
+            btn.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                // Esconde a etapa 1
+                document.getElementById('mockup-step1').classList.add('hidden');
+                
+                // Muda o texto da Hero Section
+                const heroContainer = document.getElementById('hero-text-container');
+                heroContainer.innerHTML = '<h1>Só mais um passo! Filtre o radar para o <span class="relative-inline">seu perfil<img src="assets/linha.svg" class="linha-svg" alt=""></span>.</h1><p>Para enviarmos apenas as vagas ideais, precisamos saber qual o seu momento atual de carreira.</p>';
+                
+                // Mostra a etapa 2 (Progressive Profiling)
+                document.getElementById('mockup-step2').classList.remove('hidden');
+            }, 800);
+        });
+
+        function finishFlow(btn) {
+            btn.innerHTML = 'Salvando...';
+            btn.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                document.getElementById('mockup-step2').classList.add('hidden');
+                document.getElementById('hero-text-container').classList.add('hidden');
+                document.getElementById('mockup-step3').classList.remove('hidden');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

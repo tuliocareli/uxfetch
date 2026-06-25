@@ -16,7 +16,7 @@ async function scrapeRemotar() {
         const page = await browser.newPage();
         await page.setDefaultNavigationTimeout(60000);
 
-        const queries = ['product design', 'ux', 'ui', 'design engineer', 'design ops', 'staff designer', 'design research', 'design system', 'ux researcher', 'ux research'];
+        const queries = ['product design', 'ux', 'ui', 'design engineer', 'design ops', 'staff designer', 'design research', 'design system', 'ux researcher', 'ux research', 'graphic design', 'motion design',  'ux writer', 'head de design'];
         const extractedJobs = [];
 
         // Acessa a página principal uma vez
@@ -69,13 +69,14 @@ async function scrapeRemotar() {
         const uniqueJobs = Array.from(new Map(extractedJobs.map(j => [j.url, j])).values());
         
         // Filtro de segurança rigoroso para Produto/Design
-        const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
+        const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?|lead\s+design(er)?|head\s+de\s+design|design\s+manager|diretor\s+de\s+design|graphic\s+design(er)?|design(er)?\s+gr[aá]fico|visual\s+design(er)?|motion\s+design(er)?|3d\s+design(er)?|ilustrador(a)?|ux\s+writer|designer\b)/i;
         
         const excludeKeywords = [
             'desenvolvedor', 'developer', 'arquiteto', 'architect', 
             'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
             'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
-            'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance'
+                    'moda', 'interiores', 'produto físico', 'embalagem',   'performance'
+        , 'corel draw', 'coreldraw', 'freelancer', 'temporário', 'temporario', 'gráfica', 'grafica', 'impressão', 'impresso'
         ];
 
         const filtered = uniqueJobs.map(job => {

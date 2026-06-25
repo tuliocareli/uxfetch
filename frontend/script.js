@@ -145,9 +145,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw error;
             }
             
-            // On success
-            form.style.display = 'none';
-            successMessage.classList.remove('hidden');
+            // On success of STEP 1
+            const step1Container = document.getElementById('step1-container');
+            if (step1Container) {
+                step1Container.classList.add('hidden');
+            } else {
+                form.style.display = 'none'; // Fallback for other pages
+            }
+
+            // Fill hidden email in step 2
+            const prefEmailInput = document.getElementById('pref-email');
+            if (prefEmailInput) prefEmailInput.value = payload.email;
+
+            // Show Step 2
+            const step2Container = document.getElementById('step2-container');
+            if (step2Container) {
+                step2Container.classList.remove('hidden');
+                
+                // Change Hero Text
+                const heroText = document.querySelector('.hero-text');
+                if (heroText) {
+                    heroText.innerHTML = '<h1>Só mais um passo! Filtre o radar para o <span class="relative-inline">seu perfil<img src="assets/linha.svg" class="linha-svg" alt=""></span>.</h1><p>Para enviarmos apenas as vagas ideais, precisamos saber qual o seu momento atual de carreira.</p>';
+                }
+            } else {
+                // If we are on a page without step 2, just show success
+                if (successMessage) successMessage.classList.remove('hidden');
+            }
         } catch (error) {
             console.error('Erro ao salvar no Supabase:', error);
             alert('Ops! Ocorreu um erro ao salvar sua inscrição. Tente novamente.');
@@ -157,6 +180,63 @@ document.addEventListener('DOMContentLoaded', () => {
             loader.classList.add('hidden');
         }
     });
+
+    // Preferences Form Submission Logic (STEP 2)
+    const prefForm = document.getElementById('preferences-form');
+    if (prefForm) {
+        prefForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitPrefBtn = document.getElementById('submit-pref-btn');
+            const prefBtnText = submitPrefBtn.querySelector('.btn-text');
+            const prefLoader = submitPrefBtn.querySelector('.loader');
+            
+            const email = document.getElementById('pref-email').value;
+            
+            // Build Roles Array
+            const roles = [];
+            if (document.getElementById('role_ux_ui') && document.getElementById('role_ux_ui').checked) roles.push('ux_ui');
+            if (document.getElementById('role_leadership') && document.getElementById('role_leadership').checked) roles.push('leadership');
+            if (document.getElementById('role_graphic') && document.getElementById('role_graphic').checked) roles.push('graphic');
+            if (document.getElementById('role_others') && document.getElementById('role_others').checked) roles.push('others');
+            
+            // Build Seniorities Array
+            const seniorities = [];
+            if (document.getElementById('sen_junior') && document.getElementById('sen_junior').checked) seniorities.push('junior');
+            if (document.getElementById('sen_pleno') && document.getElementById('sen_pleno').checked) seniorities.push('pleno');
+            if (document.getElementById('sen_senior') && document.getElementById('sen_senior').checked) seniorities.push('senior');
+            if (document.getElementById('sen_especialista') && document.getElementById('sen_especialista').checked) seniorities.push('especialista');
+            
+            submitPrefBtn.disabled = true;
+            if(prefBtnText) prefBtnText.classList.add('hidden');
+            if(prefLoader) prefLoader.classList.remove('hidden');
+            
+            try {
+                const { data, error } = await supabase.functions.invoke('update_preferences', {
+                    body: {
+                        email: email,
+                        preferred_roles: roles,
+                        preferred_seniorities: seniorities
+                    }
+                });
+
+                if (error) throw error;
+                
+                // Final Success
+                prefForm.style.display = 'none';
+                const successMsg = document.getElementById('success-message');
+                if (successMsg) successMsg.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Erro ao salvar preferências:', error);
+                alert('Ops! Ocorreu um erro ao salvar. Tente novamente.');
+            } finally {
+                submitPrefBtn.disabled = false;
+                if(prefBtnText) prefBtnText.classList.remove('hidden');
+                if(prefLoader) prefLoader.classList.add('hidden');
+            }
+        });
+    }
 });
 
 
@@ -183,13 +263,17 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
     const loadingIndicator = document.getElementById('loadingIndicator');
     
     // Filters DOM
+    // Filters DOM
     const filterPills = document.querySelectorAll('.filter-pill');
     const stateSelect = document.getElementById('vagas-state');
     const citySelect = document.getElementById('vagas-city');
-    const senioritySelect = document.getElementById('vagas-seniority');
 
     let allJobsCache = [];
-    let activeWorkModels = new Set(); // 'remoto', 'hibrido', 'presencial'
+    
+    // Active Filter Sets
+    let activeAreas = new Set();
+    let activeSeniorities = new Set();
+    let activeFormats = new Set();
 
     let filteredJobsCache = [];
     let currentPage = 1;
@@ -238,21 +322,70 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
         citySelect.addEventListener('change', () => applyFilters());
     }
 
-    if (senioritySelect) {
-        senioritySelect.addEventListener('change', () => applyFilters());
-    }
-
     // Toggle Pills Logic
     filterPills.forEach(pill => {
         pill.addEventListener('click', () => {
-            pill.classList.toggle('active');
             const filterType = pill.getAttribute('data-filter');
+            let group = '';
             
-            if (activeWorkModels.has(filterType)) {
-                activeWorkModels.delete(filterType);
+            if (filterType.startsWith('area_')) group = 'area';
+            else if (filterType.startsWith('sen_')) group = 'sen';
+            else group = 'format'; // format_all, remoto, hibrido, presencial, internacional
+
+            if (filterType === 'area_all' || filterType === 'sen_all' || filterType === 'format_all') {
+                // Turn OFF all specific pills in this group
+                filterPills.forEach(p => {
+                    const ft = p.getAttribute('data-filter');
+                    if (group === 'area' && ft.startsWith('area_') && ft !== 'area_all') {
+                        p.classList.remove('active');
+                        activeAreas.delete(ft.replace('area_', ''));
+                    }
+                    if (group === 'sen' && ft.startsWith('sen_') && ft !== 'sen_all') {
+                        p.classList.remove('active');
+                        activeSeniorities.delete(ft.replace('sen_', ''));
+                    }
+                    if (group === 'format' && ['remoto', 'hibrido', 'presencial', 'internacional'].includes(ft)) {
+                        p.classList.remove('active');
+                        activeFormats.delete(ft);
+                    }
+                });
+                pill.classList.add('active');
             } else {
-                activeWorkModels.add(filterType);
+                // It's a specific pill
+                pill.classList.toggle('active');
+                
+                let activeSet;
+                let allPillId;
+                let val = filterType;
+                
+                if (group === 'area') {
+                    activeSet = activeAreas;
+                    allPillId = 'area_all';
+                    val = filterType.replace('area_', '');
+                } else if (group === 'sen') {
+                    activeSet = activeSeniorities;
+                    allPillId = 'sen_all';
+                    val = filterType.replace('sen_', '');
+                } else {
+                    activeSet = activeFormats;
+                    allPillId = 'format_all';
+                }
+
+                if (pill.classList.contains('active')) {
+                    activeSet.add(val);
+                    // Turn off the 'ALL' pill
+                    const allPill = document.querySelector(`.filter-pill[data-filter="${allPillId}"]`);
+                    if (allPill) allPill.classList.remove('active');
+                } else {
+                    activeSet.delete(val);
+                    // If empty, turn ON the 'ALL' pill
+                    if (activeSet.size === 0) {
+                        const allPill = document.querySelector(`.filter-pill[data-filter="${allPillId}"]`);
+                        if (allPill) allPill.classList.add('active');
+                    }
+                }
             }
+            
             applyFilters();
         });
     });
@@ -260,25 +393,59 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
     function applyFilters() {
         let filtered = [...allJobsCache];
 
-        // 1. Filter by Work Model (Pills)
-        if (activeWorkModels.size > 0) {
+        // 1. Filter by Area
+        if (activeAreas.size > 0) {
             filtered = filtered.filter(job => {
-                const isRemote = job.is_remote;
-                let matchesInternacional = !!job.is_international;
-                let matchesRemoto = job.work_mode === 'remote' || (job.is_remote && !job.work_mode) || (job.is_international && !job.work_mode);
-                let matchesHibrido = job.work_mode === 'hybrid';
-                let matchesPresencial = !matchesRemoto && !matchesHibrido;
+                const t = job.title.toLowerCase();
+                const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+                const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media)\b/i.test(t);
+                const isOthers = /\b(motion|3d|ilustra|service|researcher|pesquisador|writer)\b/i.test(t);
+                const isUxUi = !isLeadership && !isGraphic && !isOthers; 
+                
+                if (activeAreas.has('leadership') && isLeadership) return true;
+                if (activeAreas.has('graphic') && isGraphic) return true;
+                if (activeAreas.has('others') && isOthers) return true;
+                if (activeAreas.has('ux_ui') && isUxUi) return true;
+                return false;
+            });
+        }
 
-                if (activeWorkModels.has('internacional') && matchesInternacional) return true;
-                if (activeWorkModels.has('remoto') && matchesRemoto) return true;
-                if (activeWorkModels.has('hibrido') && matchesHibrido) return true;
-                if (activeWorkModels.has('presencial') && matchesPresencial) return true;
+        // 2. Filter by Seniority
+        if (activeSeniorities.size > 0) {
+            filtered = filtered.filter(job => {
+                const t = job.title.toLowerCase();
+                const isJunior = /\b(est[áa]gio|trainee|j[úu]nior|junior|jr\.?)\b/i.test(t);
+                const isPleno = /\b(pleno|pl\.?|mid[\s-]?level)\b/i.test(t);
+                const isEspecialista = /\b(lead|head|staff|principal|especialista|manager|diretor)\b/i.test(t);
+                const isSenior = /\b(s[êe]nior|senior|sr\.?)\b/i.test(t);
+                const isUnspecified = !isJunior && !isPleno && !isEspecialista && !isSenior;
+                
+                if (activeSeniorities.has('junior') && isJunior) return true;
+                if (activeSeniorities.has('pleno') && (isPleno || isUnspecified)) return true;
+                if (activeSeniorities.has('senior') && (isSenior || isUnspecified)) return true;
+                if (activeSeniorities.has('especialista') && isEspecialista) return true;
+                return false;
+            });
+        }
+
+        // 3. Filter by Work Model (Formats)
+        if (activeFormats.size > 0) {
+            filtered = filtered.filter(job => {
+                const matchesInternacional = !!job.is_international;
+                const matchesRemoto = job.work_mode === 'remote' || (job.is_remote && !job.work_mode) || (job.is_international && !job.work_mode);
+                const matchesHibrido = job.work_mode === 'hybrid';
+                const matchesPresencial = !matchesRemoto && !matchesHibrido;
+
+                if (activeFormats.has('internacional') && matchesInternacional) return true;
+                if (activeFormats.has('remoto') && matchesRemoto) return true;
+                if (activeFormats.has('hibrido') && matchesHibrido) return true;
+                if (activeFormats.has('presencial') && matchesPresencial) return true;
 
                 return false;
             });
         }
 
-        // 2. Filter by Location (IBGE)
+        // 4. Filter by Location (IBGE)
         const selectedState = stateSelect ? stateSelect.value : '';
         const selectedCity = citySelect && !citySelect.disabled ? citySelect.value : '';
 
@@ -287,22 +454,6 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 const loc = job.location || '';
                 if (selectedState && !loc.includes(selectedState)) return false;
                 if (selectedCity && !loc.toLowerCase().includes(selectedCity.toLowerCase())) return false;
-                return true;
-            });
-        }
-
-        // 3. Filter by Seniority
-        const selectedSeniority = senioritySelect ? senioritySelect.value : 'all';
-        if (selectedSeniority !== 'all') {
-            filtered = filtered.filter(job => {
-                const t = job.title.toLowerCase();
-                if (selectedSeniority === 'estagio_junior') {
-                    return /\b(est[áa]gio|trainee|j[úu]nior|junior|jr\.?)\b/i.test(t);
-                } else if (selectedSeniority === 'pleno') {
-                    return /\b(pleno|pl\.?|mid[\s-]?level)\b/i.test(t);
-                } else if (selectedSeniority === 'senior_lead_head') {
-                    return /\b(s[êe]nior|senior|sr\.?|lead|head|staff|principal|especialista|manager|diretor)\b/i.test(t);
-                }
                 return true;
             });
         }

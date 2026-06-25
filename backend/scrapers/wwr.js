@@ -51,16 +51,17 @@ async function scrapeWWR() {
     const allowedRegions = ["anywhere", "worldwide", "latin america", "americas", "brazil", "global"];
     
     // Regex de perfis do UX Fetch
-    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?|lead\s+design(er)?|head\s+de\s+design|design\s+manager|diretor\s+de\s+design|graphic\s+design(er)?|design(er)?\s+gr[aá]fico|visual\s+design(er)?|motion\s+design(er)?|3d\s+design(er)?|ilustrador(a)?|ux\s+writer|designer\b)/i;
     
     // Exclusões de lixo/outras áreas
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
         'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
-        'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+                'moda', 'interiores', 'produto físico', 'embalagem',   'performance',
         'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
-    ];
+    , 'corel draw', 'coreldraw', 'freelancer', 'temporário', 'temporario', 'gráfica', 'grafica', 'impressão', 'impresso'
+        ];
 
     try {
         const { data } = await axios.get(url, {
@@ -115,7 +116,7 @@ async function scrapeWWR() {
 
             // 4. Detecção de Vagas Brasileiras (Lyncas, CI&T, etc) no WWR
             // Se o título tem termos típicos de vagas BR, marcamos como nacional e pulamos a tradução!
-            const ptBrKeywords = /\b(pleno|sênior|senior|júnior|junior|vaga|pessoa|remoto|brasil|designer de)\b/i;
+            const ptBrKeywords = /\b(sênior|júnior|vaga|pessoa|brasil|designer de)\b/i;
             const isBrazilian = ptBrKeywords.test(jobTitle);
 
             let finalDescription = descriptionHtml;

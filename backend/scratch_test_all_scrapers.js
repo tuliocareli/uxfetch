@@ -1,3 +1,4 @@
+require('dotenv').config();
 const scrapers = [
     { name: 'Remotar', run: require('./scrapers/remotar') },
     { name: 'Trampos', run: require('./scrapers/trampos') },

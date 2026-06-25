@@ -184,6 +184,18 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
             subject = `Nada novo hoje, mas essas ${recentJobs.length} vagas ainda estão abertas`;
         }
 
+        if (user.isWeeklyDigest) {
+            introTitle = 'Boletim Semanal UX Fetch 📌';
+            subject = 'Reduzimos a frequência dos seus e-mails. Veja o radar da semana:';
+            introText = `
+            <div style="font-size:14px; color:#718096; text-align:center; margin-bottom: 24px; padding: 16px; background-color: #F7FAFC; border-radius: 8px;">
+              💡 Reduzimos a frequência de e-mails para você com base no seu padrão de uso.<br>
+              Quer voltar a receber o radar todo dia? <strong>Só abrir este e-mail já reativa sua assinatura diária.</strong>
+            </div>
+            ${introText}
+            `;
+        }
+
         templateHtml = templateHtml.replace(/{{intro_title}}/g, introTitle);
         templateHtml = templateHtml.replace(/{{intro_text}}/g, introText);
         templateHtml = templateHtml.replace(/{{VAGAS_PLACEHOLDER}}/g, jobsHtml);
@@ -200,6 +212,10 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
         // Data para evitar agrupamento abusivo do Gmail
         const dataEnvio = new Date().toLocaleString('pt-BR');
         templateHtml = templateHtml.replace(/{{data_envio}}/g, dataEnvio);
+        
+        // Link de Preferências de Vaga (Área e Senioridade)
+        templateHtml = templateHtml.replace(/{{url_preferences}}/g, `https://uxfetch.com.br/preferencias.html?email=${encodeURIComponent(user.email)}`);
+        
         // Link da página oficial de desinscrição com destruição de dados (LGPD) - Agora via Token Seguro
         templateHtml = templateHtml.replace(/{{url_unsubscribe}}/g, `https://uxfetch.com.br/unsubscribe.html?token=${user.token}`);
 

@@ -6,20 +6,21 @@ async function scrapeGupy() {
     const jobs = [];
     const MAX_PAGES = 5; // 50 vagas por página = 250 por query
     const LIMIT = 50;
-    const queries = ['ux', 'product design', 'designer', 'design research', 'design system', 'ux researcher', 'ux research']; 
+    const queries = ['ux', 'product design', 'designer', 'design research', 'design system', 'ux researcher', 'ux research', 'graphic design', 'motion design',  'ux writer', 'head de design']; 
     const extractedJobs = [];
 
     // Filtros rigorosos para Produto/Design
-    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?)/i;
+    const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?|lead\s+design(er)?|head\s+de\s+design|design\s+manager|diretor\s+de\s+design|graphic\s+design(er)?|design(er)?\s+gr[aá]fico|visual\s+design(er)?|motion\s+design(er)?|3d\s+design(er)?|ilustrador(a)?|ux\s+writer|designer\b)/i;
     
     // Gupy possui muitas vagas de salão de beleza e design genérico não-digital
     const excludeKeywords = [
         'desenvolvedor', 'developer', 'arquiteto', 'architect', 
         'tech lead', 'programador', 'engenheiro de software', 'software engineer', 
         'backend', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'data', 'qa', 'tester',
-        'gráfico', 'grafico', 'graphic', 'motion', 'video', 'vídeo', 'audiovisual', '3d', 'moda', 'interiores', 'produto físico', 'embalagem', 'marketing', 'social media', 'performance',
+                'moda', 'interiores', 'produto físico', 'embalagem',   'performance',
         'sobrancelha', 'sobrancelhas', 'unha', 'unhas', 'cílios', 'cilios', 'micropigmentação'
-    ];
+    , 'corel draw', 'coreldraw', 'freelancer', 'temporário', 'temporario', 'gráfica', 'grafica', 'impressão', 'impresso'
+        ];
 
     try {
         // 1. Varredura por Queries
