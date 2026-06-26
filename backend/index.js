@@ -104,6 +104,12 @@ async function main() {
             }
             
             // FASE DE DISPARO DE E-MAIL
+            const today = new Date();
+            if (today.getDate() === 26 && today.getMonth() === 5 && today.getFullYear() === 2026) {
+                console.log('🚨 TRAVA DE SEGURANÇA: Hoje é 26/06/2026 (Lançamento dos Filtros). Pulando o disparo diário para evitar conflito de SPAM com o e-mail de marketing.');
+                return;
+            }
+
             console.log('Buscando inscritos ativos para disparo de e-mails...');
             const { data: subscribers, error: subError } = await supabase
                 .from('subscribers')
