@@ -282,8 +282,7 @@ async function main() {
                     
                     if (filteredPrimaryJobs.length > 0) {
                         try {
-                            // await sendDailyEmail(sub, filteredPrimaryJobs, filteredRecentJobs, false);
-                            console.log(`(Email desativado temporariamente) Simulando envio primário para: ${sub.email}`);
+                            await sendDailyEmail(sub, filteredPrimaryJobs, filteredRecentJobs, false);
                             emailsSentToday++;
                         } catch (err) {
                             console.error(`Falha ao enviar e-mail para ${sub.email}:`, err);
@@ -291,8 +290,7 @@ async function main() {
                     } else if (filteredRecentJobs.length > 0) {
                         // Digest Mode: Usuário não recebeu nada novo, então mandamos um boletim das recentes
                         try {
-                            // await sendDailyEmail(sub, filteredRecentJobs, [], true);
-                            console.log(`(Email desativado temporariamente) Simulando envio de boletim para: ${sub.email}`);
+                            await sendDailyEmail(sub, filteredRecentJobs, [], true);
                             emailsSentToday++;
                         } catch (err) {
                             console.error(`Falha ao enviar e-mail (Boletim) para ${sub.email}:`, err);
