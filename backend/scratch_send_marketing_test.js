@@ -23,7 +23,7 @@ async function run() {
         const { data, error } = await resend.emails.send({
             from: 'UX Fetch <contato@uxfetch.com.br>',
             to: [targetEmail],
-            subject: 'Novidade: O UX Fetch agora filtra as vagas para o SEU momento de carreira 🎯',
+            subject: 'Uma atualização no seu radar de vagas',
             html: htmlContent
         });
 

@@ -1,0 +1,31 @@
+name: Disparo E-mail Marketing (Lançamento Filtros)
+
+on:
+  schedule:
+    # 11:30 UTC = 08:30 no horário de Brasília
+    # Dia 26 de Junho
+    - cron: '30 11 26 6 *'
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backend
+        
+      - name: Disparar E-mails
+        run: node send_marketing_bulk.js
+        working-directory: ./backend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
