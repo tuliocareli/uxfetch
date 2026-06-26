@@ -192,11 +192,15 @@ async function main() {
                     return jobsToFilter.filter(job => {
                         const t = job.title.toLowerCase();
                         
-                        // --- A. FILTRO DE ÁREA (ROLE) ---
+                        // --- A. FILTRO DE ÁREA (ROLE) STRICT MODE ---
+                        const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
                         const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+                        
                         const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media)\b/i.test(t);
-                        const isOthers = /\b(motion|3d|ilustra|service|researcher|pesquisador|writer)\b/i.test(t);
-                        const isUxUi = !isLeadership && !isGraphic && !isOthers;
+                        const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                        
+                        const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface)\b/i.test(t);
+                        const isUxUi = isUxUiProduct || (!isPlusExplicit && !isLeadership);
 
                         let roleMatch = false;
                         if (prefRoles.includes('leadership') && isLeadership) roleMatch = true;
