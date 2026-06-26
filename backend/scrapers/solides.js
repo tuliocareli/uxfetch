@@ -89,6 +89,9 @@ async function scrapeSolides() {
                 const textLower = fullText.toLowerCase() + ' ' + t;
                 if (textLower.includes('híbrid') || textLower.includes('hibrid')) {
                     workMode = 'hybrid';
+                } else if (textLower.includes('remoto') || textLower.includes('100% remoto') || textLower.includes('home office') || textLower.includes('home-office')) {
+                    workMode = 'remote';
+                    location = location === 'A Combinar' ? 'Remoto' : location;
                 }
             }
 
@@ -107,7 +110,7 @@ async function scrapeSolides() {
                 title: job.title,
                 company: job.companyName || 'Empresa Confidencial',
                 location: location,
-                is_remote: job.homeOffice || false,
+                is_remote: job.homeOffice || workMode === 'remote',
                 work_mode: workMode,
                 url: jobUrl,
                 source: 'Sólides',
