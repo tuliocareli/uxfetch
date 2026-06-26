@@ -698,19 +698,46 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             
             // Lógica de Interleaving (Sortimento)
             const rawJobs = jobs || [];
-            const nationalJobs = rawJobs.filter(j => !j.is_international);
-            const intlJobs = rawJobs.filter(j => j.is_international);
             
+            // 1. Função Auxiliar de Categorização (Core vs Plus)
+            function categorizeJob(job) {
+                const t = job.title.toLowerCase();
+                const isPlus = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra)\b/i.test(t);
+                return isPlus ? 'plus' : 'core';
+            }
+
+            // 2. Interleave de Core (UX/UI/Produto) vs Plus (Gráfico/Motion) - Proporção 4:1
+            function interleaveCorePlus(targetJobs) {
+                const core = targetJobs.filter(j => categorizeJob(j) === 'core');
+                const plus = targetJobs.filter(j => categorizeJob(j) === 'plus');
+                const result = [];
+                let cIdx = 0, pIdx = 0;
+                while (cIdx < core.length || pIdx < plus.length) {
+                    for (let k = 0; k < 4 && cIdx < core.length; k++) {
+                        result.push(core[cIdx++]);
+                    }
+                    if (pIdx < plus.length) {
+                        result.push(plus[pIdx++]);
+                    }
+                }
+                return result;
+            }
+
+            // 3. Aplica o interleaving por área dentro de cada grupo geográfico
+            const interleavedNational = interleaveCorePlus(rawJobs.filter(j => !j.is_international));
+            const interleavedIntl = interleaveCorePlus(rawJobs.filter(j => j.is_international));
+            
+            // 4. Interleaving final Geográfico: 3 Nacionais para 1 Internacional
             const interleaved = [];
             let nIdx = 0, iIdx = 0;
-            while (nIdx < nationalJobs.length || iIdx < intlJobs.length) {
+            while (nIdx < interleavedNational.length || iIdx < interleavedIntl.length) {
                 // A cada 3 vagas nacionais...
-                for (let k = 0; k < 3 && nIdx < nationalJobs.length; k++) {
-                    interleaved.push(nationalJobs[nIdx++]);
+                for (let k = 0; k < 3 && nIdx < interleavedNational.length; k++) {
+                    interleaved.push(interleavedNational[nIdx++]);
                 }
                 // ...injetamos 1 vaga internacional
-                if (iIdx < intlJobs.length) {
-                    interleaved.push(intlJobs[iIdx++]);
+                if (iIdx < interleavedIntl.length) {
+                    interleaved.push(interleavedIntl[iIdx++]);
                 }
             }
             
