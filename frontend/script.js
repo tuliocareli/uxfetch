@@ -408,6 +408,12 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || (!isPlusExplicit && !isLeadership && !isUxUiProduct);
                 
                 const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                
+                if (activeAreas.has('leadership') && isLeadership) return true;
+                if (activeAreas.has('graphic') && isGraphic) return true;
+                if (activeAreas.has('others') && isOthers) return true;
+                if (activeAreas.has('ux_ui') && isUxUi) return true;
+                return false;
             });
         }
 
