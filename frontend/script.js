@@ -397,10 +397,17 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
         if (activeAreas.size > 0) {
             filtered = filtered.filter(job => {
                 const t = job.title.toLowerCase();
+                
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                
                 const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                 const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media)\b/i.test(t);
-                const isOthers = /\b(motion|3d|ilustra|service|researcher|pesquisador|writer)\b/i.test(t);
-                const isUxUi = !isLeadership && !isGraphic && !isOthers; 
+                const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                
+                // UX/UI é tudo que é de Produto, UX, UI, Service, Research
+                // OU vagas genéricas (ex: Designer Jr) DESDE QUE NÃO SEJAM PLUS EXPLICITO nem LIDERANÇA
+                const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface)\b/i.test(t);
+                const isUxUi = isUxUiProduct || (!isPlusExplicit && !isLeadership);
                 
                 if (activeAreas.has('leadership') && isLeadership) return true;
                 if (activeAreas.has('graphic') && isGraphic) return true;
@@ -699,11 +706,22 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             // Lógica de Interleaving (Sortimento)
             const rawJobs = jobs || [];
             
-            // 1. Função Auxiliar de Categorização (Core vs Plus)
+            // 1. Função Auxiliar de Categorização (Core vs Plus) - STRICT MODE
             function categorizeJob(job) {
                 const t = job.title.toLowerCase();
-                const isPlus = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra)\b/i.test(t);
-                return isPlus ? 'plus' : 'core';
+                
+                // 1. Se tem palavra de outra área, é PLUS na hora (ex: Game, CAD, Gráfico, Marketing)
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                if (isPlusExplicit) return 'plus';
+                
+                // 2. Verifica se é estritamente de Produto/UX/UI ou Liderança
+                const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface)\b/i.test(t);
+                const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+                
+                if (isUxUiProduct || isLeadership) return 'core';
+                
+                // 3. Qualquer coisa genérica (ex: "Designer Jr.", "Designer Pleno") que passou, cai no Plus
+                return 'plus';
             }
 
             // 2. Interleave de Core (UX/UI/Produto) vs Plus (Gráfico/Motion) - Proporção 4:1
