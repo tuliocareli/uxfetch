@@ -12,7 +12,7 @@ async function run() {
     
     const { data: subscribers, error: subError } = await supabase
         .from('subscribers')
-        .select('email')
+        .select('email, token')
         .eq('is_active', true);
         
     if (subError || !subscribers) {
@@ -34,10 +34,14 @@ async function run() {
     for (const sub of subscribers) {
         try {
             const targetEmail = sub.email;
-            // Link criptografado e único para a pessoa não precisar digitar o e-mail
-            const realLink = `https://uxfetch.com.br/preferencias.html?email=${encodeURIComponent(targetEmail)}`;
             
-            const finalHtml = baseHtml.replace(/href="#"/g, `href="${realLink}"`);
+            // Link criptografado e único para a pessoa não precisar digitar o e-mail
+            const prefLink = `https://uxfetch.com.br/preferencias.html?email=${encodeURIComponent(targetEmail)}`;
+            // Link real de desinscrição do sistema
+            const unsubLink = `https://uxfetch.com.br/unsubscribe.html?token=${sub.token}`;
+            
+            let finalHtml = baseHtml.replace(/{{url_preferences}}/g, prefLink);
+            finalHtml = finalHtml.replace(/{{url_unsubscribe}}/g, unsubLink);
             
             const { error } = await resend.emails.send({
                 from: 'UX Fetch <contato@uxfetch.com.br>',
