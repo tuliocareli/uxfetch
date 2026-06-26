@@ -398,22 +398,16 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             filtered = filtered.filter(job => {
                 const t = job.title.toLowerCase();
                 
-                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t);
                 
                 const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
-                const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media)\b/i.test(t);
-                const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
                 
-                // UX/UI é tudo que é de Produto, UX, UI, Service, Research
-                // OU vagas genéricas (ex: Designer Jr) DESDE QUE NÃO SEJAM PLUS EXPLICITO nem LIDERANÇA
                 const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface)\b/i.test(t);
-                const isUxUi = isUxUiProduct || (!isPlusExplicit && !isLeadership);
+                const isUxUi = isUxUiProduct;
                 
-                if (activeAreas.has('leadership') && isLeadership) return true;
-                if (activeAreas.has('graphic') && isGraphic) return true;
-                if (activeAreas.has('others') && isOthers) return true;
-                if (activeAreas.has('ux_ui') && isUxUi) return true;
-                return false;
+                const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || (!isPlusExplicit && !isLeadership && !isUxUiProduct);
+                
+                const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
             });
         }
 
@@ -710,8 +704,8 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             function categorizeJob(job) {
                 const t = job.title.toLowerCase();
                 
-                // 1. Se tem palavra de outra área, é PLUS na hora (ex: Game, CAD, Gráfico, Marketing)
-                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                // 1. Se tem palavra de outra área, é PLUS na hora
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t);
                 if (isPlusExplicit) return 'plus';
                 
                 // 2. Verifica se é estritamente de Produto/UX/UI ou Liderança
@@ -720,7 +714,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 
                 if (isUxUiProduct || isLeadership) return 'core';
                 
-                // 3. Qualquer coisa genérica (ex: "Designer Jr.", "Designer Pleno") que passou, cai no Plus
+                // 3. Qualquer coisa genérica que sobrou (ex: "Designer Jr.") cai no Plus (Design Gráfico)
                 return 'plus';
             }
 
