@@ -832,11 +832,7 @@ body {
 .filter-pills {
     display: flex;
     gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none; /* Firefox */
-}
-.filter-pills::-webkit-scrollbar {
-    display: none; /* Safari/Chrome */
+    flex-wrap: wrap;
 }
 
 .filter-pill {
