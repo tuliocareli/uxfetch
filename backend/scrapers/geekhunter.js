@@ -105,7 +105,8 @@ async function scrapeGeekHunter() {
                         location: work_mode === 'remote' ? 'Remoto' : location,
                         url: href,
                         source: 'GeekHunter',
-                        work_mode: work_mode
+                        work_mode: work_mode,
+                        is_remote: work_mode === 'remote'
                     });
                 }
                 

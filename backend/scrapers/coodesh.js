@@ -95,7 +95,8 @@ async function scrapeCoodesh() {
                         location: work_mode === 'remote' ? 'Remoto' : location,
                         url: url,
                         source: 'Coodesh',
-                        work_mode: work_mode
+                        work_mode: work_mode,
+                        is_remote: work_mode === 'remote'
                     });
                 }
                 

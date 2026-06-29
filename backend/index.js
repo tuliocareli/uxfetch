@@ -77,10 +77,11 @@ async function main() {
 
         console.log('Salvando/Atualizando histórico no Supabase...');
         // Limpa chaves temporárias de uso interno para evitar erro PGRST204
+        // Valida campos obrigatórios do banco para evitar falha em cascata no Upsert
         const cleanJobs = allJobs.map(j => {
             const { needsDeepCheck, ...cleanJob } = j;
             return cleanJob;
-        });
+        }).filter(j => j.url && j.title && j.company && j.location && j.source && typeof j.is_remote === 'boolean');
 
         const { data: insertedJobs, error: upsertError } = await supabase
             .from('jobs')
@@ -104,12 +105,6 @@ async function main() {
             }
             
             // FASE DE DISPARO DE E-MAIL
-            const today = new Date();
-            if (today.getDate() === 26 && today.getMonth() === 5 && today.getFullYear() === 2026) {
-                console.log('🚨 TRAVA DE SEGURANÇA: Hoje é 26/06/2026 (Lançamento dos Filtros). Pulando o disparo diário para evitar conflito de SPAM com o e-mail de marketing.');
-                return;
-            }
-
             console.log('Buscando inscritos ativos para disparo de e-mails...');
             const { data: subscribers, error: subError } = await supabase
                 .from('subscribers')
@@ -199,15 +194,21 @@ async function main() {
                         const t = job.title.toLowerCase();
                         
                         // --- A. FILTRO DE ÁREA (ROLE) STRICT MODE ---
-                        const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t);
+                        const isVideoMotion = /\b(videos?|v[ií]deos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|motion|3d|after effects|premiere|anima[çc][ãa]o|animador|animadora|vfx|capcut|cinema|cinegrafista|fotografia|fot[óo]grafo|c4d|blender|maya|zbrush|render)\b/i.test(t);
+                        const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || isVideoMotion;
                         const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                         
                         const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface)\b/i.test(t);
-                        const isUxUi = isUxUiProduct;
-
-                        const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || (!isPlusExplicit && !isLeadership && !isUxUiProduct);
                         
-                        const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t);
+                        // Garante que vagas de video/motion NUNCA caiam como UX/UI, mesmo que contenham "produto"
+                        const isUxUi = isUxUiProduct && !isVideoMotion;
+
+                        const isGraphicExplicit = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t);
+                        // Graphic é o fallback genérico, mas exclui explicitamente video/motion e ux/ui
+                        const isGraphic = (isGraphicExplicit || (!isPlusExplicit && !isLeadership && !isUxUiProduct)) && !isVideoMotion && !isUxUiProduct;
+                        
+                        // Others passa a englobar explicitamente Video e Motion
+                        const isOthers = /\b(ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil)\b/i.test(t) || isVideoMotion;
 
                         let roleMatch = false;
                         if (prefRoles.includes('leadership') && isLeadership) roleMatch = true;

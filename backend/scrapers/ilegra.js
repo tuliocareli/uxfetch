@@ -38,7 +38,7 @@ async function scrape(browser, openai) {
                     const locations = item.tags.filter(t => t.order === 1).map(t => t.name);
                     if (locations.length > 0) location = locations[0];
                     
-                    const modes = item.tags.filter(t => t.name.toLowerCase().includes('remoto') || t.name.toLowerCase().includes('híbrido')).map(t => t.name);
+                    const modes = item.tags.filter(t => (t.name || '').toLowerCase().includes('remoto') || (t.name || '').toLowerCase().includes('híbrido')).map(t => t.name);
                     if (modes.length > 0) workMode = modes[0];
                 }
 
@@ -62,10 +62,11 @@ async function scrape(browser, openai) {
                     company: 'Ilegra',
                     title: title,
                     location: location,
-                    workMode: workMode.includes('Remoto') ? 'Remoto' : workMode,
+                    work_mode: (workMode || '').toLowerCase().includes('remoto') ? 'remote' : ((workMode || '').toLowerCase().includes('híbrido') ? 'hybrid' : 'in_person'),
+                    is_remote: (workMode || '').toLowerCase().includes('remoto'),
                     url: link,
                     description: description,
-                    date: new Date().toISOString()
+                    source: 'ilegra',
                 });
             }
 
@@ -85,4 +86,4 @@ async function scrape(browser, openai) {
     return jobs;
 }
 
-module.exports = { scrape };
+module.exports = scrape;
