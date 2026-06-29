@@ -1,8 +1,8 @@
 # ⚡ UX Fetch
 
-> O radar automatizado de vagas para a comunidade de Product Design & UI/UX.
+> O radar automatizado de vagas para a comunidade Criativa (Product Design, UX/UI, Gráfico, Motion e Audiovisual).
 
-**UX Fetch** é um agregador e minerador de vagas de código aberto, criado para resolver a fragmentação na busca por oportunidades de design de produto no Brasil. Em vez de monitorar dezenas de plataformas de RH manualmente, o sistema varre a web, filtra o ruído e entrega um resumo diário com vagas curadas diretamente na caixa de entrada dos inscritos.
+**UX Fetch** é um agregador e minerador de vagas de código aberto, criado para resolver a fragmentação na busca por oportunidades nas áreas de design e criação no Brasil. Em vez de monitorar dezenas de plataformas de RH manualmente, o sistema varre a web, filtra o ruído e entrega um resumo diário com vagas curadas diretamente na caixa de entrada dos inscritos.
 
 ---
 
@@ -13,7 +13,7 @@ Como designers, passamos muito tempo otimizando a jornada dos usuários, mas a j
 ## ✨ Features
 
 *   **Varredura Autônoma (Cron Jobs):** O motor de scraping roda silenciosamente todas as madrugadas, extraindo dados de plataformas dinâmicas de RH.
-*   **Filtro de Escopo Restrito:** Algoritmo que ignora vagas genéricas e busca correspondências exatas (*Product Design, UI, UX, Interaction, Design Ops*).
+*   **Filtro de Escopo Especializado:** Algoritmo inteligente que categoriza e busca correspondências exatas para diversas disciplinas (*Product Design, UI/UX, Graphic Design, Motion, 3D, Vídeo e Design Ops*), filtrando ruídos irrelevantes.
 *   **Match Geográfico & Remoto:** O sistema cruza os dados extraídos com as preferências do usuário (cidade base e formato de trabalho), garantindo alertas 100% personalizados.
 *   **Disparo Transacional Limpo:** E-mails diários formatados com hierarquia visual clara, sem spam e sem links intermediários.
 
