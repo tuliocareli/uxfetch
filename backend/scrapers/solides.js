@@ -87,7 +87,7 @@ async function scrapeSolides() {
             } else {
                 if (job.city && job.state) location = `${job.city.name}/${job.state.code}`;
                 const textLower = fullText.toLowerCase() + ' ' + t;
-                if (textLower.includes('híbrid') || textLower.includes('hibrid')) {
+                if (textLower.includes('híbrid') || textLower.includes('hibrid') || textLower.includes('a consultar')) {
                     workMode = 'hybrid';
                 } else if (textLower.includes('remoto') || textLower.includes('100% remoto') || textLower.includes('home office') || textLower.includes('home-office')) {
                     workMode = 'remote';
