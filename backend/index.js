@@ -191,7 +191,7 @@ async function main() {
                         : ['junior', 'pleno', 'senior', 'especialista']; // Default: todas
 
                     return jobsToFilter.filter(job => {
-                        const t = job.title.toLowerCase();
+                        const t = (job.title || '').toLowerCase();
                         
                         // --- A. FILTRO DE ÁREA (ROLE) STRICT MODE ---
                         const isVideoMotion = /\b(videos?|v[ií]deos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|motion|3d|after effects|premiere|anima[çc][ãa]o|animador|animadora|vfx|capcut|cinema|cinegrafista|fotografia|fot[óo]grafo|c4d|blender|maya|zbrush|render)\b/i.test(t);
@@ -244,7 +244,7 @@ async function main() {
                             if (sub.accepts_hybrid === false) return false;
                             if (!sub.city) return false;
                             const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
-                            const jobLocLower = job.location.toLowerCase();
+                            const jobLocLower = (job.location || '').toLowerCase();
                             return jobLocLower.includes(subCityLower);
                         }
 
@@ -252,7 +252,7 @@ async function main() {
                         if (sub.accept_other_cities) return true;
                         if (!sub.city) return false;
                         const subCityLower = sub.city.split(',')[0].trim().toLowerCase();
-                        const jobLocLower = job.location.toLowerCase();
+                        const jobLocLower = (job.location || '').toLowerCase();
                         return jobLocLower.includes(subCityLower);
                     });
                 }
