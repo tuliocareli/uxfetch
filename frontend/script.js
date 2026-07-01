@@ -398,7 +398,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             filtered = filtered.filter(job => {
                 const t = job.title.toLowerCase();
                 
-                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital|v[ií]deo|videomaker|audiovisual)\b/i.test(t);
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital|v[ií]deos?|videos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|anima[çc][ãa]o|animador)\b/i.test(t);
                 
                 const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                 
@@ -407,7 +407,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 
                 const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || (!isPlusExplicit && !isLeadership && !isUxUiProduct);
                 
-                const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil|v[ií]deo|videomaker|audiovisual)\b/i.test(t);
+                const isOthers = /\b(motion|3d|ilustra|game|cad|moda|interiores|embalagem|t[êe]xtil|v[ií]deos?|videos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|anima[çc][ãa]o|animador)\b/i.test(t);
                 
                 if (activeAreas.has('leadership') && isLeadership) return true;
                 if (activeAreas.has('graphic') && isGraphic) return true;
@@ -713,7 +713,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 const t = job.title.toLowerCase();
                 
                 // 1. Se tem palavra de outra área, é PLUS na hora
-                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital|v[ií]deo|videomaker|audiovisual)\b/i.test(t);
+                const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital|v[ií]deos?|videos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|anima[çc][ãa]o|animador)\b/i.test(t);
                 if (isPlusExplicit) return 'plus';
                 
                 // 2. Verifica se é estritamente de Produto/UX/UI ou Liderança
