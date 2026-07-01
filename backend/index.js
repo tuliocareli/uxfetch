@@ -49,7 +49,24 @@ async function main() {
         }
     }
 
-    console.log(`Total de vagas coletadas: ${allJobs.length}`);
+    console.log(`Total de vagas coletadas (bruto): ${allJobs.length}`);
+
+    // Filtro agressivo contra vagas de teste / mock / homologação
+    allJobs = allJobs.filter(job => {
+        const title = (job.title || '').toLowerCase();
+        const company = (job.company || '').toLowerCase();
+        
+        // Bloqueia palavras exatas e isoladas de teste
+        const isMock = /\b(test|teste|testes|demo|mock|homolog|homologação|sandbox)\b/i;
+        
+        if (isMock.test(title) || isMock.test(company)) {
+            console.log(`🚫 Vaga Teste Bloqueada: [${job.company}] ${job.title} (${job.url})`);
+            return false;
+        }
+        return true;
+    });
+
+    console.log(`Total de vagas após filtro anti-teste: ${allJobs.length}`);
 
     if (allJobs.length > 0) {
         console.log('Filtrando vagas repetidas...');

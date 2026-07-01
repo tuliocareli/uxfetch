@@ -181,7 +181,12 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
         if (isDigestMode) {
             introTitle = 'Boletim Diário UX Fetch 📌';
             introText = `Fala <strong>${formattedName}</strong>! Hoje o mercado deu uma respirada e não detectamos vagas inéditas para o seu perfil. Para manter o radar ativo, separamos as melhores oportunidades recentes que continuam em aberto:`;
-            subject = `Nada novo hoje, mas essas ${recentJobs.length} vagas ainda estão abertas`;
+            
+            if (jobCount === 1) {
+                subject = `Nada novo hoje, mas essa 1 vaga ainda está aberta`;
+            } else {
+                subject = `Nada novo hoje, mas essas ${jobCount} vagas ainda estão abertas`;
+            }
         }
 
         if (user.isWeeklyDigest) {
