@@ -1,0 +1,10 @@
+﻿"Nome do projeto","UXfetch"
+"Intervalo de datas","06/26/2026 00:00 - 06/28/2026 23:59"
+
+
+"Métrica","Erros de JavaScript"
+"","Sessões com erros de JavaScript"
+""," total de erros do JavaScript","16"
+"","","Não, de sessões","% de sessões"
+"","script error.","11","68,75%"
+"","undefined is not an object (evaluating 'r["@context"].tolowercase')","5","31,25%"

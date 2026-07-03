@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- ROTEAMENTO SPA: As views serão alternadas aqui -->
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: SPLASH LOGIN -->
+        <!-- ========================================== -->
+        <div id="view-login" class="spa-view active">
+            <main class="login-layout">
+                <!-- Coluna Esquerda: Imagem -->
+                <div class="login-image-column">
+                    <img src="LOGIN PAGE/the-jopwell-collection-4WTb4tR45JQ-unsplash (1) (1).jpg" alt="UX Fetch Pro Team" class="login-bg-img">
+                    <div class="login-image-overlay">
+                        <img src="Logo uxfetchpro pro site 2.svg" alt="UX Fetch Pro Logo" class="login-logo-white">
+                        <div class="login-hero-text">
+                            <h2 style="font-family: 'Space Grotesk', sans-serif;">
+                                A busca é dura.<br>
+                                <span class="text-blue">
+                                    O controle é <span class="relative-inline" style="z-index: 1;">seu.<img src="Vector.svg" class="vector-underline" alt=""></span>
+                                </span>
+                            </h2>
+                            <p>Organize suas aplicações.<br>Adapte seu currículo.<br>Saia do vácuo dos recrutadores.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna Direita: Formulário -->
+                <div class="login-form-column">
+                    <div class="mobile-logo-container">
+                        <img src="Logo uxfetchpro pro site preto.svg" alt="UX Fetch Pro Logo" class="login-logo-black">
+                    </div>
+                    
+                    <div class="login-form-wrapper">
+                        <header class="login-header">
+                            <h3>Bem-vindo de volta <span class="version-badge">v1.1.0</span></h3>
+                            <p>Acesse seu Kanban e assuma o controle nas suas candidaturas.</p>
+                        </header>
+
+                        <form id="loginForm" class="login-form">
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" id="email" placeholder="E-mail" required>
+                            </div>
+                            
+                            <div class="form-group password-group hidden">
+                                <label for="password">Senha</label>
+                                <input type="password" id="password" placeholder="Senha">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btnMagicLink">
+                                ENTRAR SEM SENHA &rarr;
+                            </button>
+
+                            <div class="signup-prompt">
+                                Não possui uma conta? <a href="#" class="link-blue">Cadastre-se</a>
+                            </div>
+
+                            <div class="divider">
+                                <span>OU ENTRAR COM</span>
+                            </div>
+
+                            <button type="button" class="btn btn-google" id="btnGoogleLogin">
+                                <img src="Symbol.svg.svg" alt="Google" class="google-icon">
+                                ENTRAR COM GOOGLE
+                            </button>
+                        </form>
+
+                        <footer class="login-footer">
+                            AO ENTRAR, VOCÊ CONCORDA COM NOSSOS<br>
+                            <a href="#">Termos de Uso</a> e <a href="#">Privacidade</a>.
+                        </footer>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+            <div class="onboarding-layout">
+                <div class="onboarding-card">
+                    
+                    <!-- PASSO 1: A-Ha Moment (Pagamento Aprovado) -->
+                    <div id="onboarding-step-1" class="onboarding-step active text-center">
+                        <img src="cart.svg" alt="Sucesso" class="onboarding-success-icon" style="width: 80px; margin-bottom: 24px;">
+                        <header class="onboarding-header">
+                            <h2>Pagamento Confirmado.</h2>
+                            <p>O seu Kanban Inteligente está 100% liberado. Antes de entrarmos no painel, vamos configurar o cérebro da sua IA (Leva 30 segundos).</p>
+                        </header>
+                        <div class="onboarding-footer" style="justify-content: center;">
+                            <button class="btn btn-primary" id="btnNextToStep2" style="max-width: 300px;">CONFIGURAR MEU MENTOR &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 2: Seu contexto atual (Tags) -->
+                    <div id="onboarding-step-2" class="onboarding-step hidden">
+                        <header class="onboarding-header">
+                            <h2>Qual é o seu foco atual?</h2>
+                            <p>Selecione as áreas para que a IA filtre as melhores vagas para você.</p>
+                        </header>
+                        
+                        <div class="onboarding-form">
+                            <h4 class="onboarding-section-title">Área de atuação (Selecione uma ou mais)</h4>
+                            <div class="checkbox-list">
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="area" value="ux_ui">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text"><strong>UX/UI & Product Design</strong> (Product Designer, UX, UI, Interaction)</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="area" value="graphic">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text"><strong>Design Gráfico & Visual</strong> (Graphic, Visual, Web, Brand)</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="area" value="leadership">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text"><strong>Liderança & Management</strong> (Staff, Principal, Head, Design Ops)</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="area" value="other">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text"><strong>Outras Áreas</strong> (Motion, 3D, Ilustração, Service Design)</span>
+                                </label>
+                            </div>
+
+                            <h4 class="onboarding-section-title mt-24">Nível de Experiência (Selecione um ou mais)</h4>
+                            <div class="checkbox-grid">
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="level" value="junior">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text">Júnior / Trainee</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="level" value="pleno">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text">Pleno (Mid-level)</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="level" value="senior">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text">Sênior</span>
+                                </label>
+                                <label class="custom-checkbox-row">
+                                    <input type="checkbox" name="level" value="expert">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text">Especialista / Liderança</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="onboarding-footer">
+                            <button class="btn btn-primary" id="btnNextToStep3">AVANÇAR &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 3: Upload de PDF -->
+                    <div id="onboarding-step-3" class="onboarding-step hidden">
+                        <header class="onboarding-header">
+                            <h2>Alimente a sua IA</h2>
+                            <p>Faça o upload do seu currículo em PDF para criar o match perfeito com as vagas.</p>
+                        </header>
+
+                        <div class="upload-zone" id="dragDropZone">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:16px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <h3>Arraste seu PDF aqui</h3>
+                            <p>ou clique para selecionar o arquivo</p>
+                            <input type="file" id="cvUpload" accept="application/pdf" class="hidden-input">
+                        </div>
+                        
+                        <div id="upload-status" class="upload-status hidden">
+                            <span class="file-name">Curriculo.pdf</span>
+                            <span class="upload-success">Pronto!</span>
+                        </div>
+
+                        <div class="onboarding-footer two-buttons">
+                            <button class="btn btn-ghost" id="btnGoToManualForm">Não tenho o PDF agora</button>
+                            <button class="btn btn-primary" id="btnFinishFromPDF" disabled>CONCLUIR E ACESSAR &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 4: Formulario Manual (Fallback) -->
+                    <div id="onboarding-step-4" class="onboarding-step hidden">
+                        <header class="onboarding-header">
+                            <h2>Sem problemas!</h2>
+                            <p>Me dê um resumo rápido da sua experiência para eu não trabalhar no escuro.</p>
+                        </header>
+
+                        <div class="onboarding-form">
+                            <div class="form-group">
+                                <label>Nome Completo</label>
+                                <input type="text" id="manualName" placeholder="Seu nome">
+                            </div>
+                            <div class="form-group">
+                                <label>Cargo Atual / Título Profissional</label>
+                                <input type="text" id="manualTitle" placeholder="Ex: Senior Product Designer">
+                            </div>
+                            <div class="form-group">
+                                <label>Funções Exercidas (Resumo da sua rotina)</label>
+                                <textarea id="manualRoles" rows="3" placeholder="Ex: Discovery, criação de interfaces, testes de usabilidade..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Principais Habilidades / Tecnologias (Separadas por vírgula)</label>
+                                <input type="text" id="manualSkills" placeholder="Ex: Figma, Discovery, Design System, HTML">
+                            </div>
+                        </div>
+
+                        <div class="onboarding-footer two-buttons">
+                            <button class="btn btn-ghost" id="btnBackToPDF">&larr; Voltar para Upload</button>
+                            <button class="btn btn-primary" id="btnFinishFromManual">CONCLUIR E ACESSAR &rarr;</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: KANBAN & MURAL -->
+        <!-- ========================================== -->
+        <div id="view-app" class="spa-view">
+            <header class="app-header">
+                <div class="logo">
+                    <img src="Logo uxfetchpro pro site preto.svg" alt="UX Fetch Pro" style="height: 28px;">
+                </div>
+                <nav class="app-nav">
+                    <button class="nav-tab active" id="tab-kanban">Kanban</button>
+                    <button class="nav-tab" id="tab-mural">Mural de Vagas</button>
+                </nav>
+                <div class="credits-counter">
+                    <strong>50</strong> créditos restantes
+                </div>
+            </header>
+
+            <main class="dashboard-layout">
+
+                <!-- ABA 1: KANBAN -->
+                <section id="section-kanban" class="kanban-board active-section">
+                    <div class="kanban-column" data-status="interesse">
+                        <header class="column-header">
+                            <h2>Interesse</h2>
+                            <span class="card-count" id="count-interesse">0</span>
+                        </header>
+                        <div class="kanban-cards-container" id="col-interesse">
+                            <!-- Cards injetados via JS -->
+                        </div>
+                    </div>
+
+                    <div class="kanban-column" data-status="cv_enviado">
+                        <header class="column-header">
+                            <h2>CV enviado</h2>
+                            <span class="card-count">0</span>
+                        </header>
+                        <div class="kanban-cards-container"></div>
+                    </div>
+
+                    <div class="kanban-column" data-status="entrevista">
+                        <header class="column-header">
+                            <h2>Entrevista</h2>
+                            <span class="card-count">0</span>
+                        </header>
+                        <div class="kanban-cards-container"></div>
+                    </div>
+
+                    <div class="kanban-column" data-status="proposta">
+                        <header class="column-header">
+                            <h2>Proposta</h2>
+                            <span class="card-count">0</span>
+                        </header>
+                        <div class="kanban-cards-container"></div>
+                    </div>
+
+                    <div class="kanban-column" data-status="finalizados">
+                        <header class="column-header">
+                            <h2>Finalizados</h2>
+                            <span class="card-count">0</span>
+                        </header>
+                        <div class="kanban-cards-container"></div>
+                    </div>
+                </section>
+
+                <!-- ABA 2: MURAL DE VAGAS -->
+                <section id="section-mural" class="mural-view hidden-section">
+                    <div class="mural-container" style="max-width: 1000px; margin: 0 auto;">
+                        
+                        <!-- Sugestões Personalizadas -->
+                        <div style="margin-bottom: 32px; padding: 24px; background: #E0F2FE; border-radius: 12px; border: 1px solid #BAE6FD;">
+                            <h2>Sugestões do Mentor</h2>
+                            <p style="margin-bottom: 16px; color: #0284C7;">Matches de alta probabilidade baseados no seu currículo e perfil.</p>
+                            
+                            <div class="mural-grid" id="muralGrid">
+                                <article class="mural-job-card" style="background: white;">
+                                    <h3>Product Designer Sênior</h3>
+                                    <p class="job-meta">Nubank &middot; Híbrido</p>
+                                    <p class="job-desc">Buscamos um designer focado em discovery e design system...</p>
+                                    <button class="btn btn-outline btn-save-job" data-id="job1" data-title="Product Designer Sênior" data-company="Nubank">
+                                        Salvar Vaga
+                                    </button>
+                                </article>
+                                <article class="mural-job-card" style="background: white;">
+                                    <h3>UX Researcher</h3>
+                                    <p class="job-meta">Ifood &middot; Remoto</p>
+                                    <p class="job-desc">Profissional para liderar pesquisas qualitativas e quantitativas...</p>
+                                    <button class="btn btn-outline btn-save-job" data-id="job2" data-title="UX Researcher" data-company="Ifood">
+                                        Salvar Vaga
+                                    </button>
+                                </article>
+                            </div>
+                        </div>
+
+                        <hr style="border: none; border-top: 1px solid var(--border-light); margin: 32px 0;">
+                        
+                        <!-- Todas as vagas (Mural Público style) -->
+                        <div style="margin-bottom: 24px;">
+                            <h2 style="font-size: 1.5rem;">Mural Completo de Vagas</h2>
+                            <p style="color: var(--text-muted);">Explore todas as vagas ativas rastreadas no momento (Idêntico ao uxfetch.com.br).</p>
+                        </div>
+                        
+                        <div class="filters-bar" style="background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border-light); margin-bottom: 24px;">
+                            <div class="filters-container" style="display: flex; flex-direction: column; gap: 24px;">
+                                
+                                <div>
+                                    <div style="font-size: 0.85rem; color: #718096; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Área de Atuação</div>
+                                    <div class="filter-pills">
+                                        <button class="filter-pill active">Todas as Áreas</button>
+                                        <button class="filter-pill">UX/UI & Product</button>
+                                        <button class="filter-pill">Liderança</button>
+                                        <button class="filter-pill">Design Gráfico</button>
+                                        <button class="filter-pill">Outros</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div style="font-size: 0.85rem; color: #718096; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Nível de Experiência</div>
+                                    <div class="filter-pills">
+                                        <button class="filter-pill active">Todos os Níveis</button>
+                                        <button class="filter-pill">Júnior</button>
+                                        <button class="filter-pill">Pleno</button>
+                                        <button class="filter-pill">Sênior</button>
+                                        <button class="filter-pill">Especialista</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div style="font-size: 0.85rem; color: #718096; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Formato de Trabalho</div>
+                                    <div class="filter-pills">
+                                        <button class="filter-pill active">Todos</button>
+                                        <button class="filter-pill">Remoto</button>
+                                        <button class="filter-pill">Híbrido</button>
+                                        <button class="filter-pill">Presencial</button>
+                                        <button class="filter-pill">Internacional</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mural-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <article class="mural-job-card">
+                                <h3>Product Designer</h3>
+                                <p class="job-meta">PicPay &middot; Remoto</p>
+                                <p class="job-desc">Buscamos um Product Designer para atuar na tribo de pagamentos...</p>
+                                <button class="btn btn-outline btn-save-job" data-id="job3" data-title="Product Designer" data-company="PicPay">Salvar Vaga</button>
+                            </article>
+                            <article class="mural-job-card">
+                                <h3>UI Designer Pleno</h3>
+                                <p class="job-meta">C6 Bank &middot; Híbrido</p>
+                                <p class="job-desc">Criação de interfaces para o aplicativo mobile...</p>
+                                <button class="btn btn-outline btn-save-job" data-id="job4" data-title="UI Designer Pleno" data-company="C6 Bank">Salvar Vaga</button>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SIDEBAR DO MENTOR -->
+                <aside class="mentor-sidebar">
+                    <header class="mentor-header">
+                        <h2>Mentor de carreira</h2>
+                        <p class="active-job-title" id="mentor-job-title">Selecione uma vaga</p>
+                    </header>
+
+                    <nav class="action-list">
+                        <button class="mentor-action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon" style="margin-right: 12px;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                            <span class="action-title">Match realista</span>
+                            <span class="action-cost">1 Crédito</span>
+                        </button>
+                        <button class="mentor-action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon" style="margin-right: 12px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            <span class="action-title">Reescrever p/ ATS</span>
+                            <span class="action-cost">1 Crédito</span>
+                        </button>
+                        <button class="mentor-action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon" style="margin-right: 12px;"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                            <span class="action-title">Mock interview</span>
+                            <span class="action-cost">1 Crédito</span>
+                        </button>
+                    </nav>
+
+                    <section class="private-notes">
+                        <label for="notes-textarea">Notas privadas</label>
+                        <textarea id="notes-textarea" placeholder="Anotações para essa vaga..."></textarea>
+                    </section>
+                </aside>
+
+            </main>
+        </div>
+
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-container" class="toast-container hidden">
+        <div class="toast-content">
+            <span id="toast-icon" class="toast-icon">✅</span>
+            <span id="toast-message" class="toast-message">Mensagem de sucesso</span>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div id="custom-modal-overlay" class="custom-modal-overlay hidden">
+        <div class="custom-modal">
+            <h3 id="modal-title">Confirmação</h3>
+            <p id="modal-text">Você tem certeza?</p>
+            <div class="modal-actions">
+                <button id="modal-btn-cancel" class="btn btn-ghost">Não</button>
+                <button id="modal-btn-confirm" class="btn btn-primary">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
