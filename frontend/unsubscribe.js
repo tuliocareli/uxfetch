@@ -51,9 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMessage.classList.add('hidden');
 
         try {
-            // 1. Opcional: Salvar o feedback anonimamente
+            // 1. Opcional: Salvar o feedback anonimamente (limitado a 500 chars por segurança)
             if (reason) {
-                await supabase.from('unsubscribes_feedback').insert([{ reason: reason }]);
+                const safeReason = reason.slice(0, 500);
+                await supabase.from('unsubscribes_feedback').insert([{ reason: safeReason }]);
             }
 
             // 2. DESTRUIR os dados do usuário via função segura (RPC)

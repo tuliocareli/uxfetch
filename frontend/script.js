@@ -736,7 +736,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
 
             const { data: jobs, error } = await localSupabase
                 .from('jobs')
-                .select('*')
+                .select('id, title, company, location, url, source, work_mode, is_remote, is_international, created_at, description')
                 .gte('created_at', thirtyDaysAgo.toISOString())
                 .order('created_at', { ascending: false });
 
