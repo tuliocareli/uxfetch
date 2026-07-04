@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const emailParam = urlParams.get('email');
+    const tokenParam = urlParams.get('token'); // SEGURANÇA: token necessário para validar identidade na Edge Function
     const emailInput = document.getElementById('email');
     const form = document.getElementById('preferences-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -14,6 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("E-mail não encontrado na URL. Por favor, acesse esta página através do link no rodapé dos e-mails do UX Fetch.");
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.5';
+    }
+
+    // SEGURANÇA: bloqueia a página se o token estiver ausente (link direto sem e-mail)
+    if (!tokenParam) {
+        form.style.display = 'none';
+        const errorDiv = document.createElement('p');
+        errorDiv.style.cssText = 'text-align:center; color:#718096; padding: 40px 0;';
+        errorDiv.textContent = 'Link inválido. Acesse esta página pelo link de preferências no rodapé dos e-mails do UX Fetch.';
+        form.parentNode.insertBefore(errorDiv, form);
     }
 
     // Inicialização do Supabase
@@ -66,7 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: {
                     email: emailInput.value,
                     preferred_roles: roles,
-                    preferred_seniorities: seniorities
+                    preferred_seniorities: seniorities,
+                    token: tokenParam  // SEGURANÇA: envia o token para que a Edge Function valide a identidade
                 }
             });
 

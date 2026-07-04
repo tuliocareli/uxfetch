@@ -257,6 +257,32 @@ if (mobileBtn && mobileOverlay && closeMenuBtn) {
     });
 }
 
+// --- SECURITY HELPERS ---
+/**
+ * Escapa caracteres especiais HTML para prevenir XSS.
+ * Deve ser usada em todo dado proveniente de fontes externas (banco, APIs) antes de injetar no DOM via innerHTML.
+ */
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
+ * Valida se uma URL é segura para uso em href (bloqueia javascript:, data:, etc).
+ * Retorna a URL original se válida, ou '#' se inválida.
+ */
+function safeUrl(url) {
+    if (!url || typeof url !== 'string') return '#';
+    const trimmed = url.trim().toLowerCase();
+    if (trimmed.startsWith('https://') || trimmed.startsWith('http://')) return url.trim();
+    return '#';
+}
+
 // --- VAGAS PAGE LOGIC ---
 if (window.location.pathname.includes('/vagas') || window.location.pathname.includes('vagas.html')) {
     const jobsGrid = document.getElementById('jobsGrid');
@@ -593,7 +619,8 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             
             let sourceBadge = '';
             if(job.source) {
-                sourceBadge = `<span class="job-badge" style="background:#e0f2fe; color:#0369a1;">${job.source}</span>`;
+                // escapeHtml: job.source vem do banco (dado externo)
+                sourceBadge = `<span class="job-badge" style="background:#e0f2fe; color:#0369a1;">${escapeHtml(job.source)}</span>`;
             }
 
             let intlBadge = '';
@@ -615,6 +642,8 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 }
             }
 
+            // SEGURANÇA: Todos os campos do banco são escapados antes de entrar no innerHTML.
+            // safeUrl() bloqueia protocolos perigosos (javascript:, data:) no href.
             card.innerHTML = `
                 <div class="job-badges">
                     ${newBadge}
@@ -622,14 +651,14 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                     ${workModeBadge}
                     ${sourceBadge}
                 </div>
-                <h3 class="job-title">${job.title}</h3>
-                <p class="job-company">${job.company}</p>
+                <h3 class="job-title">${escapeHtml(job.title)}</h3>
+                <p class="job-company">${escapeHtml(job.company)}</p>
                 <div class="job-location">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    ${job.location}
+                    ${escapeHtml(job.location)}
                 </div>
-                <p class="job-description">${job.description || 'Vaga encontrada pelo UX Fetch.'}</p>
-                <a href="${job.url}" target="_blank" rel="noopener noreferrer" class="job-btn">Ver Vaga Completa</a>
+                <p class="job-description">${escapeHtml(job.description) || 'Vaga encontrada pelo UX Fetch.'}</p>
+                <a href="${safeUrl(job.url)}" target="_blank" rel="noopener noreferrer" class="job-btn">Ver Vaga Completa</a>
                 <div class="job-date">Capturada em ${dateStr}</div>
             `;
             jobsGrid.appendChild(card);

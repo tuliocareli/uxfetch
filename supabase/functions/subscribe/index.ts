@@ -74,7 +74,20 @@ serve(async (req) => {
     })
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    // SEGURANÇA (FALHA 4): Nunca expor mensagens internas do Postgres ao cliente.
+    // Erros do Postgres contêm detalhes de schema que não devem ser públicos.
+    // Apenas erros de negócio conhecidos (Turnstile, token ausente) chegam ao client com a mensagem original.
+    const isKnownBusinessError = typeof error.message === 'string' && (
+      error.message.includes('Turnstile') ||
+      error.message.includes('ausente') ||
+      error.message.includes('inválid') ||
+      error.message.includes('configurad')
+    )
+    const clientMessage = isKnownBusinessError
+      ? error.message
+      : 'Ocorreu um erro ao processar sua inscrição. Tente novamente.'
+
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     })

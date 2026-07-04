@@ -161,7 +161,15 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
 
         // Nome extraído do e-mail (antes do @)
         const name = user.email.split('@')[0];
-        const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+        const rawName = name.charAt(0).toUpperCase() + name.slice(1);
+        // SEGURANÇA (FALHA 7): Escapa o nome antes de injetar no HTML do e-mail.
+        // O prefixo de um e-mail pode conter caracteres como < > & que fariam XSS em clientes HTML.
+        const formattedName = rawName
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
 
         let introTitle = 'Novas oportunidades no radar!';
         let introText = `Fala <strong>${formattedName}</strong>, o motor do UX Fetch terminou a varredura de hoje. Filtramos os portais de RH e separamos as oportunidades de Produto e Design que dão match com você. Confere o que está em alta:`;
@@ -219,7 +227,8 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
         templateHtml = templateHtml.replace(/{{data_envio}}/g, dataEnvio);
         
         // Link de Preferências de Vaga (Área e Senioridade)
-        templateHtml = templateHtml.replace(/{{url_preferences}}/g, `https://uxfetch.com.br/preferencias.html?email=${encodeURIComponent(user.email)}`);
+        // SEGURANÇA: inclui o token do usuário para que a Edge Function possa validar a identidade do caller.
+        templateHtml = templateHtml.replace(/{{url_preferences}}/g, `https://uxfetch.com.br/preferencias.html?email=${encodeURIComponent(user.email)}&token=${encodeURIComponent(user.token || '')}`);
         
         // Link da página oficial de desinscrição com destruição de dados (LGPD) - Agora via Token Seguro
         templateHtml = templateHtml.replace(/{{url_unsubscribe}}/g, `https://uxfetch.com.br/unsubscribe.html?token=${user.token}`);
