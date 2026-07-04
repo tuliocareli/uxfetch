@@ -97,6 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Form Submission Logic
+    // Token retornado pelo subscribe (Step 1) e reutilizado no Step 2 de preferências
+    let subscriberToken = null;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -143,6 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (error) {
                 throw error;
+            }
+
+            // Captura o token retornado pelo subscribe para uso no Step 2
+            // SEGURANÇA: o token é necessário para que update_preferences valide a identidade
+            if (data && data.token) {
+                subscriberToken = data.token;
             }
             
             // On success of STEP 1
@@ -216,7 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: {
                         email: email,
                         preferred_roles: roles,
-                        preferred_seniorities: seniorities
+                        preferred_seniorities: seniorities,
+                        token: subscriberToken  // SEGURANÇA: token obtido no Step 1 para validar identidade
                     }
                 });
 

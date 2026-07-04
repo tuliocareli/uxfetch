@@ -68,7 +68,15 @@ serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    // Busca o token do usuário recém inserido (ou já existente) para retornar ao frontend
+    // O token é necessário para o Step 2 (preferências) validar a identidade do caller
+    const { data: subData } = await supabaseAdmin
+      .from('subscribers')
+      .select('token')
+      .eq('email', email)
+      .maybeSingle()
+
+    return new Response(JSON.stringify({ success: true, token: subData?.token || null }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
