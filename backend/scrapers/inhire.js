@@ -8,6 +8,10 @@ async function scrapeInhire() {
     let browser;
 
     const companies = [
+        { id: 'luby', name: 'Luby' },
+        { id: 'nuvemshop-tiendanube', name: 'Nuvemshop' },
+        { id: 'lwsa', name: 'Locaweb (LWSA)' },
+        { id: 'lwsa_bling', name: 'Bling (LWSA)', customUrl: 'https://lwsa.inhire.app/bling/vagas' },
         { id: 'zup', name: 'Zup Innovation' },
         { id: 'olist', name: 'Olist' },
         { id: 'meliuz', name: 'Méliuz' },
@@ -59,7 +63,7 @@ async function scrapeInhire() {
                     }
                 });
 
-                const url = `https://${company.id}.inhire.app/vagas`;
+                const url = company.customUrl ? company.customUrl : `https://${company.id}.inhire.app/vagas`;
                 await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
                 
                 // Aguarda as vagas aparecerem na tela

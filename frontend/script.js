@@ -438,7 +438,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 
                 const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                 
-                const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
+                const isUxUiProduct = /\b(ux|ui|products?|produtos?|researchers?|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
                 const isUxUi = isUxUiProduct;
                 
                 const isGraphic = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || (!isPlusExplicit && !isLeadership && !isUxUiProduct);
@@ -756,7 +756,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 if (isPlusExplicit) return 'plus';
                 
                 // 2. Verifica se é estritamente de Produto/UX/UI ou Liderança
-                const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
+                const isUxUiProduct = /\b(ux|ui|products?|produtos?|researchers?|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
                 const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                 
                 if (isUxUiProduct || isLeadership) return 'core';

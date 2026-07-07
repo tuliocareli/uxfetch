@@ -15,6 +15,7 @@ const coodeshScraper = require('./scrapers/coodesh');
 const greenhouseScraper = require('./scrapers/greenhouse');
 const inhireScraper = require('./scrapers/inhire');
 const ilegraScraper = require('./scrapers/ilegra');
+const recrutaiScraper = require('./scrapers/recrutai');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -32,7 +33,8 @@ async function main() {
         { name: 'Coodesh', run: coodeshScraper },
         { name: 'Greenhouse', run: greenhouseScraper },
         { name: 'Inhire', run: inhireScraper },
-        { name: 'Ilegra', run: ilegraScraper }
+        { name: 'Ilegra', run: ilegraScraper },
+        { name: 'Recrut.ai', run: recrutaiScraper }
     ];
 
     let allJobs = [];
@@ -215,7 +217,7 @@ async function main() {
                         const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || isVideoMotion;
                         const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
                         
-                        const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
+                        const isUxUiProduct = /\b(ux|ui|products?|produtos?|researchers?|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
                         
                         // Garante que vagas de video/motion NUNCA caiam como UX/UI, mesmo que contenham "produto"
                         const isUxUi = isUxUiProduct && !isVideoMotion;
