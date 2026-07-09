@@ -86,6 +86,33 @@ async function scrapeRecrutai() {
                 if (!hasUxUi) continue;
 
                 let descriptionSnippet = `Oportunidade na ${job.company} via Recrut.ai.`;
+                
+                try {
+                    const { data: jobHtml } = await axios.get(job.link, {
+                        timeout: 10000,
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+                        }
+                    });
+                    const $job = cheerio.load(jobHtml);
+                    let fullText = $job('body').text().replace(/\s+/g, ' ').trim();
+                    let descPart = fullText.split('Descrição da Vaga');
+                    
+                    if (descPart.length > 1) {
+                        let extract = descPart.pop().trim();
+                        if (extract.length > 50) {
+                            descriptionSnippet = extract.substring(0, 250).trim();
+                            if (descriptionSnippet.length > 10) descriptionSnippet += '...';
+                        }
+                    } else {
+                        let extract = fullText.substring(0, 250).trim();
+                        if (extract.length > 50) {
+                            descriptionSnippet = extract + '...';
+                        }
+                    }
+                } catch (e) {
+                    console.error(`[Recrut.ai] Erro ao extrair descrição de ${job.link}: ${e.message}`);
+                }
 
                 const textLower = job.locationAndRemote.toLowerCase() + ' ' + t;
                 const isRemote = textLower.includes('remot');
