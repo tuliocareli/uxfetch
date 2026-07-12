@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             loginSection.style.display = 'none';
             cmsSection.style.display = 'block';
             logoutBtn.style.display = 'inline-block';
+            loadPosts(); // Carregar posts quando o usuário for validado
         } else {
             loginSection.style.display = 'block';
             cmsSection.style.display = 'none';
@@ -109,6 +110,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(payload.status === 'published') {
                 postForm.reset();
             }
+            submitBtn.textContent = 'Salvar Novo Post';
+            loadPosts(); // recarrega a lista
         } catch (error) {
             console.error(error);
             statusMsg.textContent = 'Erro ao salvar: ' + error.message;
@@ -135,4 +138,82 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+
+    // --- LÓGICA DA LISTAGEM DE POSTS --- //
+    async function loadPosts() {
+        const postsList = document.getElementById('postsList');
+        if (!postsList) return;
+        postsList.innerHTML = '<p style="color: #718096;">Carregando artigos...</p>';
+        
+        try {
+            const { data, error } = await supabase
+                .from('blog_posts')
+                .select('titulo, slug, status, created_at, resumo, imagem_capa, conteudo')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                postsList.innerHTML = '<p style="color: #718096;">Nenhum artigo encontrado.</p>';
+                return;
+            }
+
+            postsList.innerHTML = '';
+            data.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                
+                const isPub = post.status === 'published';
+                const statusClass = isPub ? 'status-published' : 'status-draft';
+                const statusText = isPub ? 'Publicado' : 'Rascunho';
+
+                card.innerHTML = `
+                    <div class="post-info">
+                        <h3>${post.titulo}</h3>
+                        <span class="${statusClass}">${statusText}</span>
+                        <span style="color: #64748b; font-size: 0.85rem; margin-left: 8px;">/blog/${post.slug}</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-edit" onclick="editPost('${post.slug}')">Editar</button>
+                        <button class="btn-delete" onclick="deletePost('${post.slug}')">Excluir</button>
+                    </div>
+                `;
+                postsList.appendChild(card);
+            });
+            window.blogPostsData = data; 
+        } catch (error) {
+            postsList.innerHTML = '<p style="color: #ef4444;">Erro ao carregar artigos.</p>';
+            console.error(error);
+        }
+    }
+
+    const refreshBtn = document.getElementById('refreshPostsBtn');
+    if(refreshBtn) refreshBtn.addEventListener('click', loadPosts);
+
+    window.editPost = (slug) => {
+        const post = window.blogPostsData?.find(p => p.slug === slug);
+        if (!post) return;
+        
+        document.getElementById('titulo').value = post.titulo;
+        document.getElementById('slug').value = post.slug;
+        document.getElementById('imagem_capa').value = post.imagem_capa || '';
+        document.getElementById('resumo').value = post.resumo;
+        document.getElementById('conteudo').value = post.conteudo;
+        document.getElementById('status').value = post.status;
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        submitBtn.textContent = 'Atualizar Post';
+    };
+
+    window.deletePost = async (slug) => {
+        if(!confirm('Tem certeza que deseja excluir este artigo permanentemente?')) return;
+        
+        try {
+            const { error } = await supabase.from('blog_posts').delete().eq('slug', slug);
+            if (error) throw error;
+            loadPosts(); 
+        } catch(error) {
+            alert('Erro ao excluir: ' + error.message);
+        }
+    };
 });
