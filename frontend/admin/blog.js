@@ -29,60 +29,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     checkUser();
 
-    // Logar
+    // Logar (Fluxo OTP / Código de Email)
     if (loginForm) {
+        let isCodeSent = false;
+        
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             loginBtn.disabled = true;
-            loginBtn.textContent = 'Autenticando...';
             statusMsg.style.display = 'none';
 
             const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
 
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
+            if (!isCodeSent) {
+                // ETAPA 1: Solicitar o código OTP
+                loginBtn.textContent = 'Enviando...';
+                try {
+                    const { data, error } = await supabase.auth.signInWithOtp({
+                        email: email
+                    });
 
-                if (error) throw error;
+                    if (error) throw error;
 
-                if (data.user.email !== 'tctulio2009@gmail.com') {
-                    throw new Error("Acesso negado. Usuário não autorizado.");
+                    statusMsg.textContent = 'Código enviado! Verifique seu e-mail (e a caixa de spam).';
+                    statusMsg.className = 'status-msg success';
+                    statusMsg.style.display = 'block';
+                    
+                    document.getElementById('emailGroup').style.display = 'none';
+                    document.getElementById('codeGroup').style.display = 'block';
+                    document.getElementById('adminCode').required = true;
+                    
+                    loginBtn.textContent = 'Autenticar Código';
+                    isCodeSent = true;
+                } catch (err) {
+                    statusMsg.textContent = 'Erro ao enviar código: ' + err.message;
+                    statusMsg.className = 'status-msg error';
+                    statusMsg.style.display = 'block';
+                } finally {
+                    loginBtn.disabled = false;
                 }
+            } else {
+                // ETAPA 2: Validar o código de 6 dígitos
+                loginBtn.textContent = 'Autenticando...';
+                const token = document.getElementById('adminCode').value;
+                
+                try {
+                    const { data, error } = await supabase.auth.verifyOtp({
+                        email: email,
+                        token: token,
+                        type: 'email'
+                    });
 
-                statusMsg.textContent = 'Login efetuado com sucesso!';
-                statusMsg.className = 'status-msg success';
-                checkUser();
-            } catch (err) {
-                statusMsg.textContent = 'Erro ao logar: ' + err.message;
-                statusMsg.className = 'status-msg error';
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Entrar com E-mail';
-            }
-        });
-    }
+                    if (error) throw error;
 
-    // Logar com Google
-    const googleLoginBtn = document.getElementById('googleLoginBtn');
-    if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', async () => {
-            try {
-                googleLoginBtn.disabled = true;
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: window.location.href // Redireciona de volta para a exata URL de onde veio
+                    if (data.user && data.user.email !== 'tctulio2009@gmail.com') {
+                        throw new Error("Acesso negado. Usuário não autorizado.");
                     }
-                });
-                if (error) throw error;
-            } catch (err) {
-                statusMsg.textContent = 'Erro ao logar com Google: ' + err.message;
-                statusMsg.className = 'status-msg error';
-                statusMsg.style.display = 'block';
-                googleLoginBtn.disabled = false;
+
+                    statusMsg.textContent = 'Login efetuado com sucesso!';
+                    statusMsg.className = 'status-msg success';
+                    statusMsg.style.display = 'block';
+                    checkUser();
+                } catch (err) {
+                    statusMsg.textContent = 'Código inválido: ' + err.message;
+                    statusMsg.className = 'status-msg error';
+                    statusMsg.style.display = 'block';
+                } finally {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Autenticar Código';
+                }
             }
         });
     }
