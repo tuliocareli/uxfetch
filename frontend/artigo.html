@@ -120,11 +120,25 @@
                     dateStr = new Date(post.data_publicacao).toLocaleDateString('pt-BR');
                 }
 
-                // Renderiza o artigo (simplificado, ideal seria usar marked.js para markdown)
+                let updStr = dateStr;
+                if(post.updated_at) {
+                    updStr = new Date(post.updated_at).toLocaleDateString('pt-BR');
+                }
+
+                let authorImg = 'assets/favicon.png';
+                let authorName = 'Equipe UXfetch';
+                let authorRole = 'Radar de Oportunidades';
+
+                if(post.autor === 'tulio') {
+                    authorImg = 'https://tuliocareli.com/wp-content/uploads/2026/01/Tulio-Perfil3.png';
+                    authorName = 'Túlio Careli';
+                    authorRole = 'Product Designer';
+                }
+
+                // Renderiza o artigo
                 container.innerHTML = `
                     <div class="article-header">
                         <h1 class="article-title">${post.titulo}</h1>
-                        <div class="article-meta">Publicado em ${dateStr}</div>
                     </div>
                     ${post.imagem_capa ? `
                     <figure style="margin: 0 0 40px 0; text-align: center;">
@@ -133,8 +147,17 @@
                     </figure>
                     ` : ''}
                     <div class="article-content">
-                        <!-- Assumindo que o conteúdo já vem com quebras ou HTML. O ideal para o CMS seria salvar HTML ou converter de MD -->
                         ${post.conteudo}
+                    </div>
+                    <div style="margin-top: 60px; padding-top: 32px; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                        <img src="${authorImg}" alt="${authorName}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-dark);">${authorName}</div>
+                            <div style="font-size: 0.9rem; color: #4A5568; margin-bottom: 4px;">${authorRole}</div>
+                            <div style="font-size: 0.8rem; color: #718096;">
+                                Publicado em: ${dateStr} &bull; Atualizado em: ${updStr}
+                            </div>
+                        </div>
                     </div>
                 `;
             } catch (error) {

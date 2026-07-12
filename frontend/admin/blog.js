@@ -199,7 +199,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             imagem_capa_legenda: document.getElementById('imagem_capa_legenda').value || null,
             resumo: document.getElementById('resumo').value,
             conteudo: quill.root.innerHTML,
-            status: document.getElementById('status').value
+            status: document.getElementById('status').value,
+            autor: document.getElementById('autor').value,
+            updated_at: new Date().toISOString()
         };
 
         if (quill.getText().trim().length === 0) {
@@ -361,6 +363,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('resumo').value = post.resumo;
         quill.root.innerHTML = post.conteudo;
         document.getElementById('status').value = post.status;
+        document.getElementById('autor').value = post.autor || 'equipe';
         
         submitBtn.textContent = 'Atualizar Post';
         statusMsg.className = 'status-msg';
@@ -402,6 +405,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             document.getElementById('previewArticleContent').innerHTML = content;
+            
+            // Popular Preview do Autor
+            const autorValue = document.getElementById('autor').value;
+            const authorImg = document.getElementById('previewAuthorImg');
+            const authorName = document.getElementById('previewAuthorName');
+            const authorRole = document.getElementById('previewAuthorRole');
+            const datePub = document.getElementById('previewDatePub');
+            const dateUpd = document.getElementById('previewDateUpd');
+
+            if (autorValue === 'tulio') {
+                authorImg.src = 'https://tuliocareli.com/wp-content/uploads/2026/01/Tulio-Perfil3.png';
+                authorName.textContent = 'Túlio Careli';
+                authorRole.textContent = 'Product Designer';
+            } else {
+                authorImg.src = '../assets/favicon.png';
+                authorName.textContent = 'Equipe UXfetch';
+                authorRole.textContent = 'Radar de Oportunidades';
+            }
+
+            const today = new Date().toLocaleDateString('pt-BR');
+            datePub.textContent = today;
+            dateUpd.textContent = today;
             
             // Alternar Views
             editorView.style.display = 'none';
