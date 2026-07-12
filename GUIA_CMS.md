@@ -28,15 +28,15 @@ USING (true);
 -- 4. Cria Políticas de ESCRITA restritas ao seu email original e a nova conta admin
 CREATE POLICY "Apenas admin pode inserir" 
 ON blog_posts FOR INSERT 
-WITH CHECK (auth.email() in ('tctulio2009@gmail.com', 'admin@uxfetch.com'));
+WITH CHECK (auth.email() in ('tctulio2009@gmail.com', 'contato@uxfetch.com.br'));
 
 CREATE POLICY "Apenas admin pode atualizar" 
 ON blog_posts FOR UPDATE 
-USING (auth.email() in ('tctulio2009@gmail.com', 'admin@uxfetch.com'));
+USING (auth.email() in ('tctulio2009@gmail.com', 'contato@uxfetch.com.br'));
 
 CREATE POLICY "Apenas admin pode deletar" 
 ON blog_posts FOR DELETE 
-USING (auth.email() in ('tctulio2009@gmail.com', 'admin@uxfetch.com'));
+USING (auth.email() in ('tctulio2009@gmail.com', 'contato@uxfetch.com.br'));
 ```
 
 ## Passo 2: Criar uma Conta Secundária (Para não afetar a principal)
@@ -47,7 +47,7 @@ Para evitar problemas com limite de e-mails ou redirects, e sem precisar deletar
 2. No menu lateral esquerdo, clique em **Authentication**.
 3. Na aba **Users**, clique no botão verde **Add User** -> **Create new user**.
 4. Insira:
-   - **Email:** `admin@uxfetch.com` (ou qualquer outro que preferir).
+   - **Email:** `contato@uxfetch.com.br` (ou qualquer outro que preferir).
    - **Password:** Escolha uma senha segura e digite-a. (Ela já será salva na hora!)
 5. Marque a opção **Auto Confirm User?** para ativar instantaneamente.
 6. Clique em **Create User**.
@@ -57,7 +57,7 @@ Para evitar problemas com limite de e-mails ou redirects, e sem precisar deletar
 Agora você pode acessar livremente e com tranquilidade:
 
 1. Acesse o CMS através do navegador (Ex: `http://localhost:5500/admin/blog.html`).
-2. Faça login com o email secundário que você criou (`admin@uxfetch.com`) e a senha que definiu.
+2. Faça login com o email secundário que você criou (`contato@uxfetch.com.br`) e a senha que definiu.
 3. Se quiser, você ainda pode logar com `tctulio2009@gmail.com` usando essa mesma tela caso configure a senha dele no painel.
 
 Essa abordagem não usa redirecionamentos OAuth e não depende de e-mails do Supabase para funcionar (evitando rate limit). Apenas você tem acesso.

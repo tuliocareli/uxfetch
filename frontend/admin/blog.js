@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Verifica Sessão Atual
     async function checkUser() {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session && (session.user.email === 'tctulio2009@gmail.com' || session.user.email === 'admin@uxfetch.com')) {
+        if (session && (session.user.email === 'tctulio2009@gmail.com' || session.user.email === 'contato@uxfetch.com.br')) {
             loginSection.style.display = 'none';
             cmsSection.style.display = 'block';
             logoutBtn.style.display = 'inline-block';
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (error) throw error;
 
-                const allowedEmails = ['tctulio2009@gmail.com', 'admin@uxfetch.com'];
+                const allowedEmails = ['tctulio2009@gmail.com', 'contato@uxfetch.com.br'];
                 if (!allowedEmails.includes(data.user.email)) {
                     throw new Error("Acesso negado. Usuário não autorizado.");
                 }
