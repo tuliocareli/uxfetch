@@ -17,6 +17,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnNewPost = document.getElementById('btnNewPost');
     const btnBackToHub = document.getElementById('btnBackToHub');
 
+    // Inicialização do Quill Editor (Rich Text)
+    const quill = new Quill('#editor-container', {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: function() {
+                        const url = prompt('Por favor, cole a URL da imagem (Ex: Imgur):');
+                        if (url) {
+                            const range = this.quill.getSelection();
+                            this.quill.insertEmbed(range.index, 'image', url);
+                        }
+                    }
+                }
+            }
+        },
+        placeholder: 'Escreva o artigo com estilo...'
+    });
+
     // Verifica Sessão Atual
     async function checkUser() {
         const { data: { session } } = await supabase.auth.getSession();
@@ -97,9 +123,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             slug: document.getElementById('slug').value,
             imagem_capa: document.getElementById('imagem_capa').value || null,
             resumo: document.getElementById('resumo').value,
-            conteudo: document.getElementById('conteudo').value,
+            conteudo: quill.root.innerHTML,
             status: document.getElementById('status').value
         };
+
+        if (quill.getText().trim().length === 0) {
+            statusMsg.textContent = 'O conteúdo do artigo não pode estar vazio.';
+            statusMsg.classList.add('error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Salvar Post';
+            return;
+        }
 
         try {
             const { data, error } = await supabase
@@ -198,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (btnNewPost) {
         btnNewPost.addEventListener('click', () => {
             postForm.reset();
+            quill.setContents([]);
             document.getElementById('slug').readOnly = false;
             submitBtn.textContent = 'Salvar Post';
             statusMsg.className = 'status-msg';
@@ -235,7 +270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('slug').value = post.slug;
         document.getElementById('imagem_capa').value = post.imagem_capa || '';
         document.getElementById('resumo').value = post.resumo;
-        document.getElementById('conteudo').value = post.conteudo;
+        quill.root.innerHTML = post.conteudo;
         document.getElementById('status').value = post.status;
         
         submitBtn.textContent = 'Atualizar Post';
