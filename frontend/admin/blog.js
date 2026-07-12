@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const { data, error } = await supabase
                 .from('blog_posts')
-                .select('titulo, slug, status, created_at, resumo, imagem_capa, conteudo')
-                .order('created_at', { ascending: false });
+                .select('titulo, slug, status, data_publicacao, resumo, imagem_capa, conteudo')
+                .order('data_publicacao', { ascending: false });
 
             if (error) throw error;
 
