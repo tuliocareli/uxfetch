@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const loginSection = document.getElementById('loginSection');
     const cmsSection = document.getElementById('cmsSection');
+    const hubView = document.getElementById('hubView');
+    const editorView = document.getElementById('editorView');
     const loginForm = document.getElementById('loginForm');
     const postForm = document.getElementById('postForm');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -12,6 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusMsg = document.getElementById('statusMsg');
     const submitBtn = document.getElementById('submitBtn');
     const loginBtn = document.getElementById('loginBtn');
+    const btnNewPost = document.getElementById('btnNewPost');
+    const btnBackToHub = document.getElementById('btnBackToHub');
 
     // Verifica Sessão Atual
     async function checkUser() {
@@ -104,14 +108,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (error) throw error;
 
-            statusMsg.textContent = 'Post salvo com sucesso!';
-            statusMsg.classList.add('success');
-            
             if(payload.status === 'published') {
                 postForm.reset();
             }
-            submitBtn.textContent = 'Salvar Novo Post';
-            loadPosts(); // recarrega a lista
+            statusMsg.textContent = 'Post salvo com sucesso!';
+            statusMsg.classList.add('success');
+            
+            // Voltar pro Hub
+            setTimeout(() => {
+                editorView.style.display = 'none';
+                hubView.style.display = 'block';
+                loadPosts();
+            }, 1000);
         } catch (error) {
             console.error(error);
             statusMsg.textContent = 'Erro ao salvar: ' + error.message;
@@ -154,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                postsList.innerHTML = '<p style="color: #718096;">Nenhum artigo encontrado.</p>';
+                postsList.innerHTML = '<p style="color: #718096;">Nenhum artigo encontrado. Crie seu primeiro post!</p>';
                 return;
             }
 
@@ -164,18 +172,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.className = 'post-card';
                 
                 const isPub = post.status === 'published';
-                const statusClass = isPub ? 'status-published' : 'status-draft';
-                const statusText = isPub ? 'Publicado' : 'Rascunho';
-
+                
                 card.innerHTML = `
-                    <div class="post-info">
+                    <div class="post-info" style="flex: 1;">
                         <h3>${post.titulo}</h3>
-                        <span class="${statusClass}">${statusText}</span>
-                        <span style="color: #64748b; font-size: 0.85rem; margin-left: 8px;">/blog/${post.slug}</span>
+                        <span style="color: #64748b; font-size: 0.85rem;">/blog/${post.slug}</span>
                     </div>
-                    <div class="post-actions">
+                    <div class="post-actions" style="display: flex; gap: 8px; align-items: center;">
+                        <select onchange="updatePostStatus('${post.slug}', this.value)" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; cursor: pointer; background: ${isPub ? '#dcfce7' : '#f1f5f9'}; color: ${isPub ? '#166534' : '#475569'}; outline: none;">
+                            <option value="draft" ${!isPub ? 'selected' : ''}>Rascunho</option>
+                            <option value="published" ${isPub ? 'selected' : ''}>Publicado</option>
+                        </select>
                         <button class="btn-edit" onclick="editPost('${post.slug}')">Editar</button>
-                        <button class="btn-delete" onclick="deletePost('${post.slug}')">Excluir</button>
                     </div>
                 `;
                 postsList.appendChild(card);
@@ -187,8 +195,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    const refreshBtn = document.getElementById('refreshPostsBtn');
-    if(refreshBtn) refreshBtn.addEventListener('click', loadPosts);
+    if (btnNewPost) {
+        btnNewPost.addEventListener('click', () => {
+            postForm.reset();
+            document.getElementById('slug').readOnly = false;
+            submitBtn.textContent = 'Salvar Post';
+            statusMsg.className = 'status-msg';
+            statusMsg.textContent = '';
+            
+            hubView.style.display = 'none';
+            editorView.style.display = 'block';
+        });
+    }
+
+    if (btnBackToHub) {
+        btnBackToHub.addEventListener('click', () => {
+            editorView.style.display = 'none';
+            hubView.style.display = 'block';
+            loadPosts();
+        });
+    }
+
+    window.updatePostStatus = async (slug, newStatus) => {
+        try {
+            const { error } = await supabase.from('blog_posts').update({ status: newStatus }).eq('slug', slug);
+            if (error) throw error;
+            // Cor do select atualiza via recarga rápida
+            loadPosts();
+        } catch (err) {
+            alert('Erro ao atualizar status: ' + err.message);
+        }
+    };
 
     window.editPost = (slug) => {
         const post = window.blogPostsData?.find(p => p.slug === slug);
@@ -201,8 +238,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('conteudo').value = post.conteudo;
         document.getElementById('status').value = post.status;
         
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         submitBtn.textContent = 'Atualizar Post';
+        statusMsg.className = 'status-msg';
+        statusMsg.textContent = '';
+        
+        hubView.style.display = 'none';
+        editorView.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.deletePost = async (slug) => {

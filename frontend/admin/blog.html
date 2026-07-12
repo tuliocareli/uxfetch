@@ -72,54 +72,61 @@
 
         <!-- TELA DO CMS (Oculta por padrão) -->
         <div id="cmsSection" style="display: none;">
-            <form id="postForm">
-            <div class="form-group">
-                <label for="titulo">Título do Post</label>
-                <input type="text" id="titulo" required placeholder="Ex: As 5 Leis de UX que você precisa saber">
-            </div>
             
-            <div class="form-group">
-                <label for="slug">Slug (URL amigável)</label>
-                <input type="text" id="slug" required placeholder="Ex: as-5-leis-de-ux">
-            </div>
-            
-            <div class="form-group">
-                <label for="imagem_capa">URL da Imagem de Capa (Opcional)</label>
-                <input type="url" id="imagem_capa" placeholder="https://exemplo.com/imagem.png">
-            </div>
-            
-            <div class="form-group">
-                <label for="resumo">Resumo (Para o Card da Home)</label>
-                <textarea id="resumo" required placeholder="Pequeno texto chamativo..." style="min-height: 80px;"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="conteudo">Conteúdo (Markdown ou Texto/HTML)</label>
-                <textarea id="conteudo" required placeholder="Escreva o artigo aqui..."></textarea>
-            </div>
-            
-            <div class="form-group" style="width: 200px;">
-                <label for="status">Status</label>
-                <select id="status">
-                    <option value="draft">Rascunho (Oculto)</option>
-                    <option value="published">Publicado</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="btn-submit" id="submitBtn">Salvar Post</button>
-        </form>
-
-            <hr style="margin: 40px 0; border: none; border-top: 1px solid #e2e8f0;">
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="margin: 0; font-size: 1.3rem;">Artigos Cadastrados</h2>
-                <button id="refreshPostsBtn" style="background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500;">Atualizar Lista</button>
-            </div>
-            
-            <div id="postsList" style="display: flex; flex-direction: column; gap: 16px;">
-                <!-- Lista de artigos será injetada aqui -->
+            <!-- HUB CENTRAL -->
+            <div id="hubView">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="margin: 0; font-size: 1.5rem;">Seus Artigos</h2>
+                    <button id="btnNewPost" class="btn-submit">+ Criar Novo</button>
+                </div>
+                
+                <div id="postsList" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Lista de artigos será injetada aqui -->
+                </div>
             </div>
 
+            <!-- EDITOR DE POST -->
+            <div id="editorView" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <button id="btnBackToHub" style="background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500;">&larr; Voltar para os Artigos</button>
+                </div>
+                <form id="postForm">
+                    <div class="form-group">
+                        <label for="titulo">Título do Post</label>
+                        <input type="text" id="titulo" required placeholder="Ex: As 5 Leis de UX que você precisa saber">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="slug">Slug (URL amigável)</label>
+                        <input type="text" id="slug" required placeholder="Ex: as-5-leis-de-ux">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imagem_capa">URL da Imagem de Capa (Opcional)</label>
+                        <input type="url" id="imagem_capa" placeholder="https://exemplo.com/imagem.png">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resumo">Resumo (Para o Card da Home)</label>
+                        <textarea id="resumo" required placeholder="Pequeno texto chamativo..." style="min-height: 80px;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="conteudo">Conteúdo (Markdown ou Texto/HTML)</label>
+                        <textarea id="conteudo" required placeholder="Escreva o artigo aqui..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="width: 200px;">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="draft">Rascunho (Oculto)</option>
+                            <option value="published">Publicado</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" id="submitBtn">Salvar Post</button>
+                </form>
+            </div>
         </div>
     </div>
 
