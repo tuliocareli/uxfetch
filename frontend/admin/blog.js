@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             slug: document.getElementById('slug').value,
             imagem_capa: document.getElementById('imagem_capa').value || null,
             imagem_capa_alt: document.getElementById('imagem_capa_alt').value || null,
+            imagem_capa_legenda: document.getElementById('imagem_capa_legenda').value || null,
             resumo: document.getElementById('resumo').value,
             conteudo: quill.root.innerHTML,
             status: document.getElementById('status').value
@@ -245,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const { data, error } = await supabase
                 .from('blog_posts')
-                .select('titulo, slug, status, data_publicacao, resumo, imagem_capa, conteudo')
+                .select('titulo, slug, status, data_publicacao, resumo, imagem_capa, imagem_capa_alt, imagem_capa_legenda, conteudo')
                 .order('data_publicacao', { ascending: false });
 
             if (error) throw error;
@@ -337,6 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('slug').value = post.slug;
         document.getElementById('imagem_capa').value = post.imagem_capa || '';
         document.getElementById('imagem_capa_alt').value = post.imagem_capa_alt || '';
+        document.getElementById('imagem_capa_legenda').value = post.imagem_capa_legenda || '';
         document.getElementById('resumo').value = post.resumo;
         quill.root.innerHTML = post.conteudo;
         document.getElementById('status').value = post.status;
@@ -356,19 +358,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Capturar dados atuais do formulário
             const title = document.getElementById('titulo').value || 'Sem título';
             const resume = document.getElementById('resumo').value || 'Sem resumo';
-            const img = document.getElementById('imagem_capa').value || '../assets/og-image.png';
+            const img = document.getElementById('imagem_capa').value;
+            const imgAlt = document.getElementById('imagem_capa_alt').value || title;
+            const imgCaption = document.getElementById('imagem_capa_legenda').value;
             const content = quill.root.innerHTML;
             
             // Popular Preview do Card
             document.getElementById('previewCardTitle').textContent = title;
             document.getElementById('previewCardDesc').textContent = resume;
-            document.getElementById('previewCardImg').src = img;
+            document.getElementById('previewCardImg').src = img || '../assets/og-image.png';
             
             // Popular Preview do Artigo
             document.getElementById('previewArticleTitle').textContent = title;
             document.getElementById('previewArticleDate').textContent = new Date().toLocaleDateString('pt-BR');
-            document.getElementById('previewArticleImg').src = img;
-            document.getElementById('previewArticleImg').style.display = document.getElementById('imagem_capa').value ? 'block' : 'none';
+            
+            const fig = document.getElementById('previewArticleFigure');
+            if (img) {
+                fig.style.display = 'block';
+                document.getElementById('previewArticleImg').src = img;
+                document.getElementById('previewArticleImg').alt = imgAlt;
+                document.getElementById('previewArticleCaption').textContent = imgCaption;
+            } else {
+                fig.style.display = 'none';
+            }
+            
             document.getElementById('previewArticleContent').innerHTML = content;
             
             // Alternar Views

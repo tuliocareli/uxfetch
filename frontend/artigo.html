@@ -90,7 +90,12 @@
                         <h1 class="article-title">${post.titulo}</h1>
                         <div class="article-meta">Publicado em ${dateStr}</div>
                     </div>
-                    ${post.imagem_capa ? `<img src="${post.imagem_capa}" alt="${post.imagem_capa_alt || post.titulo}" class="article-cover">` : ''}
+                    ${post.imagem_capa ? `
+                    <figure style="margin: 0 0 40px 0; text-align: center;">
+                        <img src="${post.imagem_capa}" alt="${post.imagem_capa_alt || post.titulo}" class="article-cover" style="margin-bottom: 8px;">
+                        ${post.imagem_capa_legenda ? `<figcaption style="color: #718096; font-size: 0.9rem; font-style: italic;">${post.imagem_capa_legenda}</figcaption>` : ''}
+                    </figure>
+                    ` : ''}
                     <div class="article-content">
                         <!-- Assumindo que o conteúdo já vem com quebras ou HTML. O ideal para o CMS seria salvar HTML ou converter de MD -->
                         ${post.conteudo.replace(/\n/g, '<br>')}

@@ -145,6 +145,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="imagem_capa_legenda">Legenda da Capa (Opcional)</label>
+                        <input type="text" id="imagem_capa_legenda" placeholder="Texto visível abaixo da imagem de capa">
+                    </div>
+
+                    <div class="form-group">
                         <label for="resumo">Resumo (Para o Card da Home)</label>
                         <textarea id="resumo" required placeholder="Pequeno texto chamativo..." style="min-height: 80px;"></textarea>
                     </div>
@@ -196,7 +201,10 @@
                         <h1 class="article-title" id="previewArticleTitle"></h1>
                         <div class="article-meta">Publicado em <span id="previewArticleDate"></span></div>
                     </div>
-                    <img src="" alt="Capa" class="article-cover" id="previewArticleImg">
+                    <figure id="previewArticleFigure" style="margin: 0 0 40px 0; text-align: center; display: none;">
+                        <img src="" alt="" class="article-cover" id="previewArticleImg" style="margin-bottom: 8px;">
+                        <figcaption id="previewArticleCaption" style="color: #718096; font-size: 0.9rem; font-style: italic;"></figcaption>
+                    </figure>
                     <div class="article-content" id="previewArticleContent">
                     </div>
                 </div>
