@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loginBtn = document.getElementById('loginBtn');
     const btnNewPost = document.getElementById('btnNewPost');
     const btnBackToHub = document.getElementById('btnBackToHub');
+    
+    // Elementos de Preview
+    const previewView = document.getElementById('previewView');
+    const btnPreview = document.getElementById('btnPreview');
+    const btnBackToEditor = document.getElementById('btnBackToEditor');
 
     // Inicialização do Quill Editor (Rich Text)
     const quill = new Quill('#editor-container', {
@@ -262,6 +267,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    window.deletePost = async (slug) => {
+        if(!confirm('Tem certeza que deseja excluir este artigo permanentemente?')) return;
+        
+        try {
+            const { error } = await supabase.from('blog_posts').delete().eq('slug', slug);
+            if (error) throw error;
+            loadPosts(); 
+        } catch(error) {
+            alert('Erro ao excluir: ' + error.message);
+        }
+    };
+
     window.editPost = (slug) => {
         const post = window.blogPostsData?.find(p => p.slug === slug);
         if (!post) return;
@@ -282,15 +299,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.deletePost = async (slug) => {
-        if(!confirm('Tem certeza que deseja excluir este artigo permanentemente?')) return;
-        
-        try {
-            const { error } = await supabase.from('blog_posts').delete().eq('slug', slug);
-            if (error) throw error;
-            loadPosts(); 
-        } catch(error) {
-            alert('Erro ao excluir: ' + error.message);
-        }
-    };
+    // --- LÓGICA DO PREVIEW --- //
+    if (btnPreview && previewView && btnBackToEditor) {
+        btnPreview.addEventListener('click', () => {
+            // Capturar dados atuais do formulário
+            const title = document.getElementById('titulo').value || 'Sem título';
+            const resume = document.getElementById('resumo').value || 'Sem resumo';
+            const img = document.getElementById('imagem_capa').value || '../assets/og-image.png';
+            const content = quill.root.innerHTML;
+            
+            // Popular Preview do Card
+            document.getElementById('previewCardTitle').textContent = title;
+            document.getElementById('previewCardDesc').textContent = resume;
+            document.getElementById('previewCardImg').src = img;
+            
+            // Popular Preview do Artigo
+            document.getElementById('previewArticleTitle').textContent = title;
+            document.getElementById('previewArticleDate').textContent = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('previewArticleImg').src = img;
+            document.getElementById('previewArticleImg').style.display = document.getElementById('imagem_capa').value ? 'block' : 'none';
+            document.getElementById('previewArticleContent').innerHTML = content;
+            
+            // Alternar Views
+            editorView.style.display = 'none';
+            previewView.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        btnBackToEditor.addEventListener('click', () => {
+            previewView.style.display = 'none';
+            editorView.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 });
