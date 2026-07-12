@@ -31,11 +31,35 @@
             <a href="index.html" class="logo-link">
                 <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
             </a>
+            
             <nav class="desktop-nav">
-                <a href="index.html" class="nav-link">Voltar para Início</a>
+                <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="nav-link">Dados do Radar</a>
+                <a href="index.html#sobre" class="nav-link">Sobre o Projeto</a>
+                <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" class="nav-btn-coffee">☕ Apoiar Projeto</a>
             </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu principal">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="close-menu-btn" id="closeMenuBtn" aria-label="Fechar menu">&times;</button>
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-nav-link">Início</a>
+                <a href="vagas.html" class="mobile-nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="mobile-nav-link">Dados do Radar</a>
+                <a href="index.html#sobre" class="mobile-nav-link">Sobre o Projeto</a>
+                <a href="termos.html" class="mobile-nav-link">Termos e Privacidade</a>
+                <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" class="mobile-nav-link" style="margin-top: 16px;">☕ Apoiar Projeto</a>
+            </nav>
+        </div>
+    </div>
 
     <main class="main-content">
         <div class="article-container" id="articleContainer">
@@ -45,8 +69,19 @@
 
     <footer class="footer">
         <div class="container footer-container">
+            <div class="footer-logo">
+                <img src="assets/logo-white.svg" alt="UX Fetch Logo Branca" style="height: 32px;">
+            </div>
+            <p class="footer-description">O UX Fetch não armazena currículos, não pede pagamentos e nem intermedeia vagas. Somos apenas um hub de curadoria e utilidade pública para a comunidade de Design de Produto.</p>
+            
+            <hr class="footer-divider">
+            
             <div class="footer-bottom">
                 <p>2026 UXfetch. Desenvolvido com ☕, Vibe Code, Supabase e GitHub Actions.</p>
+                <div>
+                    <a href="termos.html" style="margin-right: 16px;">Termos de Uso</a>
+                    <a href="mailto:contato@uxfetch.com.br">Contato</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -107,5 +142,6 @@
             }
         });
     </script>
+    <script src="script.js?v=2.3"></script>
 </body>
 </html>

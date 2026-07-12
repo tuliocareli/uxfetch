@@ -72,24 +72,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                     ['link', 'image'],
                     ['clean']
-                ],
-                handlers: {
-                    image: function() {
-                        // Abre o modal customizado em vez do prompt
-                        document.getElementById('imageModal').style.display = 'flex';
-                        document.getElementById('modalImgUrl').value = '';
-                        document.getElementById('modalImgAlt').value = '';
-                        document.getElementById('modalImgCaption').value = '';
-                    }
-                }
+                ]
             }
         },
         placeholder: 'Escreva o artigo com estilo...'
     });
 
+    let imageModalRange = null;
+
+    quill.getModule('toolbar').addHandler('image', () => {
+        imageModalRange = quill.getSelection();
+        document.getElementById('modalImgUrl').value = '';
+        document.getElementById('modalImgAlt').value = '';
+        document.getElementById('modalImgCaption').value = '';
+        document.getElementById('imageModal').style.display = 'flex';
+    });
+
     // Lógica do Modal de Imagem
     document.getElementById('btnCancelImage').addEventListener('click', () => {
         document.getElementById('imageModal').style.display = 'none';
+        imageModalRange = null;
     });
 
     document.getElementById('btnInsertImage').addEventListener('click', () => {
@@ -99,8 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const caption = document.getElementById('modalImgCaption').value;
         
         if (url) {
-            // Pega o index atual ou vai para o fim
-            const range = quill.getSelection() || { index: quill.getLength() };
+            const range = imageModalRange || quill.getSelection(true) || { index: quill.getLength() };
             
             // Insere a imagem com Alt Text
             quill.insertEmbed(range.index, 'customImage', { url: url, alt: alt }, 'user');
