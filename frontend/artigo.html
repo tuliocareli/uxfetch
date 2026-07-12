@@ -21,7 +21,7 @@
         .article-cover { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-bottom: 40px; }
         .article-content { font-size: 1.1rem; line-height: 1.8; color: var(--text-dark); }
         .article-content h2 { margin-top: 40px; margin-bottom: 16px; }
-        .article-content p { margin-bottom: 24px; }
+        .article-content p { margin-bottom: 16px; }
         .article-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block; }
         .loading-state { text-align: center; padding: 60px 0; color: #718096; font-size: 1.2rem; }
     </style>
@@ -134,7 +134,7 @@
                     ` : ''}
                     <div class="article-content">
                         <!-- Assumindo que o conteúdo já vem com quebras ou HTML. O ideal para o CMS seria salvar HTML ou converter de MD -->
-                        ${post.conteudo.replace(/\n/g, '<br>')}
+                        ${post.conteudo}
                     </div>
                 `;
             } catch (error) {
