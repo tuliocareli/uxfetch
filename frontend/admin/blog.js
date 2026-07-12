@@ -60,7 +60,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 statusMsg.className = 'status-msg error';
             } finally {
                 loginBtn.disabled = false;
-                loginBtn.textContent = 'Entrar';
+                loginBtn.textContent = 'Entrar com E-mail';
+            }
+        });
+    }
+
+    // Logar com Google
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', async () => {
+            try {
+                googleLoginBtn.disabled = true;
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.href // Redireciona de volta para a exata URL de onde veio
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                statusMsg.textContent = 'Erro ao logar com Google: ' + err.message;
+                statusMsg.className = 'status-msg error';
+                statusMsg.style.display = 'block';
+                googleLoginBtn.disabled = false;
             }
         });
     }
