@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Verifica Sessão Atual
     async function checkUser() {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session && session.user.email === 'tctulio2009@gmail.com') {
+        if (session && (session.user.email === 'tctulio2009@gmail.com' || session.user.email === 'admin@uxfetch.com')) {
             loginSection.style.display = 'none';
             cmsSection.style.display = 'block';
             logoutBtn.style.display = 'inline-block';
@@ -29,74 +29,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     checkUser();
 
-    // Logar (Fluxo OTP / Código de Email)
+    // Logar (Fluxo Direto de Email e Senha)
     if (loginForm) {
-        let isCodeSent = false;
-        
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             loginBtn.disabled = true;
+            loginBtn.textContent = 'Autenticando...';
             statusMsg.style.display = 'none';
 
             const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
 
-            if (!isCodeSent) {
-                // ETAPA 1: Solicitar o código OTP
-                loginBtn.textContent = 'Enviando...';
-                try {
-                    const { data, error } = await supabase.auth.signInWithOtp({
-                        email: email
-                    });
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
 
-                    if (error) throw error;
+                if (error) throw error;
 
-                    statusMsg.textContent = 'Código enviado! Verifique seu e-mail (e a caixa de spam).';
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.style.display = 'block';
-                    
-                    document.getElementById('emailGroup').style.display = 'none';
-                    document.getElementById('codeGroup').style.display = 'block';
-                    document.getElementById('adminCode').required = true;
-                    
-                    loginBtn.textContent = 'Autenticar Código';
-                    isCodeSent = true;
-                } catch (err) {
-                    statusMsg.textContent = 'Erro ao enviar código: ' + err.message;
-                    statusMsg.className = 'status-msg error';
-                    statusMsg.style.display = 'block';
-                } finally {
-                    loginBtn.disabled = false;
+                const allowedEmails = ['tctulio2009@gmail.com', 'admin@uxfetch.com'];
+                if (!allowedEmails.includes(data.user.email)) {
+                    throw new Error("Acesso negado. Usuário não autorizado.");
                 }
-            } else {
-                // ETAPA 2: Validar o código de 6 dígitos
-                loginBtn.textContent = 'Autenticando...';
-                const token = document.getElementById('adminCode').value;
-                
-                try {
-                    const { data, error } = await supabase.auth.verifyOtp({
-                        email: email,
-                        token: token,
-                        type: 'email'
-                    });
 
-                    if (error) throw error;
-
-                    if (data.user && data.user.email !== 'tctulio2009@gmail.com') {
-                        throw new Error("Acesso negado. Usuário não autorizado.");
-                    }
-
-                    statusMsg.textContent = 'Login efetuado com sucesso!';
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.style.display = 'block';
-                    checkUser();
-                } catch (err) {
-                    statusMsg.textContent = 'Código inválido: ' + err.message;
-                    statusMsg.className = 'status-msg error';
-                    statusMsg.style.display = 'block';
-                } finally {
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Autenticar Código';
-                }
+                statusMsg.textContent = 'Login efetuado com sucesso!';
+                statusMsg.className = 'status-msg success';
+                statusMsg.style.display = 'block';
+                checkUser();
+            } catch (err) {
+                statusMsg.textContent = 'Erro ao logar: ' + err.message;
+                statusMsg.className = 'status-msg error';
+                statusMsg.style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar no CMS';
             }
         });
     }

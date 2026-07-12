@@ -47,17 +47,16 @@
             <p style="margin-bottom: 24px; color: #4A5568;">Faça login com seu e-mail de administrador para gerenciar o blog.</p>
             <form id="loginForm">
                 <div class="form-group" id="emailGroup">
-                    <label for="adminEmail">E-mail</label>
-                    <input type="email" id="adminEmail" required placeholder="seu@email.com" value="tctulio2009@gmail.com" readonly style="background: #e2e8f0; color: #475569;">
+                    <label for="adminEmail">E-mail de Acesso</label>
+                    <input type="email" id="adminEmail" required placeholder="admin@uxfetch.com">
                 </div>
                 
-                <div class="form-group" id="codeGroup" style="display: none;">
-                    <label for="adminCode">Código de Acesso (6 dígitos)</label>
-                    <input type="text" id="adminCode" placeholder="Verifique seu e-mail" autocomplete="one-time-code">
-                    <p style="font-size: 0.8rem; color: #718096; margin-top: 8px;">O Supabase enviou um código para o seu e-mail.</p>
+                <div class="form-group" id="passwordGroup">
+                    <label for="adminPassword">Senha</label>
+                    <input type="password" id="adminPassword" required placeholder="••••••••">
                 </div>
 
-                <button type="submit" class="btn-submit" id="loginBtn" style="width: 100%;">Receber Código de Acesso</button>
+                <button type="submit" class="btn-submit" id="loginBtn" style="width: 100%;">Entrar no CMS</button>
             </form>
         </div>
 
