@@ -371,6 +371,34 @@
             </div>
         </section>
 
+        <!-- BLOG CAROUSEL SECTION (Oculto por padrão até ter posts) -->
+        <section class="container" id="blog-carousel-section" style="display: none; margin-bottom: 60px;">
+            <div class="uxf-section">
+                <div class="uxf-header">
+                    <div class="uxf-header-text">
+                        <span class="uxf-tag">Conteúdo</span>
+                        <h2 class="uxf-title">Artigos e Insights</h2>
+                        <p class="uxf-subtitle">Conteúdo sobre mercado, portfólio e evolução na carreira de design.</p>
+                    </div>
+                    
+                    <div class="uxf-controls">
+                        <button class="uxf-control-btn" id="blogPrev" aria-label="Anterior">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                        <button class="uxf-control-btn" id="blogNext" aria-label="Próximo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="uxf-carousel-wrapper">
+                    <div class="uxf-carousel" id="blogCarousel">
+                        <!-- Carregando... -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- UX BOOKS CAROUSEL SECTION -->
         <section class="container" style="margin-bottom: 60px;">
             <div class="uxf-section">
@@ -620,5 +648,6 @@
     </script>
     <script src="script.js?v=2.3"></script>
     <script src="cookies.js"></script>
+    <script src="blog.js"></script>
 </body>
 </html>

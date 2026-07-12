@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Fetch | Blog</title>
+    <!-- Proteção de Indexação conforme Roadmap -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .article-container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        .article-header { text-align: center; margin-bottom: 40px; }
+        .article-title { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); margin-bottom: 16px; }
+        .article-meta { color: #718096; font-size: 0.9rem; }
+        .article-cover { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-bottom: 40px; }
+        .article-content { font-size: 1.1rem; line-height: 1.8; color: var(--text-dark); }
+        .article-content h2 { margin-top: 40px; margin-bottom: 16px; }
+        .article-content p { margin-bottom: 24px; }
+        .loading-state { text-align: center; padding: 60px 0; color: #718096; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo">
+            </a>
+            <nav class="desktop-nav">
+                <a href="index.html" class="nav-link">Voltar para Início</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="article-container" id="articleContainer">
+            <div class="loading-state" id="loadingIndicator">Carregando artigo...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-bottom">
+                <p>2026 UXfetch. Desenvolvido com ☕, Vibe Code, Supabase e GitHub Actions.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_YP0GmSgpgugyAnjan6I3bQ_Gaf4CSGI';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            const container = document.getElementById('articleContainer');
+
+            if (!slug) {
+                container.innerHTML = '<div class="loading-state">Artigo não encontrado.</div>';
+                return;
+            }
+
+            try {
+                const { data: post, error } = await supabase
+                    .from('blog_posts')
+                    .select('*')
+                    .eq('slug', slug)
+                    .eq('status', 'published')
+                    .single();
+
+                if (error || !post) throw error;
+
+                // Aplicar marcação de SEO dinamicamente (mesmo com noindex por enquanto)
+                document.title = `${post.titulo} | UX Fetch Blog`;
+                
+                let dateStr = '';
+                if(post.data_publicacao) {
+                    dateStr = new Date(post.data_publicacao).toLocaleDateString('pt-BR');
+                }
+
+                // Renderiza o artigo (simplificado, ideal seria usar marked.js para markdown)
+                container.innerHTML = `
+                    <div class="article-header">
+                        <h1 class="article-title">${post.titulo}</h1>
+                        <div class="article-meta">Publicado em ${dateStr}</div>
+                    </div>
+                    ${post.imagem_capa ? `<img src="${post.imagem_capa}" alt="Capa" class="article-cover">` : ''}
+                    <div class="article-content">
+                        <!-- Assumindo que o conteúdo já vem com quebras ou HTML. O ideal para o CMS seria salvar HTML ou converter de MD -->
+                        ${post.conteudo.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="loading-state">Artigo não encontrado ou indisponível.</div>';
+            }
+        });
+    </script>
+</body>
+</html>
