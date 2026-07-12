@@ -22,6 +22,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnPreview = document.getElementById('btnPreview');
     const btnBackToEditor = document.getElementById('btnBackToEditor');
 
+    // Custom Image Blot para suportar Alt Text
+    const ImageBlot = Quill.import('formats/image');
+    class CustomImage extends ImageBlot {
+        static create(value) {
+            let node = super.create(value.url || value);
+            if (typeof value === 'object') {
+                if(value.alt) node.setAttribute('alt', value.alt);
+                if(value.url) node.setAttribute('src', value.url);
+            }
+            return node;
+        }
+        static value(node) {
+            return {
+                url: node.getAttribute('src'),
+                alt: node.getAttribute('alt')
+            };
+        }
+    }
+    CustomImage.blotName = 'customImage';
+    CustomImage.tagName = 'img';
+    Quill.register(CustomImage, true);
+
     // Inicialização do Quill Editor (Rich Text)
     const quill = new Quill('#editor-container', {
         theme: 'snow',
@@ -36,16 +58,43 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ],
                 handlers: {
                     image: function() {
-                        const url = prompt('Por favor, cole a URL da imagem (Ex: Imgur):');
-                        if (url) {
-                            const range = this.quill.getSelection();
-                            this.quill.insertEmbed(range.index, 'image', url);
-                        }
+                        // Abre o modal customizado em vez do prompt
+                        document.getElementById('imageModal').style.display = 'flex';
+                        document.getElementById('modalImgUrl').value = '';
+                        document.getElementById('modalImgAlt').value = '';
+                        document.getElementById('modalImgCaption').value = '';
                     }
                 }
             }
         },
         placeholder: 'Escreva o artigo com estilo...'
+    });
+
+    // Lógica do Modal de Imagem
+    document.getElementById('btnCancelImage').addEventListener('click', () => {
+        document.getElementById('imageModal').style.display = 'none';
+    });
+
+    document.getElementById('btnInsertImage').addEventListener('click', () => {
+        const url = document.getElementById('modalImgUrl').value;
+        const alt = document.getElementById('modalImgAlt').value;
+        const caption = document.getElementById('modalImgCaption').value;
+        
+        if (url) {
+            // Pega o index atual ou vai para o fim
+            const range = quill.getSelection() || { index: quill.getLength() };
+            
+            // Insere a imagem com Alt Text
+            quill.insertEmbed(range.index, 'customImage', { url: url, alt: alt }, 'user');
+            
+            // Se tiver legenda, insere abaixo
+            if (caption) {
+                quill.insertText(range.index + 1, '\n' + caption + '\n', 'user');
+                // Formata a legenda em itálico e centralizado (opcionalmente)
+                quill.formatText(range.index + 1, caption.length + 1, { italic: true }, 'user');
+            }
+        }
+        document.getElementById('imageModal').style.display = 'none';
     });
 
     // Verifica Sessão Atual
@@ -127,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             titulo: document.getElementById('titulo').value,
             slug: document.getElementById('slug').value,
             imagem_capa: document.getElementById('imagem_capa').value || null,
+            imagem_capa_alt: document.getElementById('imagem_capa_alt').value || null,
             resumo: document.getElementById('resumo').value,
             conteudo: quill.root.innerHTML,
             status: document.getElementById('status').value
@@ -286,6 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('titulo').value = post.titulo;
         document.getElementById('slug').value = post.slug;
         document.getElementById('imagem_capa').value = post.imagem_capa || '';
+        document.getElementById('imagem_capa_alt').value = post.imagem_capa_alt || '';
         document.getElementById('resumo').value = post.resumo;
         quill.root.innerHTML = post.conteudo;
         document.getElementById('status').value = post.status;

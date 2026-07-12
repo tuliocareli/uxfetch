@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const { data: posts, error } = await supabase
             .from('blog_posts')
-            .select('titulo, slug, imagem_capa, resumo')
+            .select('titulo, slug, imagem_capa, imagem_capa_alt, resumo')
             .eq('status', 'published')
             .order('data_publicacao', { ascending: false })
             .limit(6);
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             card.innerHTML = `
                 <div class="uxf-card-img-wrapper" style="padding: 0;">
-                    <img class="uxf-card-img" style="object-fit: cover; width: 100%; height: 100%; border-radius: 20px 20px 0 0;" src="${img}" alt="${post.titulo}">
+                    <img class="uxf-card-img" style="object-fit: cover; width: 100%; height: 100%; border-radius: 20px 20px 0 0;" src="${img}" alt="${post.imagem_capa_alt || post.titulo}">
                 </div>
                 <div class="uxf-card-content" style="height: 150px;">
                     <div class="uxf-tag" style="margin-bottom: 8px;">Artigo</div>

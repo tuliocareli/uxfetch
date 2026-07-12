@@ -136,9 +136,14 @@
                     
                     <div class="form-group">
                         <label for="imagem_capa">URL da Imagem de Capa (Opcional)</label>
-                        <input type="url" id="imagem_capa" placeholder="https://exemplo.com/imagem.png">
+                        <input type="url" id="imagem_capa" placeholder="https://...">
                     </div>
                     
+                    <div class="form-group">
+                        <label for="imagem_capa_alt">Alt Text da Capa (Acessibilidade/SEO)</label>
+                        <input type="text" id="imagem_capa_alt" placeholder="Descreva a imagem de capa (ex: Homem usando notebook no escritório...)">
+                    </div>
+
                     <div class="form-group">
                         <label for="resumo">Resumo (Para o Card da Home)</label>
                         <textarea id="resumo" required placeholder="Pequeno texto chamativo..." style="min-height: 80px;"></textarea>
@@ -195,6 +200,29 @@
                     <div class="article-content" id="previewArticleContent">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Custom Image para Quill -->
+    <div id="imageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 24px; border-radius: 12px; width: 400px; max-width: 90%;">
+            <h3 style="margin-top: 0; margin-bottom: 16px;">Inserir Imagem</h3>
+            <div class="form-group">
+                <label for="modalImgUrl">URL da Imagem</label>
+                <input type="url" id="modalImgUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label for="modalImgAlt">Texto Alternativo (Alt Text)</label>
+                <input type="text" id="modalImgAlt" placeholder="Descreva a imagem (Importante para o Google)">
+            </div>
+            <div class="form-group">
+                <label for="modalImgCaption">Legenda (Opcional)</label>
+                <input type="text" id="modalImgCaption" placeholder="Texto visível abaixo da imagem">
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                <button type="button" class="btn-outline" id="btnCancelImage" style="width: auto; padding: 8px 16px;">Cancelar</button>
+                <button type="button" class="btn-submit" id="btnInsertImage" style="width: auto; padding: 8px 16px;">Inserir</button>
             </div>
         </div>
     </div>
