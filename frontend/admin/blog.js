@@ -22,6 +22,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnPreview = document.getElementById('btnPreview');
     const btnBackToEditor = document.getElementById('btnBackToEditor');
 
+    // Auto fix Imgur links
+    function fixImgurLink(url) {
+        if (!url) return url;
+        if (url.includes('imgur.com') && !url.includes('i.imgur.com') && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+            if(url.includes('/a/')) return url; // É um álbum, ignora
+            return url.replace('imgur.com', 'i.imgur.com') + '.jpg';
+        }
+        return url;
+    }
+
+    const imgCapaInput = document.getElementById('imagem_capa');
+    if (imgCapaInput) {
+        imgCapaInput.addEventListener('blur', () => {
+            imgCapaInput.value = fixImgurLink(imgCapaInput.value);
+        });
+    }
+
     // Custom Image Blot para suportar Alt Text
     const ImageBlot = Quill.import('formats/image');
     class CustomImage extends ImageBlot {
@@ -76,7 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('btnInsertImage').addEventListener('click', () => {
-        const url = document.getElementById('modalImgUrl').value;
+        let url = document.getElementById('modalImgUrl').value;
+        url = fixImgurLink(url);
         const alt = document.getElementById('modalImgAlt').value;
         const caption = document.getElementById('modalImgCaption').value;
         
