@@ -94,7 +94,13 @@
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
+            let slug = urlParams.get('slug');
+            
+            if (!slug) {
+                const pathParts = window.location.pathname.split('/');
+                slug = pathParts[pathParts.length - 1];
+            }
+
             const container = document.getElementById('articleContainer');
 
             if (!slug) {
