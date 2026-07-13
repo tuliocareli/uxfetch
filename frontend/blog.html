@@ -129,7 +129,7 @@
 
                 posts.forEach(post => {
                     const card = document.createElement('a');
-                    card.href = `artigo.html?slug=${post.slug}`;
+                    card.href = `artigo/${post.slug}`;
                     card.className = 'uxf-card';
                     
                     const img = post.imagem_capa || 'assets/og-image.png';

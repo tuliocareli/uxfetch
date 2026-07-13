@@ -381,23 +381,27 @@
                         <p class="uxf-subtitle">Conteúdo sobre mercado, portfólio e evolução na carreira de design.</p>
                     </div>
                     
-                    <div class="uxf-controls" style="display: flex; align-items: center; gap: 16px;">
+                    <div class="uxf-controls" style="display: flex; align-items: center;">
                         <a href="blog.html" style="color: var(--primary); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Ver todos os artigos &rarr;</a>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="uxf-control-btn" id="blogPrev" aria-label="Anterior">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                            </button>
-                            <button class="uxf-control-btn" id="blogNext" aria-label="Próximo">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                            </button>
-                        </div>
                     </div>
                 </div>
 
-                <div class="uxf-carousel-wrapper">
+                <div class="uxf-carousel-wrapper" style="position: relative;">
+                    <style>
+                        .blog-side-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: var(--white); width: 48px; height: 48px; }
+                        .blog-side-btn.prev-btn { left: -24px; }
+                        .blog-side-btn.next-btn { right: -24px; }
+                        @media (max-width: 768px) { .blog-side-btn { display: none !important; } }
+                    </style>
+                    <button class="uxf-control-btn blog-side-btn prev-btn" id="blogPrev" aria-label="Anterior">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
                     <div class="uxf-carousel" id="blogCarousel">
                         <!-- Carregando... -->
                     </div>
+                    <button class="uxf-control-btn blog-side-btn next-btn" id="blogNext" aria-label="Próximo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
                 </div>
             </div>
         </section>
