@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/artigo/:slug",
-      "destination": "/post"
+      "destination": "/api/og-artigo?slug=:slug"
     }
   ]
 }
