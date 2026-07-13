@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const img = post.imagem_capa || 'assets/og-image.png'; // Fallback
             
             card.innerHTML = `
-                <div class="uxf-card-img-wrapper" style="padding: 0; height: 190px;">
+                <div class="uxf-card-img-wrapper" style="padding: 0; height: 170px;">
                     <img class="uxf-card-img" style="object-fit: cover; width: 100%; height: 100%; border-radius: 20px 20px 0 0;" src="${img}" alt="${post.imagem_capa_alt || post.titulo}">
                 </div>
-                <div class="uxf-card-content" style="height: 190px; position: relative; justify-content: flex-start; padding: 20px; border-top: none;">
+                <div class="uxf-card-content" style="height: 210px; position: relative; justify-content: flex-start; padding: 20px; border-top: none;">
                     <div class="uxf-tag" style="margin-bottom: 12px; width: fit-content;">Artigo</div>
-                    <h3 class="uxf-book-title" style="font-size: 1.1rem; margin-bottom: 8px;">${post.titulo}</h3>
-                    <p class="uxf-book-desc" style="font-size: 0.85rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${post.resumo}</p>
+                    <h3 class="uxf-book-title" style="font-size: 1.1rem; margin-bottom: 8px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${post.titulo}</h3>
+                    <p class="uxf-book-desc" style="font-size: 0.85rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${post.resumo}</p>
                 </div>
             `;
             carousel.appendChild(card);
