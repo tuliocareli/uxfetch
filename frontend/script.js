@@ -436,7 +436,7 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                 
                 const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|motion|3d|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital|v[ií]deos?|videos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|anima[çc][ãa]o|animador)\b/i.test(t);
                 
-                const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+                const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t) && !t.includes('diretor de arte');
                 
                 const isUxUiProduct = /\b(ux|ui|products?|produtos?|researchers?|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
                 const isUxUi = isUxUiProduct;

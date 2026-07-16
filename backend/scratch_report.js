@@ -41,7 +41,7 @@ async function main() {
     // Areas
     const isVideoMotion = /\b(videos?|v[ií]deos?|videomaker|filmmaker|audiovisual|edi[çc][ãa]o|motion|3d|after effects|premiere|anima[çc][ãa]o|animador|animadora|vfx|capcut|cinema|cinegrafista|fotografia|fot[óo]grafo|c4d|blender|maya|zbrush|render)\b/i.test(t);
     const isPlusExplicit = /\b(game|cad|graphic|gr[aá]fico|visual|brand|marketing|arte|social media|ilustra|moda|interiores|embalagem|t[êe]xtil|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t) || isVideoMotion;
-    const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t);
+    const isLeadership = /\b(lead|head|staff|principal|manager|diretor|coordinator)\b/i.test(t) && !t.includes('diretor de arte');
     const isUxUiProduct = /\b(ux|ui|product|produto|research|pesquisa|service|experi[êe]ncia|usabilidade|interface|design engineer|engenheir[oa] de design|design ops|design system)\b/i.test(t);
     const isUxUi = isUxUiProduct && !isVideoMotion;
     const isGraphicExplicit = /\b(graphic|gr[aá]fico|visual|brand|marketing|arte|social media|criativo|criativos|comunica[çc][ãa]o|publicidade|digital)\b/i.test(t);
