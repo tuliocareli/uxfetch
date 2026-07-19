@@ -26,13 +26,13 @@ const initPartnerShowcase = async () => {
                 const style = document.createElement('style');
                 style.id = 'uxf-partner-styles';
                 style.textContent = `
-                    .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; }
+                    .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; min-height: 280px; }
                     .native-partner-link { position: relative; display: inline-block; border-radius: 12px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
                     .native-partner-link:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1); }
                     .native-partner-link img { display: block; width: 100%; max-width: 300px; height: auto; object-fit: cover; }
                     .partner-badge-floating { position: absolute; top: 12px; left: 12px; z-index: 10; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #1e293b; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); padding: 0.25rem 0.6rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); pointer-events: none; }
                     
-                    @media (min-width: 1200px) {
+                    @media (min-width: 1536px) {
                         .partner-wrapper {
                             position: fixed;
                             top: 140px;
@@ -49,6 +49,9 @@ const initPartnerShowcase = async () => {
             const mobileSource = banner.image_mobile_url 
                 ? `<source media="(max-width: 768px)" srcset="${banner.image_mobile_url}">` 
                 : '';
+                
+            const isDesktop = window.innerWidth >= 1536;
+            const imgAttributes = isDesktop ? 'fetchpriority="high"' : 'loading="lazy"';
 
             adSlot.innerHTML = `
                 <aside class="partner-wrapper">
@@ -56,7 +59,7 @@ const initPartnerShowcase = async () => {
                         <span class="partner-badge-floating">Patrocinado</span>
                         <picture>
                             ${mobileSource}
-                            <img src="${banner.image_url}" alt="${banner.alt_text}" loading="lazy">
+                            <img src="${banner.image_url}" alt="${banner.alt_text}" ${imgAttributes}>
                         </picture>
                     </a>
                 </aside>
