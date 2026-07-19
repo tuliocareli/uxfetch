@@ -209,6 +209,40 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
             `;
         }
 
+        const currentMs = Date.now();
+        const cutoffDate = new Date('2026-07-23T00:00:00Z').getTime(); // Desliga a campanha no dia 23 de Julho
+        let avisoTermosHtml = '';
+
+        if (currentMs < cutoffDate) {
+            const dayOfYear = Math.floor(currentMs / 1000 / 60 / 60 / 24);
+            const variationIndex = dayOfYear % 3;
+            
+            const psCopies = [
+                // Envio 1
+                '<strong>P.S.:</strong> O UXfetch está crescendo! Para manter a nossa curadoria 100% gratuita para você, atualizamos nossos Termos de Uso (julho/2026). Passaremos a usar estatísticas gerais e anônimas da plataforma (como "volume total de cliques" ou "taxa de abertura de e-mails") para buscar patrocinadores que apoiem o projeto. Fique tranquilo: seu e-mail, seu comportamento individual e seus dados continuam blindados e não são compartilhados com terceiros. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Leia os Termos atualizados aqui &rarr;</a>',
+                
+                // Envio 2
+                '<strong>P.S.:</strong> Se você perdeu o aviso de ontem &mdash; atualizamos os Termos de Uso pra deixar claro como usamos estatísticas anônimas (nunca seu e-mail ou dado individual) na busca por patrocinadores que mantêm o UXfetch gratuito. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Termos aqui &rarr;</a>',
+                
+                // Envio 3
+                '<strong>P.S.:</strong> Última vez que menciono isso por aqui &mdash; Termos de Uso atualizados em julho/2026, com detalhes de como usamos dados anônimos da plataforma. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Confira aqui &rarr;</a>'
+            ];
+
+            const selectedCopy = psCopies[variationIndex];
+
+            avisoTermosHtml = `
+      <tr>
+        <td style="padding:10px 30px 20px 30px;">
+          <div style="background-color:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; padding:20px;">
+            <p style="margin:0; font-size:14px; line-height:22px; color:#1E3A8A;">
+              ${selectedCopy}
+            </p>
+          </div>
+        </td>
+      </tr>`;
+        }
+
+        templateHtml = templateHtml.replace(/{{AVISO_TERMOS_PLACEHOLDER}}/g, avisoTermosHtml);
         templateHtml = templateHtml.replace(/{{intro_title}}/g, introTitle);
         templateHtml = templateHtml.replace(/{{intro_text}}/g, introText);
         templateHtml = templateHtml.replace(/{{VAGAS_PLACEHOLDER}}/g, jobsHtml);
