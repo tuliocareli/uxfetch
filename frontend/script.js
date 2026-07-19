@@ -65,31 +65,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Lógica de exclusão mútua dos checkboxes
-    onlyRemoteCheck.addEventListener('change', (e) => {
-        if(e.target.checked) {
-            acceptOtherCheck.checked = false;
-            acceptRemoteCheck.checked = false;
-            acceptsHybridCheck.checked = false;
-        }
-    });
+    if (onlyRemoteCheck) {
+        onlyRemoteCheck.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                if(acceptOtherCheck) acceptOtherCheck.checked = false;
+                if(acceptRemoteCheck) acceptRemoteCheck.checked = false;
+                if(acceptsHybridCheck) acceptsHybridCheck.checked = false;
+            }
+        });
+    }
 
-    acceptOtherCheck.addEventListener('change', (e) => {
-        if(e.target.checked) {
-            onlyRemoteCheck.checked = false;
-        }
-    });
+    if (acceptOtherCheck) {
+        acceptOtherCheck.addEventListener('change', (e) => {
+            if(e.target.checked && onlyRemoteCheck) {
+                onlyRemoteCheck.checked = false;
+            }
+        });
+    }
 
-    acceptRemoteCheck.addEventListener('change', (e) => {
-        if(e.target.checked) {
-            onlyRemoteCheck.checked = false;
-        }
-    });
+    if (acceptRemoteCheck) {
+        acceptRemoteCheck.addEventListener('change', (e) => {
+            if(e.target.checked && onlyRemoteCheck) {
+                onlyRemoteCheck.checked = false;
+            }
+        });
+    }
 
-    acceptsHybridCheck.addEventListener('change', (e) => {
-        if(e.target.checked) {
-            onlyRemoteCheck.checked = false;
-        }
-    });
+    if (acceptsHybridCheck) {
+        acceptsHybridCheck.addEventListener('change', (e) => {
+            if(e.target.checked && onlyRemoteCheck) {
+                onlyRemoteCheck.checked = false;
+            }
+        });
+    }
 
     // Inicialização do Supabase Client
     let supabase;
@@ -109,8 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Token retornado pelo subscribe (Step 1) e reutilizado no Step 2 de preferências
     let subscriberToken = null;
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
         if(!supabase) {
             alert('Sistema de banco de dados não disponível no momento.');
@@ -193,11 +202,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erro ao salvar no Supabase:', error);
             alert('Ops! Ocorreu um erro ao salvar sua inscrição. Tente novamente.');
         } finally {
-            submitBtn.disabled = false;
-            btnText.classList.remove('hidden');
-            loader.classList.add('hidden');
+            if(submitBtn) submitBtn.disabled = false;
+            if(btnText) btnText.classList.remove('hidden');
+            if(loader) loader.classList.add('hidden');
         }
     });
+    }
 
     // Preferences Form Submission Logic (STEP 2)
     const prefForm = document.getElementById('preferences-form');

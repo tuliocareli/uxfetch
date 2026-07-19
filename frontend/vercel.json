@@ -20,6 +20,11 @@
   ],
   "redirects": [
     {
+      "source": "/blog/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
       "source": "/artigo/o-que-eu-aprendi-enviando-563-vagas-de-design-em-30-dias",
       "destination": "/blog/analise-563-vagas-design",
       "permanent": true
