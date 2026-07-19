@@ -210,21 +210,33 @@ async function sendDailyEmail(user, jobs, recentJobs = [], isDigestMode = false)
         }
 
         const currentMs = Date.now();
-        const cutoffDate = new Date('2026-07-23T00:00:00Z').getTime(); // Desliga a campanha no dia 23 de Julho
+        // Converte a data para o fuso do Brasil. Isso garante que a virada de e-mail 
+        // aconteça exatamente à meia-noite do BR, e não no fuso do servidor.
+        // O formato 'en-CA' força o padrão YYYY-MM-DD
+        const dateStringBR = new Date(currentMs).toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }); 
+        
         let avisoTermosHtml = '';
 
-        if (currentMs < cutoffDate) {
-            const dayOfYear = Math.floor(currentMs / 1000 / 60 / 60 / 24);
-            const variationIndex = dayOfYear % 3;
+        // Tabela de Roteamento Estático: Mapeia cada data explicitamente para um e-mail.
+        // Zero chance de erro matemático. Se a data não estiver aqui, o P.S. não entra.
+        const campaignSchedule = {
+            '2026-07-19': 0, // Adicionado apenas para você conseguir testar hoje se quiser (Envio 1)
+            '2026-07-20': 0, // Amanhã, dia oficial de início (Envio 1)
+            '2026-07-21': 1, // Depois de amanhã (Envio 2)
+            '2026-07-22': 2  // Último dia (Envio 3)
+        };
+
+        if (campaignSchedule.hasOwnProperty(dateStringBR)) {
+            const variationIndex = campaignSchedule[dateStringBR];
             
             const psCopies = [
-                // Envio 1
+                // Envio 1 (Índice 0)
                 '<strong>P.S.:</strong> O UXfetch está crescendo! Para manter a nossa curadoria 100% gratuita para você, atualizamos nossos Termos de Uso (julho/2026). Passaremos a usar estatísticas gerais e anônimas da plataforma (como "volume total de cliques" ou "taxa de abertura de e-mails") para buscar patrocinadores que apoiem o projeto. Fique tranquilo: seu e-mail, seu comportamento individual e seus dados continuam blindados e não são compartilhados com terceiros. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Leia os Termos atualizados aqui &rarr;</a>',
                 
-                // Envio 2
+                // Envio 2 (Índice 1)
                 '<strong>P.S.:</strong> Se você perdeu o aviso de ontem &mdash; atualizamos os Termos de Uso pra deixar claro como usamos estatísticas anônimas (nunca seu e-mail ou dado individual) na busca por patrocinadores que mantêm o UXfetch gratuito. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Termos aqui &rarr;</a>',
                 
-                // Envio 3
+                // Envio 3 (Índice 2)
                 '<strong>P.S.:</strong> Última vez que menciono isso por aqui &mdash; Termos de Uso atualizados em julho/2026, com detalhes de como usamos dados anônimos da plataforma. <a href="https://uxfetch.com.br/termos.html" target="_blank" style="color:#1D4ED8; font-weight:600; text-decoration:underline;">Confira aqui &rarr;</a>'
             ];
 
