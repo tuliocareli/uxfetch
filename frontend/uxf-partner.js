@@ -26,21 +26,23 @@ const initPartnerShowcase = async () => {
                 const style = document.createElement('style');
                 style.id = 'uxf-partner-styles';
                 style.textContent = `
-                    .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; min-height: 280px; }
-                    .native-partner-link { position: relative; display: inline-block; border-radius: 12px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
-                    .native-partner-link:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1); }
-                    .native-partner-link img { display: block; width: 100%; max-width: 300px; height: auto; object-fit: cover; }
-                    .partner-badge-floating { position: absolute; top: 12px; left: 12px; z-index: 10; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #1e293b; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); padding: 0.25rem 0.6rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); pointer-events: none; }
+                    .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; }
+                    .partner-box { background: #EBF4FF; border-radius: 12px; width: 300px; padding: 24px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.05); text-decoration: none; display: flex; flex-direction: column; position: relative; border: 1px solid #D1E4FF; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+                    .partner-box:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 85, 255, 0.15); border-color: var(--primary); }
+                    .partner-badge { position: absolute; top: -12px; left: 24px; background: var(--white); color: #4A5568; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
+                    .partner-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; justify-content: flex-end; }
+                    .partner-brand img { height: 20px; }
+                    .partner-title { font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin: 0 0 12px 0; line-height: 1.3; }
+                    .partner-desc { font-size: 0.9rem; color: #4A5568; margin: 0 0 16px 0; line-height: 1.5; font-weight: 500; }
+                    .partner-img-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 16px; }
+                    .partner-img { max-width: 100%; border-radius: 8px; max-height: 180px; object-fit: contain; }
+                    .partner-btn { background: var(--primary); color: var(--white); text-align: center; font-weight: 700; padding: 12px; border-radius: 8px; width: 100%; transition: background 0.2s ease; }
+                    .partner-box:hover .partner-btn { background: var(--primary-dark); }
                     
-                    @media (min-width: 1536px) {
-                        .partner-wrapper {
-                            position: fixed;
-                            top: 140px;
-                            right: 40px;
-                            width: auto;
-                            margin: 0;
-                            z-index: 900;
-                        }
+                    /* O Container tem max-width 1200px. O Banner tem 300px + margins.
+                       Para caber lado a lado sem sobrepor, precisamos de: 1200 + 340 + 340 = 1880px de viewport. */
+                    @media (min-width: 1880px) {
+                        .partner-wrapper { position: fixed; top: 120px; right: 40px; margin: 0; min-height: auto; z-index: 100; }
                     }
                 `;
                 document.head.appendChild(style);
