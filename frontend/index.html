@@ -114,6 +114,12 @@
             .uxf-carousel-wrapper { margin: 0 -20px; padding: 0 20px; }
             .uxf-card { flex: 0 0 260px; height: 350px; }
         }
+        
+        /* Prevenção de CLS para o Banner Patrocinado */
+        .partner-slot-placeholder { min-height: 380px; width: 100%; }
+        @media (min-width: 1880px) {
+            .partner-slot-placeholder { min-height: 0; }
+        }
     </style>
 </head>
 <body>
@@ -305,7 +311,7 @@
             </div>
 
             <!-- Slot para Banners Patrocinados -->
-            <div id="uxf-partner-slot"></div>
+            <div id="uxf-partner-slot" class="partner-slot-placeholder"></div>
         </div>
 
         <!-- SOBRE O PROJETO SECTION -->
@@ -378,8 +384,8 @@
             </div>
         </section>
 
-        <!-- BLOG CAROUSEL SECTION (Oculto por padrão até ter posts) -->
-        <section class="container" id="blog-carousel-section" style="display: none; margin-bottom: 60px;">
+        <!-- BLOG CAROUSEL SECTION -->
+        <section class="container" id="blog-carousel-section" style="min-height: 480px; margin-bottom: 60px;">
             <div class="uxf-section">
                 <div class="uxf-header">
                     <div class="uxf-header-text">
@@ -414,7 +420,7 @@
         </section>
 
         <!-- UX BOOKS CAROUSEL SECTION -->
-        <div id="uxf-books-container"></div>
+        <div id="uxf-books-container" style="min-height: 500px;"></div>
 
     </main>
 

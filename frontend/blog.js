@@ -28,9 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Se houver, renderizamos e exibimos
-        blogCarouselContainer.style.display = 'block';
-
         const carousel = document.getElementById('blogCarousel');
         if (!carousel) return;
 
