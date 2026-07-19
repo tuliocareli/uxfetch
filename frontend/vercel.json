@@ -8,6 +8,14 @@
     {
       "source": "/blog/:match*",
       "destination": "https://app.uxfetch.com.br/blog/:match*"
+    },
+    {
+      "source": "/blog",
+      "destination": "https://app.uxfetch.com.br/blog"
+    },
+    {
+      "source": "/post.html",
+      "destination": "https://app.uxfetch.com.br/post.html"
     }
   ],
   "redirects": [
