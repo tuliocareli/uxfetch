@@ -138,11 +138,11 @@
             .uxf-card { flex: 0 0 260px; height: 350px; }
         }
         
-        /* Banner slot: esconde o wrapper inline em telas < 1880px.
+        /* Banner slot: esconde o wrapper inline em telas < 1536px.
            Na home, o banner só existe como flutuante fixo em telas ultra-largas.
            Em telas menores, simplesmente não aparece para não quebrar o layout. */
         #uxf-partner-slot .partner-wrapper { display: none; }
-        @media (min-width: 1880px) {
+        @media (min-width: 1536px) {
             #uxf-partner-slot .partner-wrapper { display: flex; }
         }
     </style>
@@ -490,6 +490,6 @@
     <script src="script.js?v=2.5" defer></script>
     <script src="cookies.js" defer></script>
     <script src="blog.js" defer></script>
-    <script src="uxf-partner.js?v=2.1" defer></script>
+    <script src="uxf-partner.js?v=2.2" defer></script>
 </body>
 </html>

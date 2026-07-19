@@ -30,43 +30,34 @@ const initPartnerShowcase = async () => {
                 style.id = 'uxf-partner-styles';
                 style.textContent = `
                     .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; }
-                    .partner-box { background: #EBF4FF; border-radius: 12px; width: 300px; padding: 24px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.05); text-decoration: none; display: flex; flex-direction: column; position: relative; border: 1px solid #D1E4FF; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-                    .partner-box:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 85, 255, 0.15); border-color: var(--primary); }
-                    .partner-badge { position: absolute; top: -12px; left: 24px; background: #fff; color: #4A5568; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; border: 1px solid #B7CFFF; }
-                    .partner-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; justify-content: flex-end; }
-                    .partner-brand img { height: 20px; }
-                    .partner-title { font-size: 1.25rem; font-weight: 800; color: #231F20; margin: 0 0 12px 0; line-height: 1.3; }
-                    .partner-desc { font-size: 0.9rem; color: #4A5568; margin: 0 0 16px 0; line-height: 1.5; font-weight: 500; }
-                    .partner-img-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 16px; }
-                    .partner-img { max-width: 100%; border-radius: 8px; max-height: 180px; object-fit: contain; }
-                    .partner-btn { background: #0055FF; color: #fff; text-align: center; font-weight: 700; padding: 12px; border-radius: 8px; width: 100%; transition: background 0.2s ease; }
-                    .partner-box:hover .partner-btn { background: #274E9C; }
+                    .native-partner-link { position: relative; display: block; border-radius: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease; border: 1px solid var(--border-color, #B7CFFF); box-shadow: 0 4px 12px rgba(0, 85, 255, 0.05); }
+                    .native-partner-link:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 85, 255, 0.15); border-color: var(--primary, #0055FF); }
+                    .partner-badge-floating { position: absolute; top: -12px; left: 24px; background: var(--white, #fff); color: #4A5568; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color, #B7CFFF); z-index: 10; }
+                    .native-partner-link img { display: block; width: 300px; max-width: 100%; height: auto; border-radius: 12px; }
                     
-                    /* Position fixo APENAS na Home e apenas em telas muito largas (1880px+).
-                       Calculado como: max-width do container (1200px) + banner (300px) + margens (380px) = 1880px */
-                    ${!isBlogPage ? `@media (min-width: 1880px) {
-                        .partner-wrapper { position: fixed; top: 120px; right: 40px; margin: 0; z-index: 100; }
+                    /* Position fixo APENAS na Home e apenas em telas muito largas (1536px+) */
+                    ${!isBlogPage ? `@media (min-width: 1536px) {
+                        .partner-wrapper { position: fixed; top: 120px; right: 40px; margin: 0; width: auto; z-index: 100; }
                     }` : ''}
                 `;
                 document.head.appendChild(style);
             }
 
+            const mobileSource = banner.image_mobile_url 
+                ? `<source media="(max-width: 768px)" srcset="${banner.image_mobile_url}">` 
+                : '';
+                
             const isDesktop = window.innerWidth >= 1536;
             const imgAttributes = isDesktop ? 'fetchpriority="high"' : 'loading="lazy"';
 
             adSlot.innerHTML = `
                 <aside class="partner-wrapper">
-                    <a href="${redirectUrl}" class="partner-box" target="_blank" rel="sponsored noopener">
-                        <span class="partner-badge">Patrocinado</span>
-                        <div class="partner-brand">
-                            <img src="/assets/logo.svg" alt="UXfetch" onerror="this.style.display='none'">
-                        </div>
-                        <p class="partner-title">${banner.title || 'Tem um produto de design?'}</p>
-                        <p class="partner-desc">${banner.description || 'Apareça pra clientes qualificados.'}</p>
-                        <div class="partner-img-wrapper">
-                            <img class="partner-img" src="${banner.image_url}" alt="${banner.alt_text}" ${imgAttributes}>
-                        </div>
-                        <div class="partner-btn">Anuncie aqui</div>
+                    <a href="${redirectUrl}" class="native-partner-link" target="_blank" rel="sponsored noopener">
+                        <span class="partner-badge-floating">Patrocinado</span>
+                        <picture>
+                            ${mobileSource}
+                            <img src="${banner.image_url}" alt="${banner.alt_text}" ${imgAttributes}>
+                        </picture>
                     </a>
                 </aside>
             `;
