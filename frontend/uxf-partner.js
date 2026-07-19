@@ -31,6 +31,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                     .native-partner-link:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1); }
                     .native-partner-link img { display: block; width: 100%; max-width: 300px; height: auto; object-fit: cover; }
                     .partner-badge-floating { position: absolute; top: 12px; left: 12px; z-index: 10; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #1e293b; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); padding: 0.25rem 0.6rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); pointer-events: none; }
+                    
+                    @media (min-width: 1200px) {
+                        .partner-wrapper {
+                            position: fixed;
+                            top: 140px;
+                            right: 40px;
+                            width: auto;
+                            margin: 0;
+                            z-index: 900;
+                        }
+                    }
                 `;
                 document.head.appendChild(style);
             }
