@@ -100,17 +100,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicialização do Supabase Client
-    let supabase;
-    try {
-        const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_YP0GmSgpgugyAnjan6I3bQ_Gaf4CSGI';
-        if (window.supabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } else {
-            console.warn('Supabase SDK não carregou.');
+    let supabase = window.appSupabase;
+    if (!supabase) {
+        try {
+            const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_YP0GmSgpgugyAnjan6I3bQ_Gaf4CSGI';
+            if (window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.appSupabase = supabase; // Salva a instância no Singleton
+            } else {
+                console.warn('Supabase SDK não carregou.');
+            }
+        } catch (e) {
+            console.error('Erro ao inicializar Supabase:', e);
         }
-    } catch (e) {
-        console.error('Erro ao inicializar Supabase:', e);
     }
 
     // Form Submission Logic
