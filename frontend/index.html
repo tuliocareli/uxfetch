@@ -20,7 +20,30 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
     <link rel="preload" as="image" href="assets/logo.svg">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="styles.css">
+    <!-- CSS crítico inline: apenas o suficiente para pintar acima da dobra sem bloquear render -->
+    <style>
+        :root{--primary:#0055FF;--primary-dark:#274E9C;--white:#FFFFFF;--black:#000000;--text-dark:#231F20;--bg-light:#F3F3F3;--bg-blue-lightest:#F0F5FF;--bg-blue-light:#EDF3FF;--bg-blue-medium:#E5EBF9;--border-color:#B7CFFF;--font-main:'Space Grotesk',sans-serif;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--font-main);background-color:var(--bg-blue-lightest);color:var(--text-dark);line-height:1.6;}
+        .container{max-width:1200px;margin:0 auto;padding:0 24px;}
+        .header{padding:24px 0;}
+        .header-container{display:flex;justify-content:space-between;align-items:center;}
+        .logo{height:40px;}
+        .hero-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 88px);padding:40px 24px;text-align:center;}
+        .hero-text{max-width:800px;margin-bottom:48px;}
+        .hero-text h1{font-size:3.5rem;font-weight:700;color:var(--black);margin-bottom:24px;line-height:1.1;letter-spacing:-0.03em;}
+        .hero-text p{font-size:1.25rem;color:#4A5568;max-width:600px;margin:0 auto;}
+        .highlight{color:var(--primary);}
+        .btn-primary{background:var(--primary);color:var(--white);border:none;border-radius:12px;padding:16px 32px;font-family:var(--font-main);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;}
+        .desktop-nav{display:none;}
+        @media(min-width:768px){.desktop-nav{display:flex;gap:32px;align-items:center;}}
+        .mobile-menu-btn{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+        .mobile-menu-btn span{width:24px;height:2px;background:var(--text-dark);border-radius:2px;}
+        @media(min-width:768px){.mobile-menu-btn{display:none;}}
+    </style>
+    <!-- CSS restante carregado de forma não-bloqueante -->
+    <link rel="preload" as="style" href="styles.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script type="application/ld+json">
