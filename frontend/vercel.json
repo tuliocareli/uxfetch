@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/_next/:match*",
+      "destination": "https://app.uxfetch.com.br/_next/:match*"
+    },
+    {
       "source": "/blog/:match*",
       "destination": "https://app.uxfetch.com.br/blog/:match*"
     }
