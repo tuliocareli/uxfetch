@@ -138,9 +138,12 @@
             .uxf-card { flex: 0 0 260px; height: 350px; }
         }
         
-        /* Banner slot: sem min-height no mobile (banner só aparece em 1880px+) */
+        /* Banner slot: esconde o wrapper inline em telas < 1880px.
+           Na home, o banner só existe como flutuante fixo em telas ultra-largas.
+           Em telas menores, simplesmente não aparece para não quebrar o layout. */
+        #uxf-partner-slot .partner-wrapper { display: none; }
         @media (min-width: 1880px) {
-            .partner-slot-placeholder { min-height: 380px; }
+            #uxf-partner-slot .partner-wrapper { display: flex; }
         }
     </style>
 </head>
