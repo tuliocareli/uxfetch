@@ -115,10 +115,9 @@
             .uxf-card { flex: 0 0 260px; height: 350px; }
         }
         
-        /* Prevenção de CLS para o Banner Patrocinado */
-        .partner-slot-placeholder { min-height: 380px; width: 100%; }
+        /* Banner slot: sem min-height no mobile (banner só aparece em 1880px+) */
         @media (min-width: 1880px) {
-            .partner-slot-placeholder { min-height: 0; }
+            .partner-slot-placeholder { min-height: 380px; }
         }
     </style>
 </head>
@@ -385,7 +384,7 @@
         </section>
 
         <!-- BLOG CAROUSEL SECTION -->
-        <section class="container" id="blog-carousel-section" style="min-height: 480px; margin-bottom: 60px;">
+        <section class="container" id="blog-carousel-section" style="margin-bottom: 60px; display: none;">
             <div class="uxf-section">
                 <div class="uxf-header">
                     <div class="uxf-header-text">
@@ -420,7 +419,7 @@
         </section>
 
         <!-- UX BOOKS CAROUSEL SECTION -->
-        <div id="uxf-books-container" style="min-height: 500px;"></div>
+        <div id="uxf-books-container"></div>
 
     </main>
 

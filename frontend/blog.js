@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const carousel = document.getElementById('blogCarousel');
         if (!carousel) return;
 
+        // Revela a seção agora que temos conteúdo
+        blogCarouselContainer.style.display = 'block';
         carousel.innerHTML = ''; // Limpa estado de carregamento
 
         posts.forEach(post => {
