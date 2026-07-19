@@ -1,7 +1,7 @@
 // UXfetch Partner Showcase Injector (Vanilla JS)
-document.addEventListener('DOMContentLoaded', async () => {
+const initPartnerShowcase = async () => {
     const adSlot = document.getElementById('uxf-partner-slot');
-    if (!adSlot) return;
+    if (!adSlot || adSlot.dataset.loaded) return; // Prevent double injection
 
     try {
         const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </a>
                 </aside>
             `;
+            adSlot.dataset.loaded = 'true';
             
             // Track Impression via RPC
             fetch(`${SUPABASE_URL}/rest/v1/rpc/track_banner_view`, {
@@ -76,4 +77,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
         console.error('Ad load failed', e);
     }
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPartnerShowcase);
+} else {
+    initPartnerShowcase();
+}
