@@ -47,8 +47,10 @@
         }
 
         /* Dynamic Blocks */
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; text-align: center; }
         .tab-content.active { display: block; }
+        .tab-content h1.hero-text { margin-bottom: 16px; text-align: center; }
+        .tab-content p { text-align: center; margin-left: auto; margin-right: auto; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Metrics */
@@ -84,6 +86,16 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #1e293b; }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+            font-family: inherit; font-size: 1rem; color: #334155; transition: border-color 0.2s;
+            background: #f8fafc; box-sizing: border-box;
+        }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none; border-color: var(--primary); background: white;
+            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.1);
+        }
         @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .sponsor-form { padding: 24px; } }
         
         .char-counter {
@@ -104,12 +116,35 @@
             <a href="index.html" class="logo-link">
                 <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo" width="180" height="40">
             </a>
+            
             <nav class="desktop-nav">
                 <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="nav-link">Dados do Radar</a>
                 <a href="https://uxfetch.com.br/blog" class="nav-link">Blog</a>
+                <a href="index.html#sobre" class="nav-link">Sobre o Projeto</a>
+                <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" class="nav-btn-coffee">☕ Apoiar Projeto</a>
             </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu principal">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="close-menu-btn" id="closeMenuBtn" aria-label="Fechar menu">&times;</button>
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-nav-link">Início</a>
+                <a href="vagas.html" class="mobile-nav-link">Vagas Recentes</a>
+                <a href="dados.html" class="mobile-nav-link">Dados do Radar</a>
+                <a href="https://uxfetch.com.br/blog" class="mobile-nav-link">Blog</a>
+                <a href="index.html#sobre" class="mobile-nav-link">Sobre o Projeto</a>
+            </nav>
+        </div>
+    </div>
 
     <main class="container">
         <section class="anuncie-hero">
@@ -266,29 +301,43 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="footer">
-        <div class="container footer-content">
-            <div class="footer-left">
-                <img src="assets/logo.svg" alt="UX Fetch Logo" class="footer-logo">
-                <p>O radar automatizado para Product Designers.</p>
-                <div class="social-links" style="margin-top: 12px;">
-                    <a href="mailto:contato@uxfetch.com.br" style="color: #64748b; font-size: 0.9rem; text-decoration: none;">contato@uxfetch.com.br</a>
+        <div class="container footer-container">
+            <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-bottom: 32px;">
+                <!-- Coluna Esquerda -->
+                <div class="footer-col">
+                    <div class="footer-logo" style="margin-bottom: 16px;">
+                        <img src="assets/logo-white.svg" alt="UXfetch Logo" style="height: 32px;">
+                    </div>
+                    <p class="footer-description" style="margin-top: 0;">
+                        Feito para fortalecer o ecossistema.<br>
+                        <span style="color: var(--gray-300); font-style: italic;">O UXfetch é um radar, não um destino. Todas as vagas listadas redirecionam o candidato de forma gratuita para a plataforma oficial.</span>
+                    </p>
+                </div>
+
+                <!-- Coluna Direita -->
+                <div class="footer-col" style="display: flex; flex-direction: column; gap: 16px; justify-content: flex-end;">
+                    <p class="footer-description" style="font-size: 0.85rem; color: var(--gray-400); margin: 0;">
+                        O UXfetch é uma ferramenta viva e cresce com quem usa. Sugestões de portais, bugs ou ideias: manda um email.
+                    </p>
+                    <p class="footer-description" style="margin: 0;">
+                        Quer apoiar o projeto? <a href="https://buymeacoffee.com/uxfetch" target="_blank" rel="noopener noreferrer" style="color: var(--white); text-decoration: underline;">Apoie com um café ☕</a><br>
+                        Dúvidas ou sugestões? <a href="mailto:contato@uxfetch.com.br" style="color: var(--white); text-decoration: underline;">contato@uxfetch.com.br</a>
+                    </p>
                 </div>
             </div>
-            <div class="footer-links">
-                <div class="link-col">
-                    <h4>Links Úteis</h4>
-                    <a href="index.html">Página Inicial</a>
-                    <a href="vagas.html">Explorar Vagas</a>
-                    <a href="https://uxfetch.com.br/blog">Blog do UX Fetch</a>
-                </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <p>2026 UXfetch. Desenvolvido com ☕, Vibe Code, Supabase e GitHub Actions por <a href="https://tuliocareli.com" target="_blank" style="color: inherit;">tuliocareli.com</a></p>
+                <a href="termos.html">Termos e Privacidade</a>
             </div>
-        </div>
-        <div class="container footer-bottom">
-            <p>&copy; 2026 UX Fetch. Todos os direitos reservados.</p>
         </div>
     </footer>
 
+    <script src="script.js?v=2.3"></script>
     <script src="anuncie.js"></script>
 </body>
 </html>
