@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuncie no UX Fetch | Alcance Designers de Produto</title>
+    <meta name="description" content="Anuncie pra quem realmente contrata e é contratado em design. O UXfetch reúne Product Designers ativamente em busca de oportunidades.">
+    <meta property="og:title" content="Anuncie no UX Fetch | Alcance Designers">
+    <meta property="og:description" content="O UXfetch reúne Product Designers e UX Designers ativamente em busca de oportunidade — não tráfego de passagem. Patrocine o site ou a newsletter.">
+    <meta property="og:image" content="https://uxfetch.com.br/assets/og-image.png">
+    <meta property="og:url" content="https://uxfetch.com.br/anuncie.html">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://uxfetch.com.br/anuncie.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .anuncie-hero { text-align: center; padding: 60px 20px 40px; }
+        
+        /* Toggle */
+        .toggle-container {
+            display: inline-flex;
+            background: #f1f5f9;
+            border-radius: 100px;
+            padding: 4px;
+            margin: 0 auto 40px;
+        }
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 24px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 85, 255, 0.2);
+        }
+
+        /* Dynamic Blocks */
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .metric-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .metric-value { font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.1; letter-spacing: -1px; }
+        .metric-desc { font-size: 0.95rem; color: #475569; line-height: 1.4; font-weight: 500; }
+
+        /* Form */
+        .sponsor-form {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .sponsor-form { padding: 24px; } }
+        
+        .char-counter {
+            text-align: right; font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;
+        }
+        .char-counter.error { color: #ef4444; }
+        
+        .success-box {
+            display: none;
+            background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;
+            padding: 24px; border-radius: 12px; text-align: center; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="logo" width="180" height="40">
+            </a>
+            <nav class="desktop-nav">
+                <a href="vagas.html" class="nav-link">Vagas Recentes</a>
+                <a href="https://uxfetch.com.br/blog" class="nav-link">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="anuncie-hero">
+            <div class="toggle-container" role="tablist">
+                <button class="toggle-btn active" role="tab" aria-selected="true" data-target="newsletter">Newsletter</button>
+                <button class="toggle-btn" role="tab" aria-selected="false" data-target="site">Site</button>
+            </div>
+
+            <!-- NEWSLETTER TAB -->
+            <div id="newsletter-tab" class="tab-content active">
+                <h1 class="hero-text" style="margin-bottom: 16px;">
+                    Uma lista pequena que <span class="relative-inline">ninguém cancela<img src="assets/linha.svg" class="linha-svg" alt=""></span>.
+                </h1>
+                <p style="font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto;">
+                    323 designers recebem cada edição — e quase 50% abrem toda vez.
+                </p>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">323</div>
+                        <div class="metric-desc">Inscritos ativos, com retenção de praticamente 100%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">49,7%</div>
+                        <div class="metric-desc">Taxa de abertura — mais que o dobro da média do mercado</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">11,9%</div>
+                        <div class="metric-desc">Taxa de clique — muito acima do padrão do setor</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">619</div>
+                        <div class="metric-desc">Vagas já mapeadas e enviadas — curadoria de valor real</div>
+                    </div>
+                </div>
+
+                <div style="max-width: 700px; margin: 0 auto 40px; font-size: 1.05rem; line-height: 1.6; color: #475569;">
+                    <p>Não é uma lista grande — é uma lista que fica. Quase ninguém sai depois que entra, e quando mandamos uma edição, metade abre. Isso não acontece por acaso: a newsletter existe pra resolver um problema real (encontrar vaga), então quem está nela presta atenção.</p>
+                </div>
+            </div>
+
+            <!-- SITE TAB -->
+            <div id="site-tab" class="tab-content">
+                <h1 class="hero-text" style="margin-bottom: 16px;">
+                    Anuncie pra quem realmente <span class="relative-inline">contrata e é contratado<img src="assets/linha.svg" class="linha-svg" alt=""></span> em design.
+                </h1>
+                <p style="font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto;">
+                    O UXfetch reúne Product Designers e UX Designers ativamente em busca de oportunidade — não tráfego de passagem.
+                </p>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">342</div>
+                        <div class="metric-desc">Usuários únicos por mês</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">44%</div>
+                        <div class="metric-desc">Voltam — não é visita única</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">17,5%</div>
+                        <div class="metric-desc">Convertem em formulário — intenção real, não curiosidade</div>
+                    </div>
+                </div>
+
+                <div style="max-width: 700px; margin: 0 auto 40px; font-size: 1.05rem; line-height: 1.6; color: #475569;">
+                    <p><strong>Onde seu anúncio aparece:</strong> A página mais acessada da plataforma é a listagem de vagas — o lugar exato onde designers estão decidindo o próximo passo da carreira. É ali que seu produto entra.</p>
+                    <p style="margin-top: 12px; font-size: 0.9rem; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                        <strong>Formatos disponíveis:</strong> 300x250 e 300x600 no desktop, 300x250 no mobile. Peso máximo de 150KB — performance do site nunca é sacrificada por anúncio.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FORM -->
+            <form class="sponsor-form" id="adRequestForm">
+                <h3 style="margin-top: 0; margin-bottom: 24px; font-size: 1.25rem;">Solicite um orçamento</h3>
+                <input type="hidden" id="form-type" value="newsletter">
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="nome">Nome *</label>
+                        <input type="text" id="nome" required placeholder="Seu nome">
+                    </div>
+                    <div class="input-group">
+                        <label for="email">E-mail corporativo *</label>
+                        <input type="email" id="email" required placeholder="voce@empresa.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="empresa">Empresa / Produto *</label>
+                        <input type="text" id="empresa" required placeholder="Nome do produto">
+                    </div>
+                    <div class="input-group">
+                        <label for="site_url">Site do produto *</label>
+                        <input type="url" id="site_url" required placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- Conditional Newsletter -->
+                <div class="newsletter-fields">
+                    <div class="input-group">
+                        <label for="formato_news">Formato desejado *</label>
+                        <select id="formato_news" class="w-full">
+                            <option value="Menção em texto corrido">Menção em texto corrido</option>
+                            <option value="Banner no e-mail">Banner no e-mail</option>
+                            <option value="Edição patrocinada exclusiva">Edição patrocinada exclusiva</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-top: 16px;">
+                        <label for="link_destino">Link de destino do anúncio</label>
+                        <input type="url" id="link_destino" placeholder="Para onde o clique vai?">
+                    </div>
+                    <div class="input-group" style="margin-top: 16px;">
+                        <label for="texto_anuncio">Texto do anúncio (Até 280 caracteres) - Para menções</label>
+                        <textarea id="texto_anuncio" rows="3" placeholder="O que você gostaria de comunicar na newsletter?"></textarea>
+                        <span class="char-counter" id="charCounter">0 / 280</span>
+                    </div>
+                </div>
+
+                <!-- Conditional Site -->
+                <div class="site-fields" style="display: none;">
+                    <div class="input-group">
+                        <label for="formato_site">Formato desejado *</label>
+                        <select id="formato_site" class="w-full">
+                            <option value="300x250">Banner Padrão (300x250)</option>
+                            <option value="300x600">Banner Vertical (300x600) + Mobile</option>
+                            <option value="Ambos">Ambos os formatos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 16px;">
+                    <label for="orcamento">Orçamento aproximado / período desejado (Opcional)</label>
+                    <input type="text" id="orcamento" placeholder="Ex: R$ 500/mês ou Campanha para Setembro">
+                </div>
+
+                <div class="input-group" style="margin-top: 16px;">
+                    <label for="descricao">Conte um pouco sobre o produto</label>
+                    <textarea id="descricao" rows="3" placeholder="Como o seu produto ajuda designers?"></textarea>
+                </div>
+
+                <button type="submit" class="cta-btn w-full mt-4" id="submitAdBtn" style="margin-top: 24px;">
+                    <span class="btn-text">Solicitar espaço</span>
+                    <span class="loader hidden"></span>
+                </button>
+
+                <div id="successMessage" class="success-box">
+                    <strong>Recebido!</strong><br>
+                    Respondemos em até 2 dias úteis com o media kit completo e disponibilidade.
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-left">
+                <img src="assets/logo.svg" alt="UX Fetch Logo" class="footer-logo">
+                <p>O radar automatizado para Product Designers.</p>
+                <div class="social-links" style="margin-top: 12px;">
+                    <a href="mailto:contato@uxfetch.com.br" style="color: #64748b; font-size: 0.9rem; text-decoration: none;">contato@uxfetch.com.br</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-col">
+                    <h4>Links Úteis</h4>
+                    <a href="index.html">Página Inicial</a>
+                    <a href="vagas.html">Explorar Vagas</a>
+                    <a href="https://uxfetch.com.br/blog">Blog do UX Fetch</a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 UX Fetch. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="anuncie.js"></script>
+</body>
+</html>
