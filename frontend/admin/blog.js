@@ -560,6 +560,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const payload = {
                 titulo: document.getElementById('bannerTitle').value,
                 image_url: document.getElementById('bannerImage').value,
+                image_mobile_url: document.getElementById('bannerMobileImage').value || null,
                 target_url: document.getElementById('bannerLink').value,
                 alt_text: document.getElementById('bannerAlt').value,
                 status: document.getElementById('bannerStatus').value,
@@ -622,6 +623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('bannerId').value = banner.id;
         document.getElementById('bannerTitle').value = banner.titulo;
         document.getElementById('bannerImage').value = banner.image_url;
+        document.getElementById('bannerMobileImage').value = banner.image_mobile_url || '';
         document.getElementById('bannerLink').value = banner.target_url;
         document.getElementById('bannerAlt').value = banner.alt_text;
         document.getElementById('bannerStatus').value = banner.status;
