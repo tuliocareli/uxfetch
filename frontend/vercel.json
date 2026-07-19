@@ -6,6 +6,10 @@
       "destination": "https://app.uxfetch.com.br/_next/:match*"
     },
     {
+      "source": "/blog",
+      "destination": "https://app.uxfetch.com.br/blog"
+    },
+    {
       "source": "/blog/:match*",
       "destination": "https://app.uxfetch.com.br/blog/:match*"
     },
