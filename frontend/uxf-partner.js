@@ -21,8 +21,7 @@ const initPartnerShowcase = async () => {
             const banner = data[0];
             const redirectUrl = `/ad-redirect.html?id=${banner.id}&dest=${encodeURIComponent(banner.target_url)}`;
             
-            // Detecta se está numa página do blog para não usar position: fixed
-            const isBlogPage = window.location.pathname.startsWith('/blog');
+            
             
             // Add CSS styles if not already present
             if (!document.getElementById('uxf-partner-styles')) {
@@ -35,10 +34,10 @@ const initPartnerShowcase = async () => {
                     .partner-badge-floating { position: absolute; top: -12px; left: 24px; background: var(--white, #fff); color: #4A5568; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color, #B7CFFF); z-index: 10; }
                     .native-partner-link img { display: block; width: 300px; max-width: 100%; height: auto; border-radius: 12px; }
                     
-                    /* Position fixo APENAS na Home e apenas em telas muito largas (1536px+) */
-                    ${!isBlogPage ? `@media (min-width: 1536px) {
+                    /* Position fixo lateral no Desktop (1536px+) para TODAS as páginas */
+                    @media (min-width: 1536px) {
                         .partner-wrapper { position: fixed; top: 120px; right: 40px; margin: 0; width: auto; z-index: 100; }
-                    }` : ''}
+                    }
                 `;
                 document.head.appendChild(style);
             }
