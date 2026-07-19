@@ -1,9 +1,35 @@
 {
   "cleanUrls": true,
-  "rewrites": [
+  "redirects": [
+    {
+      "source": "/artigo/o-que-eu-aprendi-enviando-563-vagas-de-design-em-30-dias",
+      "destination": "https://uxfetch.com.br/blog/analise-563-vagas-design",
+      "permanent": true
+    },
+    {
+      "source": "/artigo/onde-encontrar-vagas-de-product-design-fora-da-gupy-e-do-linkedin",
+      "destination": "https://uxfetch.com.br/blog/vagas-product-design-fora-linkedin",
+      "permanent": true
+    },
+    {
+      "source": "/artigo/o-oceano-azul-como-encontrar-as-melhores-vagas-de-design-fora-do-linkedin",
+      "destination": "https://uxfetch.com.br/blog/melhores-vagas-design-fora-linkedin",
+      "permanent": true
+    },
+    {
+      "source": "/artigo/como-achar-vagas-gringas-de-ux-design-e-filtrar-o-ruido",
+      "destination": "https://uxfetch.com.br/blog/vagas-gringas-ux-design",
+      "permanent": true
+    },
+    {
+      "source": "/artigo/o-que-as-empresas-realmente-exigem-de-um-product-designer-analise-de-mercado",
+      "destination": "https://uxfetch.com.br/blog/requisitos-habilidades-product-designer",
+      "permanent": true
+    },
     {
       "source": "/artigo/:slug",
-      "destination": "/api/og-artigo?slug=:slug"
+      "destination": "https://uxfetch.com.br/blog/:slug",
+      "permanent": true
     }
   ]
 }

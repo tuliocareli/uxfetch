@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         posts.forEach(post => {
             const card = document.createElement('a');
-            card.href = `artigo/${post.slug}`;
+            card.href = `https://uxfetch.com.br/blog/${post.slug}`;
             card.className = 'uxf-card'; // Reaproveitando estilos do carrossel existente
             
             const img = post.imagem_capa || 'assets/og-image.png'; // Fallback

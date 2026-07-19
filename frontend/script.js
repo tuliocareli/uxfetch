@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // UI Elements
     const form = document.getElementById('subscribe-form');
     const submitBtn = document.getElementById('submit-btn');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const loader = submitBtn.querySelector('.loader');
+    const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+    const loader = submitBtn ? submitBtn.querySelector('.loader') : null;
     const successMessage = document.getElementById('success-message');
     
     // Checkboxes
@@ -28,7 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     stateSelect.appendChild(option);
                 });
             })
-            .catch(err => console.error('Erro ao carregar estados do IBGE:', err));
+            .catch(err => {
+                console.error('Erro ao carregar estados do IBGE:', err);
+                const fallbackStates = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+                fallbackStates.forEach(sigla => {
+                    const option = document.createElement('option');
+                    option.value = sigla;
+                    option.textContent = sigla;
+                    stateSelect.appendChild(option);
+                });
+            });
 
         // Ao selecionar um estado, carrega as cidades
         stateSelect.addEventListener('change', (e) => {
@@ -327,7 +336,16 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
                     stateSelect.appendChild(option);
                 });
             })
-            .catch(err => console.error('Erro ao carregar estados do IBGE:', err));
+            .catch(err => {
+                console.error('Erro ao carregar estados do IBGE:', err);
+                const fallbackStates = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+                fallbackStates.forEach(sigla => {
+                    const option = document.createElement('option');
+                    option.value = sigla;
+                    option.textContent = sigla;
+                    stateSelect.appendChild(option);
+                });
+            });
 
         stateSelect.addEventListener('change', (e) => {
             const uf = e.target.value;
