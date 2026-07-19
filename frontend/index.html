@@ -12,16 +12,14 @@
     <meta property="og:url" content="https://uxfetch.com.br/">
     <meta property="og:type" content="website">
     <link rel="canonical" href="https://uxfetch.com.br/">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"></noscript>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
     <link rel="preload" as="image" href="assets/logo.svg">
     <meta name="theme-color" content="#ffffff">
     <!-- CSS crítico inline: apenas o suficiente para pintar acima da dobra sem bloquear render -->
     <style>
+        /* font-display:swap garante texto visível imediatamente, sem esperar a fonte carregar */
+        @font-face{font-family:'Space Grotesk';font-style:normal;font-weight:400 700;font-display:swap;src:url(https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gozuPTPAg.woff2) format('woff2');}
         :root{--primary:#0055FF;--primary-dark:#274E9C;--white:#FFFFFF;--black:#000000;--text-dark:#231F20;--bg-light:#F3F3F3;--bg-blue-lightest:#F0F5FF;--bg-blue-light:#EDF3FF;--bg-blue-medium:#E5EBF9;--border-color:#B7CFFF;--font-main:'Space Grotesk',sans-serif;}
         *{margin:0;padding:0;box-sizing:border-box;}
         body{font-family:var(--font-main);background-color:var(--bg-blue-lightest);color:var(--text-dark);line-height:1.6;}
@@ -41,6 +39,8 @@
         .mobile-menu-btn span{width:24px;height:2px;background:var(--text-dark);border-radius:2px;}
         @media(min-width:768px){.mobile-menu-btn{display:none;}}
     </style>
+    <!-- Preload da fonte WOFF2 diretamente, sem passar pelo CSS do Google Fonts -->
+    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gozuPTPAg.woff2" crossorigin>
     <!-- CSS restante carregado de forma não-bloqueante -->
     <link rel="preload" as="style" href="styles.css" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="styles.css"></noscript>
