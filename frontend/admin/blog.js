@@ -440,4 +440,197 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
+    // --- TABS LOGIC --- //
+    const tabBlog = document.getElementById('tabBlog');
+    const tabBanners = document.getElementById('tabBanners');
+    const blogContent = document.getElementById('blogContent');
+    const bannersContent = document.getElementById('bannersContent');
+
+    if (tabBlog && tabBanners) {
+        tabBlog.addEventListener('click', () => {
+            tabBlog.style.borderBottomColor = 'var(--primary)';
+            tabBlog.style.color = 'var(--primary)';
+            tabBanners.style.borderBottomColor = 'transparent';
+            tabBanners.style.color = '#718096';
+            blogContent.style.display = 'block';
+            bannersContent.style.display = 'none';
+        });
+        tabBanners.addEventListener('click', () => {
+            tabBanners.style.borderBottomColor = 'var(--primary)';
+            tabBanners.style.color = 'var(--primary)';
+            tabBlog.style.borderBottomColor = 'transparent';
+            tabBlog.style.color = '#718096';
+            blogContent.style.display = 'none';
+            bannersContent.style.display = 'block';
+            loadBanners();
+        });
+    }
+
+    // --- BANNERS LOGIC --- //
+    const btnNewBanner = document.getElementById('btnNewBanner');
+    const btnBackToBannersHub = document.getElementById('btnBackToBannersHub');
+    const bannersHubView = document.getElementById('bannersHubView');
+    const bannerEditorView = document.getElementById('bannerEditorView');
+    const bannerForm = document.getElementById('bannerForm');
+
+    async function loadBanners() {
+        const bannersList = document.getElementById('bannersList');
+        if (!bannersList) return;
+        bannersList.innerHTML = '<p style="color: #718096;">Carregando banners...</p>';
+        
+        try {
+            const { data, error } = await supabase
+                .from('ad_banners')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                bannersList.innerHTML = '<p style="color: #718096;">Nenhum banner encontrado.</p>';
+                return;
+            }
+
+            bannersList.innerHTML = '';
+            data.forEach(banner => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                const isPub = banner.status === 'active';
+                const ctr = banner.impressions_count > 0 ? ((banner.clicks_count / banner.impressions_count) * 100).toFixed(2) : '0.00';
+                
+                card.innerHTML = `
+                    <div class="post-info" style="flex: 1; display: flex; gap: 16px; align-items: center;">
+                        <img src="${banner.image_url}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
+                        <div>
+                            <h3>${banner.titulo}</h3>
+                            <div style="font-size: 0.85rem; color: #475569; margin-top: 4px; display: flex; gap: 12px;">
+                                <span>👁️ ${banner.impressions_count} Views</span>
+                                <span>👆 ${banner.clicks_count} Clicks</span>
+                                <span>📈 ${ctr}% CTR</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-actions" style="display: flex; gap: 8px; align-items: center;">
+                        <select onchange="updateBannerStatus('${banner.id}', this.value)" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; cursor: pointer; background: ${isPub ? '#dcfce7' : '#f1f5f9'}; color: ${isPub ? '#166534' : '#475569'}; outline: none;">
+                            <option value="inactive" ${!isPub ? 'selected' : ''}>Inativo</option>
+                            <option value="active" ${isPub ? 'selected' : ''}>Ativo</option>
+                        </select>
+                        <button class="btn-edit" onclick="editBanner('${banner.id}')">Editar</button>
+                        <button class="btn-delete" onclick="deleteBanner('${banner.id}')">Excluir</button>
+                    </div>
+                `;
+                bannersList.appendChild(card);
+            });
+            window.bannersData = data; 
+        } catch (error) {
+            bannersList.innerHTML = '<p style="color: #ef4444;">Erro ao carregar banners.</p>';
+            console.error(error);
+        }
+    }
+
+    if (btnNewBanner) {
+        btnNewBanner.addEventListener('click', () => {
+            if(bannerForm) bannerForm.reset();
+            document.getElementById('bannerId').value = '';
+            document.getElementById('submitBannerBtn').textContent = 'Salvar Banner';
+            statusMsg.className = 'status-msg';
+            statusMsg.textContent = '';
+            
+            bannersHubView.style.display = 'none';
+            bannerEditorView.style.display = 'block';
+        });
+    }
+
+    if (btnBackToBannersHub) {
+        btnBackToBannersHub.addEventListener('click', () => {
+            bannerEditorView.style.display = 'none';
+            bannersHubView.style.display = 'block';
+            loadBanners();
+        });
+    }
+
+    if (bannerForm) {
+        bannerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBannerBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Salvando...';
+            
+            const id = document.getElementById('bannerId').value;
+            const payload = {
+                titulo: document.getElementById('bannerTitle').value,
+                image_url: document.getElementById('bannerImage').value,
+                target_url: document.getElementById('bannerLink').value,
+                alt_text: document.getElementById('bannerAlt').value,
+                status: document.getElementById('bannerStatus').value,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                if (id) {
+                    const { error } = await supabase.from('ad_banners').update(payload).eq('id', id);
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabase.from('ad_banners').insert([payload]);
+                    if (error) throw error;
+                }
+                
+                statusMsg.textContent = 'Banner salvo com sucesso!';
+                statusMsg.className = 'status-msg success';
+                statusMsg.style.display = 'block';
+                
+                setTimeout(() => {
+                    bannerEditorView.style.display = 'none';
+                    bannersHubView.style.display = 'block';
+                    statusMsg.style.display = 'none';
+                    loadBanners();
+                }, 1000);
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Salvar Banner';
+            }
+        });
+    }
+
+    window.updateBannerStatus = async (id, newStatus) => {
+        try {
+            const { error } = await supabase.from('ad_banners').update({ status: newStatus }).eq('id', id);
+            if (error) throw error;
+            loadBanners();
+        } catch (err) {
+            alert('Erro ao atualizar status: ' + err.message);
+        }
+    };
+
+    window.deleteBanner = async (id) => {
+        if(!confirm('Tem certeza que deseja excluir este banner permanentemente?')) return;
+        try {
+            const { error } = await supabase.from('ad_banners').delete().eq('id', id);
+            if (error) throw error;
+            loadBanners(); 
+        } catch(error) {
+            alert('Erro ao excluir: ' + error.message);
+        }
+    };
+
+    window.editBanner = (id) => {
+        const banner = window.bannersData?.find(b => b.id === id);
+        if (!banner) return;
+        
+        document.getElementById('bannerId').value = banner.id;
+        document.getElementById('bannerTitle').value = banner.titulo;
+        document.getElementById('bannerImage').value = banner.image_url;
+        document.getElementById('bannerLink').value = banner.target_url;
+        document.getElementById('bannerAlt').value = banner.alt_text;
+        document.getElementById('bannerStatus').value = banner.status;
+        
+        document.getElementById('submitBannerBtn').textContent = 'Atualizar Banner';
+        statusMsg.className = 'status-msg';
+        statusMsg.textContent = '';
+        
+        bannersHubView.style.display = 'none';
+        bannerEditorView.style.display = 'block';
+    };
 });

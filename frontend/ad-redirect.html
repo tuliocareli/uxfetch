@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando... | UX Fetch</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { margin: 0; background-color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .loader { width: 30px; height: 30px; border: 3px solid #e0e7ff; border-top-color: #0055ff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const adId = urlParams.get('id');
+            const dest = urlParams.get('dest');
+            
+            if (!adId || !dest) {
+                window.location.replace('/');
+                return;
+            }
+
+            try {
+                const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
+                const SUPABASE_ANON_KEY = 'sb_publishable_YP0GmSgpgugyAnjan6I3bQ_Gaf4CSGI';
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                await supabase.rpc('track_banner_click', {
+                    p_banner_id: adId,
+                    p_referrer: document.referrer || window.location.href
+                });
+            } catch (error) {
+                console.error('Tracking error', error);
+            } finally {
+                // Redireciona sempre, independente de erro de rede ou adblock no Supabase
+                window.location.replace(decodeURIComponent(dest));
+            }
+        });
+    </script>
+</body>
+</html>

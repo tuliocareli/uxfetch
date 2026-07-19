@@ -114,7 +114,15 @@
         <!-- TELA DO CMS (Oculta por padrão) -->
         <div id="cmsSection" style="display: none;">
             
-            <!-- HUB CENTRAL -->
+            <!-- TABS -->
+            <div id="adminTabs" style="display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">
+                <button class="tab-btn active" id="tabBlog" style="background: none; border: none; font-size: 1.1rem; font-weight: 700; color: var(--primary); cursor: pointer; border-bottom: 2px solid var(--primary);">Artigos</button>
+                <button class="tab-btn" id="tabBanners" style="background: none; border: none; font-size: 1.1rem; font-weight: 700; color: #718096; cursor: pointer; border-bottom: 2px solid transparent;">Banners</button>
+            </div>
+
+            <!-- GESTÃO DE BLOG -->
+            <div id="blogContent">
+                <!-- HUB CENTRAL -->
             <div id="hubView">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <h2 style="margin: 0; font-size: 1.5rem;">Seus Artigos</h2>
@@ -237,6 +245,57 @@
                     </div>
                 </div>
             </div>
+            </div> <!-- FIM BLOG CONTENT -->
+
+            <!-- GESTÃO DE BANNERS -->
+            <div id="bannersContent" style="display: none;">
+                <div id="bannersHubView">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="margin: 0; font-size: 1.5rem;">Gestão de Banners</h2>
+                        <button id="btnNewBanner" class="btn-submit">+ Novo Banner</button>
+                    </div>
+                    <div id="bannersList" style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Lista de banners injetada via JS -->
+                    </div>
+                </div>
+
+                <div id="bannerEditorView" style="display: none;">
+                    <div style="margin-bottom: 24px;">
+                        <button id="btnBackToBannersHub" style="background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500;">&larr; Voltar para Banners</button>
+                    </div>
+                    <form id="bannerForm">
+                        <input type="hidden" id="bannerId">
+                        
+                        <div class="form-group">
+                            <label for="bannerTitle">Título (Apenas Controle Interno)</label>
+                            <input type="text" id="bannerTitle" required placeholder="Ex: Campanha Alura - Setembro">
+                        </div>
+                        <div class="form-group">
+                            <label for="bannerImage">URL da Imagem (300x250 recomendado)</label>
+                            <input type="url" id="bannerImage" required placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="bannerLink">Link de Destino (Com UTMs)</label>
+                            <input type="url" id="bannerLink" required placeholder="https://anunciante.com/?utm_source=uxfetch...">
+                        </div>
+                        <div class="form-group">
+                            <label for="bannerAlt">Alt Text (Acessibilidade)</label>
+                            <input type="text" id="bannerAlt" required placeholder="Ex: Conheça o curso de UX Design da Alura">
+                        </div>
+                        
+                        <div class="form-group" style="width: 200px;">
+                            <label for="bannerStatus">Status</label>
+                            <select id="bannerStatus">
+                                <option value="inactive">Inativo (Oculto)</option>
+                                <option value="active">Ativo (Rodando no site)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit" id="submitBannerBtn">Salvar Banner</button>
+                    </form>
+                </div>
+            </div> <!-- FIM BANNERS CONTENT -->
+
         </div>
     </div>
     
