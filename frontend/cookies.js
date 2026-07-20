@@ -65,7 +65,7 @@ function renderBanner() {
             <p class="cookie-banner__text">
                 🎨 <strong>Como bom designer, adoro ver como a interface performa.</strong>
                 Usamos cookies analíticos via Microsoft Clarity (mapas de calor) e Google Analytics (origem do tráfego) para melhorar o radar.
-                Nenhum dado sensível é coletado e ninguém vai te perseguir com anúncios.
+                Nenhum dado sensível é coletado.
                 <a href="termos.html" class="cookie-banner__link">Saiba mais</a>
             </p>
             <div class="cookie-banner__actions">
