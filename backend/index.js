@@ -124,6 +124,20 @@ async function main() {
             }
             
             // FASE DE DISPARO DE E-MAIL
+            if (process.env.SKIP_MAILER === 'true' || process.env.ENABLE_MAILER === 'false') {
+                console.log('⏸️ Disparo de e-mails pausado (SKIP_MAILER=true). Vagas salvas no banco com sucesso!');
+                if (newJobs.length > 0) {
+                    const { error: statsError } = await supabase.rpc('increment_platform_stats', { 
+                        jobs_added: newJobs.length, 
+                        emails_added: 0 
+                    });
+                    if (!statsError) {
+                        console.log(`Métricas atualizadas: +${newJobs.length} vagas, 0 e-mails.`);
+                    }
+                }
+                return;
+            }
+
             console.log('Buscando inscritos ativos para disparo de e-mails...');
             const { data: subscribers, error: subError } = await supabase
                 .from('subscribers')

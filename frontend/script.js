@@ -765,13 +765,27 @@ if (window.location.pathname.includes('/vagas') || window.location.pathname.incl
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-            const { data: jobs, error } = await localSupabase
+            let { data: jobs, error } = await localSupabase
                 .from('jobs')
                 .select('id, title, company, location, url, source, work_mode, is_remote, is_international, created_at, description')
                 .gte('created_at', thirtyDaysAgo.toISOString())
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
+
+            // Fallback resiliente: caso o período de 30 dias não possua vagas recentes
+            // (ex: pausa temporária dos scrapers), busca as últimas vagas do banco para o mural nunca quebrar
+            if (!jobs || jobs.length === 0) {
+                const { data: fallbackJobs, error: fallbackError } = await localSupabase
+                    .from('jobs')
+                    .select('id, title, company, location, url, source, work_mode, is_remote, is_international, created_at, description')
+                    .order('created_at', { ascending: false })
+                    .limit(200);
+
+                if (!fallbackError && fallbackJobs && fallbackJobs.length > 0) {
+                    jobs = fallbackJobs;
+                }
+            }
 
             loadingIndicator.style.display = 'none';
             

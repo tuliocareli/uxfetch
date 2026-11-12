@@ -19,14 +19,12 @@ const initPartnerShowcase = async () => {
         
         if (data && data.length > 0) {
             const banner = data[0];
-            const redirectUrl = `/ad-redirect.html?id=${banner.id}&dest=${encodeURIComponent(banner.target_url)}`;
-            
-            
+            const redirectUrl = `https://wxogmhruwhjvhhgmfvrr.supabase.co/functions/v1/redirect_partner?banner_id=${banner.id}`;
             
             // Add CSS styles if not already present
-            if (!document.getElementById('uxf-partner-styles')) {
+            if (!document.querySelector('.partner-wrapper-style')) {
                 const style = document.createElement('style');
-                style.id = 'uxf-partner-styles';
+                style.className = 'partner-wrapper-style';
                 style.textContent = `
                     .partner-wrapper { width: 100%; display: flex; justify-content: center; margin: 40px 0; }
                     .native-partner-link { position: relative; display: block; border-radius: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease; border: 1px solid var(--border-color, #B7CFFF); box-shadow: 0 4px 12px rgba(0, 85, 255, 0.05); }
@@ -72,9 +70,12 @@ const initPartnerShowcase = async () => {
                 },
                 body: JSON.stringify({ p_banner_id: banner.id })
             }).catch(e => console.error('Ad tracking failed', e));
+        } else {
+            adSlot.style.display = 'none';
         }
     } catch (e) {
         console.error('Ad load failed', e);
+        if (adSlot) adSlot.style.display = 'none';
     }
 };
 
