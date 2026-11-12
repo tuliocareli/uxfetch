@@ -19,7 +19,7 @@ const initPartnerShowcase = async () => {
         
         if (data && data.length > 0) {
             const banner = data[0];
-            const redirectUrl = `https://wxogmhruwhjvhhgmfvrr.supabase.co/functions/v1/redirect_partner?banner_id=${banner.id}`;
+            const redirectUrl = `/ad-redirect.html?id=${banner.id}&dest=${encodeURIComponent(banner.target_url)}`;
             
             // Add CSS styles if not already present
             if (!document.querySelector('.partner-wrapper-style')) {
