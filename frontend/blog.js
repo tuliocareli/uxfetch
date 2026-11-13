@@ -3,16 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const blogCarouselContainer = document.getElementById('blog-carousel-section');
     if (!blogCarouselContainer) return;
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                loadBlogPosts();
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { rootMargin: '300px' });
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    loadBlogPosts();
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '300px' });
 
-    observer.observe(blogCarouselContainer);
+        observer.observe(blogCarouselContainer);
+    } else {
+        loadBlogPosts();
+    }
 
     async function loadBlogPosts() {
         const SUPABASE_URL = 'https://wxogmhruwhjvhhgmfvrr.supabase.co';
@@ -56,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 card.innerHTML = `
                     <div class="uxf-card-img-wrapper" style="padding: 0; height: 170px;">
-                        <img class="uxf-card-img" style="object-fit: cover; width: 100%; height: 100%; border-radius: 20px 20px 0 0;" src="${img}" alt="${post.imagem_capa_alt || post.titulo}">
+                        <img class="uxf-card-img" loading="lazy" decoding="async" style="object-fit: cover; width: 100%; height: 100%; border-radius: 20px 20px 0 0;" src="${img}" alt="${post.imagem_capa_alt || post.titulo}">
                     </div>
                     <div class="uxf-card-content" style="height: 210px; position: relative; justify-content: flex-start; padding: 20px; border-top: none;">
                         <div class="uxf-tag" style="margin-bottom: 12px; width: fit-content;">Artigo</div>
