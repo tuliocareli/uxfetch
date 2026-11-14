@@ -34,16 +34,16 @@
         .highlight{color:var(--primary);}
         .btn-primary{background:var(--primary);color:var(--white);border:none;border-radius:12px;padding:16px 32px;font-family:var(--font-main);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;}
         .desktop-nav{display:none;}
-        @media(min-width:768px){.desktop-nav{display:flex;gap:32px;align-items:center;}}
-        .mobile-menu-btn{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
-        .mobile-menu-btn span{width:24px;height:2px;background:var(--text-dark);border-radius:2px;}
-        @media(min-width:768px){.mobile-menu-btn{display:none;}}
+        @media(min-width:769px){.desktop-nav{display:flex;gap:32px;align-items:center;}}
+        .mobile-menu-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;padding:8px;flex-shrink:0;background:none;border:none;cursor:pointer;}
+        .mobile-menu-btn span{display:block;width:24px;height:3px;flex-shrink:0;background:var(--text-dark);border-radius:3px;}
+        @media(min-width:769px){.mobile-menu-btn{display:none;}}
     </style>
     <!-- Preload da fonte WOFF2 diretamente, sem passar pelo CSS do Google Fonts -->
     <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gozuPTPAg.woff2" crossorigin>
     <!-- CSS restante carregado de forma não-bloqueante -->
-    <link rel="preload" as="style" href="styles.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <link rel="preload" as="style" href="styles.css?v=2.1" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css?v=2.1"></noscript>
     <!-- Scripts de terceiros movidos para o final do body para otimizar LCP -->
     <script type="application/ld+json">
     [

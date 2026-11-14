@@ -709,17 +709,22 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    width: 30px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
     z-index: 1000;
 }
 
 .mobile-menu-btn span {
     display: block;
-    width: 100%;
+    width: 24px;
     height: 3px;
+    flex-shrink: 0;
     background-color: var(--text-dark);
     border-radius: 3px;
     transition: all 0.3s ease;
