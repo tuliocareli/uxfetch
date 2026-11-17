@@ -31,7 +31,9 @@ async function scrapeInhire() {
         { id: 'paytrack', name: 'Paytrack' },
         { id: 'avivatec', name: 'Avivatec' },
         { id: 'deloitte', name: 'Deloitte' },
-        { id: 'livelo', name: 'Livelo' }
+        { id: 'livelo', name: 'Livelo' },
+        { id: 'atlastechnol', name: 'Atlas Technologies' },
+        { id: 'radix', name: 'Radix', customUrl: 'https://radix.inhire.app/vagas/' }
     ];
 
     const includeRegex = /\b(ux\b|ui\b|product\s+design(er)?|design\s+de\s+produto(s)?|designer\s+de\s+produto(s)?|design\s+ops|designops|staff\s+design(er)?|design\s+engineer|ux\s+research(er)?|design\s+research(er)?|user\s+experience|user\s+interface|service\s+design(er)?|lead\s+design(er)?|head\s+de\s+design|design\s+manager|diretor\s+de\s+design|diretor\s+de\s+arte|graphic\s+design(er)?|design(er)?\s+gr[aá]fico|visual\s+design(er)?|motion\s+design(er)?|motion\s+graphics|3d\s+design(er)?|ilustrador(a)?|ux\s+writer|designer\b|videomaker|editor(a)?\s+de\s+v[ií]deo|audiovisual|edi[çc][ãa]o\s+de\s+v[ií]deo)/i;
@@ -70,8 +72,8 @@ async function scrapeInhire() {
                 const url = company.customUrl ? company.customUrl : `https://${company.id}.inhire.app/vagas`;
                 await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
                 
-                // Aguarda as vagas aparecerem na tela
-                await page.waitForSelector('a[href*="/vaga"], a[href*="/v/"]', { timeout: 10000 }).catch(() => {});
+                // Aguarda as vagas reais aparecerem na tela (evita match precoce com o link /vagas do header)
+                await page.waitForSelector('a[href*="/vagas/"], a[href*="/vaga/"], a[href*="/v/"]', { timeout: 10000 }).catch(() => {});
                 await new Promise(r => setTimeout(r, 2000));
 
                 let previousHeight;
@@ -103,7 +105,7 @@ async function scrapeInhire() {
 
                 const extractedJobs = await page.evaluate(() => {
                     const links = Array.from(document.querySelectorAll('a'))
-                        .filter(a => a.href.includes('/vaga') || a.href.includes('/v/'));
+                        .filter(a => /\/vagas?\/.+|\/v\/.+/.test(a.href));
                     
                     const results = [];
                     for (const a of links) {
