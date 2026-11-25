@@ -17,6 +17,11 @@ const inhireScraper = require('./scrapers/inhire');
 const ilegraScraper = require('./scrapers/ilegra');
 const recrutaiScraper = require('./scrapers/recrutai');
 const supersideScraper = require('./scrapers/superside');
+const automatticScraper = require('./scrapers/automattic');
+const workableScraper = require('./scrapers/workable');
+const workdayScraper = require('./scrapers/workday');
+const wpEcosystemScraper = require('./scrapers/wpEcosystem');
+const wordpressJobsScraper = require('./scrapers/wordpressJobs');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -36,7 +41,12 @@ async function main() {
         { name: 'Inhire', run: inhireScraper },
         { name: 'Ilegra', run: ilegraScraper },
         { name: 'Recrut.ai', run: recrutaiScraper },
-        { name: 'Superside', run: supersideScraper }
+        { name: 'Superside', run: supersideScraper },
+        { name: 'Automattic', run: automatticScraper },
+        { name: 'Workable', run: workableScraper },
+        { name: 'Workday', run: workdayScraper },
+        { name: 'WP Ecosystem', run: wpEcosystemScraper },
+        { name: 'WordPress Jobs', run: wordpressJobsScraper }
     ];
 
     let allJobs = [];
