@@ -2,8 +2,8 @@ name: Daily UX Fetch Scraper
 
 on:
   schedule:
-    # Roda de segunda a sexta-feira às 11:00 UTC (08:00 no fuso de Brasília)
-    - cron: '0 11 * * 1-5'
+    # Roda de segunda a sexta-feira às 11:23 UTC (08:23 no fuso de Brasília, fora da hora cheia para reduzir atrasos de fila)
+    - cron: '23 11 * * 1-5'
   workflow_dispatch: # Permite disparar o robô manualmente clicando em um botão no site do GitHub
 
 jobs:

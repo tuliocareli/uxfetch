@@ -22,6 +22,7 @@ const workableScraper = require('./scrapers/workable');
 const workdayScraper = require('./scrapers/workday');
 const wpEcosystemScraper = require('./scrapers/wpEcosystem');
 const wordpressJobsScraper = require('./scrapers/wordpressJobs');
+const michaelpageScraper = require('./scrapers/michaelpage');
 
 async function main() {
     console.log('Iniciando orquestrador de scrapers...');
@@ -46,7 +47,8 @@ async function main() {
         { name: 'Workable', run: workableScraper },
         { name: 'Workday', run: workdayScraper },
         { name: 'WP Ecosystem', run: wpEcosystemScraper },
-        { name: 'WordPress Jobs', run: wordpressJobsScraper }
+        { name: 'WordPress Jobs', run: wordpressJobsScraper },
+        { name: 'Michael Page', run: michaelpageScraper }
     ];
 
     let allJobs = [];
